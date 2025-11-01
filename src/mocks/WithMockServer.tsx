@@ -17,7 +17,7 @@ export default function WithMockServer() {
 
   useEffect(() => {
     const shouldMock =
-      import.meta.env.MODE === "development" &&
+      import.meta.env.VITE_APP_ENV === "development" &&
       import.meta.env.VITE_ENABLE_MOCK === "true";
 
     if (!shouldMock) return;
