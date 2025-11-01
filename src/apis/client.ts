@@ -36,7 +36,7 @@ client.interceptors.response.use(
       if (!isRefreshing) {
         isRefreshing = true;
         refreshPromise = client
-          .post(`${import.meta.env.VITE_BASE_API_URL}/auth/refresh`, {
+          .post(`${import.meta.env.VITE_SERVER_URL}/api/auth/refresh`, {
             withCredentials: true,
           })
           .then((res) => {
