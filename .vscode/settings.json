@@ -57,5 +57,11 @@
       "backgroundColor": "#00efff",
       "fontColor": "#ffffff"
     }
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.tsx": "$(capture).stories.tsx, $(capture).test.tsx, $(capture).stories.ts, $(capture).test.ts",
+    "*.ts": "$(capture).stories.ts, $(capture).test.ts"
   }
 }
