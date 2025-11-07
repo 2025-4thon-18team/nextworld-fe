@@ -1,4 +1,3 @@
-import Vite from "./vite.svg?react";
 import { withIconProps } from "./withIconProps";
 import Check from "./icon-check.svg?react";
 import Chevron from "./icon-chevron.svg?react";
@@ -16,8 +15,7 @@ import Posnts from "./icon-posnts.svg?react";
 import Share from "./icon-share.svg?react";
 import Star from "./icon-star.svg?react";
 import Warning from "./icon-warning.svg?react";
-
-export const IconVite = withIconProps(Vite);
+import Picture from "./icon-picture.svg?react";
 export const IconCheck = withIconProps(Check);
 export const IconChevron = withIconProps(Chevron);
 export const IconCircle = withIconProps(Circle);
@@ -34,3 +32,4 @@ export const IconPosnts = withIconProps(Posnts);
 export const IconShare = withIconProps(Share);
 export const IconStar = withIconProps(Star);
 export const IconWarning = withIconProps(Warning);
+export const IconPicture = withIconProps(Picture);
