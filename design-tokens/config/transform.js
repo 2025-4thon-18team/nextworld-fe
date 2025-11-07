@@ -65,10 +65,11 @@ export function parseTextStyleToken(token, result, category, name, value) {
     const typographyObj = {};
 
     for (const [prop, val] of Object.entries(token.$value)) {
-      if (typeof val !== "string") continue;
+      // ✅ 숫자나 문자열이 아닌 값은 제외 (객체, null 등)
+      if (typeof val !== "string" && typeof val !== "number") continue;
 
       // ✅ 참조가 있는 경우 그대로 var(--...) 변환
-      if (val.startsWith("{") && val.endsWith("}")) {
+      if (typeof val === "string" && val.startsWith("{") && val.endsWith("}")) {
         typographyObj[prop] = `var(--${val
           .replace(/[{}]/g, "")
           .replace(/\./g, "-")})`;

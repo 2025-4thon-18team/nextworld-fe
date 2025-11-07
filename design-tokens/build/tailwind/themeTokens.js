@@ -114,7 +114,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Bold",
       "lineHeight": "140%",
+      "fontSize": 24,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -123,7 +125,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Bold",
       "lineHeight": "140%",
+      "fontSize": 20,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -132,7 +136,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Bold",
       "lineHeight": "140%",
+      "fontSize": 18,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -141,7 +147,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Bold",
       "lineHeight": "140%",
+      "fontSize": 16,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -150,7 +158,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Bold",
       "lineHeight": "140%",
+      "fontSize": 14,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -159,7 +169,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "SemiBold",
       "lineHeight": "150%",
+      "fontSize": 18,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -168,7 +180,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Medium",
       "lineHeight": "150%",
+      "fontSize": 18,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -177,7 +191,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "SemiBold",
       "lineHeight": "150%",
+      "fontSize": 18,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -186,7 +202,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Regular",
       "lineHeight": "150%",
+      "fontSize": 16,
       "letterSpacing": "-2%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -195,7 +213,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Medium",
       "lineHeight": "150%",
+      "fontSize": 16,
       "letterSpacing": "-2%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -204,7 +224,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "SemiBold",
       "lineHeight": "150%",
+      "fontSize": 12,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -213,7 +235,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Medium",
       "lineHeight": "150%",
+      "fontSize": 12,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -222,7 +246,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "SemiBold",
       "lineHeight": "150%",
+      "fontSize": 12,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -231,7 +257,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Regular",
       "lineHeight": "150%",
+      "fontSize": 12,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -240,7 +268,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Medium",
       "lineHeight": "150%",
+      "fontSize": 12,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -249,7 +279,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "SemiBold",
       "lineHeight": "150%",
+      "fontSize": 12,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -258,7 +290,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "Medium",
       "lineHeight": "150%",
+      "fontSize": 12,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
@@ -267,7 +301,9 @@ export default {
       "fontFamily": "Pretendard",
       "fontWeight": "SemiBold",
       "lineHeight": "150%",
+      "fontSize": 12,
       "letterSpacing": "-3%",
+      "paragraphSpacing": 0,
       "paragraphIndent": "0px",
       "textCase": "none",
       "textDecoration": "none"
