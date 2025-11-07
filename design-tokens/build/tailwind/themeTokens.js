@@ -68,24 +68,7 @@ export default {
     "md": 2
   },
   "boxShadow": {
-    "drop-default": [
-      {
-        "color": "#9999991a",
-        "x": 2,
-        "y": 2,
-        "blur": 10,
-        "spread": 0,
-        "$type": "dropShadow"
-      },
-      {
-        "color": "#9999991a",
-        "x": -2,
-        "y": -2,
-        "blur": 10,
-        "spread": 0,
-        "$type": "dropShadow"
-      }
-    ]
+    "drop-default": "2px 2px 10px 0px #9999991a, -2px -2px 10px 0px #9999991a"
   },
   "opacity": {
     "disabled": 0.4,

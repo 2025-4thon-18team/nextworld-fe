@@ -152,6 +152,19 @@ export function themeTokens({ dictionary }) {
       parseGenericToken(token, result, tailwindKey, name, value);
     }
   });
+  // boxShadow 배열을 CSS 문자열로 변환
+  if (result.boxShadow) {
+    for (const [key, value] of Object.entries(result.boxShadow)) {
+      if (Array.isArray(value)) {
+        result.boxShadow[key] = value
+          .map((shadow) => {
+            const { x, y, blur, spread, color } = shadow;
+            return `${x}px ${y}px ${blur}px ${spread}px ${color}`;
+          })
+          .join(", ");
+      }
+    }
+  }
 
   return `export default ${JSON.stringify(result, null, 2)};`;
 }
@@ -187,8 +200,13 @@ import textStylesPlugin from "../../config/textStylesPlugin.js";
 // px 값을 rem으로 변환하는 함수
 const pxToRem = (px, remDivider = 16) => \`\${px / remDivider}rem\`;
 
-// spacing, borderRadius, borderWidth, fontSize를 rem으로 변환
+/**
+ * spacing, borderRadius, borderWidth, fontSize를 rem으로 변환
+ * @param {Record<string, number | string>} obj
+ * @returns {Record<string, string>}
+ */
 const convertToRem = (obj) => {
+  /** @type {Record<string, string>} */
   const result = {};
   for (const [key, value] of Object.entries(obj)) {
     // 숫자 또는 숫자 문자열인 경우 rem으로 변환
@@ -203,14 +221,39 @@ const convertToRem = (obj) => {
   return result;
 };
 
+// 빈 객체 필터링
+const filterEmpty = (obj) => {
+  const result = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (value && typeof value === "object" && Object.keys(value).length === 0) {
+      continue;
+    }
+    result[key] = value;
+  }
+  return result;
+};
+
+const { 
+  textStyles, 
+  transitionDuration, 
+  transitionTimingFunction, 
+  width, 
+  height,
+  spacing: spacingOriginal,
+  borderRadius: borderRadiusOriginal,
+  borderWidth: borderWidthOriginal,
+  fontSize: fontSizeOriginal,
+  ...restTheme 
+} = themeTokens;
+
 export default {
   theme: {
     extend: {
-      ...themeTokens,
-      spacing: convertToRem(themeTokens.spacing),
-      borderRadius: convertToRem(themeTokens.borderRadius),
-      borderWidth: convertToRem(themeTokens.borderWidth),
-      fontSize: convertToRem(themeTokens.fontSize),
+      ...restTheme,
+      spacing: convertToRem(spacingOriginal),
+      borderRadius: convertToRem(borderRadiusOriginal),
+      borderWidth: convertToRem(borderWidthOriginal),
+      fontSize: convertToRem(fontSizeOriginal),
     },
   },
   plugins: [cssVarsPlugin, textStylesPlugin],
