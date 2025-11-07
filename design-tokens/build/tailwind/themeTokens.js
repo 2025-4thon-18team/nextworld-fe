@@ -220,6 +220,28 @@ export default {
       "textCase": "none",
       "textDecoration": "none"
     },
+    "body-small-regular": {
+      "fontFamily": "Pretendard",
+      "fontWeight": "Regular",
+      "lineHeight": "150%",
+      "fontSize": 14,
+      "letterSpacing": "-1%",
+      "paragraphSpacing": 0,
+      "paragraphIndent": "0px",
+      "textCase": "none",
+      "textDecoration": "none"
+    },
+    "body-small-medium": {
+      "fontFamily": "Pretendard",
+      "fontWeight": "Medium",
+      "lineHeight": "150%",
+      "fontSize": 14,
+      "letterSpacing": "-1%",
+      "paragraphSpacing": 0,
+      "paragraphIndent": "0px",
+      "textCase": "none",
+      "textDecoration": "none"
+    },
     "footnote-regular": {
       "fontFamily": "Pretendard",
       "fontWeight": "SemiBold",

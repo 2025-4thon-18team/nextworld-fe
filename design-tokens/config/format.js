@@ -118,6 +118,7 @@ export function themeTokens({ dictionary }) {
         "headline",
         "body",
         "body large",
+        "body small",
         "caption",
         "footnote",
         "small",
