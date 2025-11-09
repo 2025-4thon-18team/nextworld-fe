@@ -6,10 +6,9 @@ export default function IconWithLabel({
   label: string;
 }) {
   return (
-    <div className="flex items-center gap-4 px-12">
+    <div className="gap-xs flex flex-col items-center px-12">
       {icon}
       <span className="text-body-medium text-grayscale-black">{label}</span>
     </div>
   );
 }
-

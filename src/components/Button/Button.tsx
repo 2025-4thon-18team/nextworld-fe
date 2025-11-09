@@ -26,7 +26,7 @@ const Button: FC<ButtonProps> = ({
   return (
     <button
       className={cn(
-        "py-md flex items-center justify-center rounded-sm px-[54px]",
+        "py-md flex items-center justify-center rounded-sm px-54",
         "text-headings-heading-3",
         variantStyles[variant],
         className,

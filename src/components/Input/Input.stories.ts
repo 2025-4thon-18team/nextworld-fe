@@ -49,7 +49,7 @@ type InputStory = StoryObj<typeof inputMeta>;
 export const Input: InputStory = {
   args: {
     placeholder: "김나경",
-    className: "w-[810px]",
+    className: "w-810",
   },
 };
 
@@ -69,6 +69,6 @@ type TextAreaStory = StoryObj<typeof textareaMeta>;
 export const Area: TextAreaStory = {
   args: {
     placeholder: "김나경",
-    className: "w-[810px]",
+    className: "w-810",
   },
 };

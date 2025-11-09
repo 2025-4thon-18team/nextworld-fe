@@ -39,7 +39,7 @@ export const TextAreaInputList: FC<TextAreaInputListProps> = ({
   return (
     <div
       className={cn(
-        "gap-sm flex w-[810px] flex-col items-start opacity-60",
+        "gap-sm flex w-810 flex-col items-start opacity-60",
         className,
       )}
     >
@@ -72,7 +72,7 @@ export const TextAreaInputList: FC<TextAreaInputListProps> = ({
       {isExpanded && (
         <div className="gap-sm flex w-full items-start">
           {/* Plus/Minus Controls */}
-          <div className="flex items-start gap-[10px]">
+          <div className="flex items-start gap-10">
             <button
               type="button"
               onClick={handleAddTextArea}

@@ -21,7 +21,7 @@ export const StickerCard: FC<StickerCardProps> = ({
   return (
     <div
       className={cn(
-        "flex w-[339px] flex-col items-start gap-[10px] p-lg",
+        "flex w-339 flex-col items-start gap-10 p-lg",
         variantStyles[variant],
         className,
       )}

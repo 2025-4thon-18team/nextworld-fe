@@ -14,12 +14,12 @@ export const InputLabel: FC<InputLabelProps> = ({
   className,
 }) => {
   return (
-    <div className={cn("flex items-start gap-[4px]", className)}>
+    <div className={cn("flex items-start gap-4", className)}>
       <p className="text-headings-heading-4 text-muted whitespace-nowrap">
         {children}
       </p>
       {required && (
-        <p className="text-foreground-default w-[13px] text-[20px] leading-normal font-medium">
+        <p className="text-foreground-default w-13 text-20 leading-normal font-medium">
           *
         </p>
       )}
@@ -36,7 +36,7 @@ export const TextInput: FC<TextInputProps> = ({ className, ...props }) => {
   return (
     <input
       className={cn(
-        "text-body-medium text-muted border-sm border-grayscale-g2 px-lg py-md flex h-[46px] w-full items-start gap-[10px] rounded-md",
+        "text-body-medium text-muted border-sm border-grayscale-g2 px-lg py-md flex h-46 w-full items-start gap-10 rounded-md",
         "focus:border-foreground-default focus:outline-none",
         className,
       )}
@@ -54,7 +54,7 @@ export const TextArea: FC<TextAreaProps> = ({ className, ...props }) => {
   return (
     <textarea
       className={cn(
-        "text-body-medium text-muted border-sm border-grayscale-g2 px-lg flex min-h-[120px] w-full items-start gap-[10px] rounded-md py-[11px]",
+        "text-body-medium text-muted border-sm border-grayscale-g2 px-lg flex min-h-120 w-full items-start gap-10 rounded-md py-11",
         "focus:border-foreground-default resize-y focus:outline-none",
         className,
       )}
