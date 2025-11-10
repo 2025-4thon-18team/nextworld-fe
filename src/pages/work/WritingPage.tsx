@@ -59,18 +59,11 @@ const WritingPage: React.FC = () => {
   const handleSubmit = async () => {
     console.log("✅ 버튼 클릭됨"); // 클릭 확인용 로그
 
-    const payload = {
-      title,
-      description,
-      days: selectedDays,
-      genres: selectedGenres,
-      tags,
-      coverImage,
-    };
+    const payload = { title, description, selectedDays, selectedGenres, tags };
 
     try {
-      await axiosInstance.post("/api/works", payload);
-      navigate("/work/ProfitPage"); // ✅ 실제 URL 경로로 수정
+      await axiosInstance.post("/works", payload);
+      navigate("/UniversePage"); // ✅ ProfitPage → UniversePage로 변경
     } catch (error) {
       console.error("저장 실패:", error);
     }
@@ -212,7 +205,7 @@ const WritingPage: React.FC = () => {
             {/* 다음 단계 버튼 */}
             <div className="flex justify-end pt-6">
               <button
-                type="button" // ✅ 기본 submit 방지
+                type="button"
                 onClick={handleSubmit}
                 className="rounded-md bg-purple-500 px-8 py-3 text-white transition-colors hover:bg-purple-600"
               >
