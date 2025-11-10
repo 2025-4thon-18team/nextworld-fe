@@ -1,7 +1,12 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter as ReactRouter, Routes, Route } from "react-router-dom";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import TestPage from "./pages/TestPage";
+import HomePage from "@/pages/HomePage";
+import WorkPage from "@/pages/WorkPage";
+import WritingPage from "@/pages/work/WritingPage";
+import ProfitPage from "@/pages/work/ProfitPage";
+import Header from "@/components/Header";
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -24,7 +29,11 @@ export function Router() {
     <QueryClientProvider client={queryClient}>
       <ReactRouter>
         <Routes>
-          <Route element={<TestPage />} path="/"></Route>
+          <Route element={<HomePage />} path="/"></Route>
+          <Route element={<WorkPage />} path="/WorkPage"></Route>
+          <Route element={<Header />} path="/Header"></Route>
+          <Route element={<WritingPage />} path="/WritingPage"></Route>
+          <Route element={<ProfitPage />} path="/ProfitPage"></Route>
         </Routes>
       </ReactRouter>
       <ReactQueryDevtools initialIsOpen={false} />

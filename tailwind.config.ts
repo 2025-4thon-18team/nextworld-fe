@@ -1,12 +1,18 @@
-import type { Config } from "tailwindcss";
-import preset from "tailwindcss-preset-px-to-rem";
-import tailwindPreset from "./design-tokens/build/tailwind/preset.js";
+import * as tokens from './dist/js/tokens.js';
 
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: tokens.color.primary,
+        secondary: tokens.color.secondary,
+        background: tokens.color.background,
+      },
+      spacing: {
+        sm: tokens.spacing.sm,
+        md: tokens.spacing.md,
+        lg: tokens.spacing.lg,
+      },
+    },
   },
-  plugins: [],
-  presets: [preset, tailwindPreset],
-} satisfies Config;
+};

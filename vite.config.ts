@@ -1,3 +1,4 @@
+// vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
@@ -6,19 +7,7 @@ import path from "path";
 
 export default defineConfig({
   plugins: [
-    react({
-      babel: {
-        plugins: [
-          // other Babel plugins
-          [
-            "@locator/babel-jsx/dist",
-            {
-              env: "development",
-            },
-          ],
-        ],
-      },
-    }),
+    react(),
     tailwindcss(),
     svgr({
       include: "**/*.svg?react",
@@ -35,7 +24,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(__dirname, "src").replace(/\\/g, "/"),
     },
   },
   build: {
@@ -44,6 +33,5 @@ export default defineConfig({
     sourcemap: true,
     minify: true,
     cssCodeSplit: true,
-    cssMinify: true,
   },
 });
