@@ -1,5 +1,5 @@
-import { useState, useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import type { SeriesPort } from "@/services/types";
 
 interface Episode {
@@ -34,199 +34,54 @@ interface Post {
 export function useSeriesDetail(params: { series?: SeriesPort }) {
   const { series } = params;
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const [activeTab, setActiveTab] = useState<"episodes" | "universe">("episodes");
+  // Extract series ID from URL path (e.g., /series/123 -> "123")
+  const seriesId = useMemo(() => {
+    const match = location.pathname.match(/\/series\/([^/]+)/);
+    return match ? match[1] : "";
+  }, [location.pathname]);
+
+  const [activeTab, setActiveTab] = useState<"episodes" | "universe">(
+    "episodes",
+  );
   const [sortOrder, setSortOrder] = useState<"latest" | "oldest">("latest");
+  const [seriesData, setSeriesData] = useState<{
+    imageUrl: string;
+    universeName: string;
+    seriesName: string;
+    authorName: string;
+    description: string;
+    category: string;
+    rating: number;
+    views: number;
+    isSerializing: boolean;
+    tags: string[];
+    likes: number;
+  } | null>(null);
+  const [episodes, setEpisodes] = useState<Episode[]>([]);
+  const [universeWorks, setUniverseWorks] = useState<UniverseWork[]>([]);
+  const [popularPosts, setPopularPosts] = useState<Post[]>([]);
 
-  // Mock data - will be replaced with actual API calls
-  const seriesData = useMemo(
-    () => ({
-      imageUrl: "https://via.placeholder.com/409x453",
-      universeName: "유니버스명",
-      seriesName: "작품명",
-      authorName: "작가명",
-      description:
-        "작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품 소개작품소개작품소개작품소개작품소개작품소개작품소개작품소개작품소개작품소개작품 소개작품 소개작품 소개작품 소개",
-      category: "장르 | 자유 연재",
-      rating: 4.4,
-      views: 44,
-      isSerializing: true,
-      tags: ["현대로맨스", "현대로맨스", "현대로맨스"],
-      likes: 33,
-    }),
-    [],
-  );
-
-  const episodes: Episode[] = useMemo(
-    () => [
-      {
-        id: "1",
-        title: "제목제목",
-        points: 100,
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-      {
-        id: "2",
-        title: "제목제목",
-        points: 100,
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-      {
-        id: "3",
-        title: "제목제목",
-        points: 100,
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-      {
-        id: "4",
-        title: "제목제목",
-        points: 100,
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-      {
-        id: "5",
-        title: "제목제목",
-        points: 100,
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-      {
-        id: "6",
-        title: "제목제목",
-        points: 100,
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-      {
-        id: "7",
-        title: "제목제목",
-        points: 100,
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-      {
-        id: "8",
-        title: "제목제목",
-        points: 100,
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-    ],
-    [],
-  );
-
-  const universeWorks: UniverseWork[] = useMemo(
-    () => [
-      {
-        id: "1",
-        imageUrl: "https://via.placeholder.com/150x225",
-        title: "[작품 제목]",
-        tags: ["현대로맨스", "현대로맨스"],
-      },
-      {
-        id: "2",
-        imageUrl: "https://via.placeholder.com/150x225",
-        title: "[작품 제목]",
-        tags: ["현대로맨스", "현대로맨스"],
-      },
-      {
-        id: "3",
-        imageUrl: "https://via.placeholder.com/150x225",
-        title: "[작품 제목]",
-        tags: ["현대로맨스", "현대로맨스"],
-      },
-      {
-        id: "4",
-        imageUrl: "https://via.placeholder.com/150x225",
-        title: "[작품 제목]",
-        tags: ["현대로맨스", "현대로맨스"],
-      },
-      {
-        id: "5",
-        imageUrl: "https://via.placeholder.com/150x225",
-        title: "[작품 제목]",
-        tags: ["현대로맨스", "현대로맨스"],
-      },
-      {
-        id: "6",
-        imageUrl: "https://via.placeholder.com/150x225",
-        title: "[작품 제목]",
-        tags: ["현대로맨스", "현대로맨스"],
-      },
-    ],
-    [],
-  );
-
-  const popularPosts: Post[] = useMemo(
-    () => [
-      {
-        id: "1",
-        title: "그녀가 웃던 마지막 봄날",
-        points: 100,
-        content: `"폐하, 또 도망치시네요."\n그 미소는 기억보다 더 오래된, 저주처럼 달콤했다.....`,
-        tags: ["현대로맨스", "현대로맨스", "현대로맨스"],
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-      {
-        id: "2",
-        title: "그녀가 웃던 마지막 봄날 2화",
-        points: 100,
-        content:
-          "처형장에선 늘 바람이 분다.그리고 그날도 마찬가지였다 — 나의 세 번째 사형식이 시작되던 아침. "이번엔 제발 죽게 해주세요." ....",
-        tags: ["현대로맨스", "현대로맨스", "현대로맨스"],
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-      {
-        id: "3",
-        title: "악녀 팬아트",
-        points: 100,
-        content: "그림 1장",
-        tags: ["현대로맨스", "현대로맨스", "현대로맨스"],
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-      {
-        id: "4",
-        title: "그녀가 웃던 마지막 봄날",
-        points: 100,
-        content: `"폐하, 또 도망치시네요."\n그 미소는 기억보다 더 오래된, 저주처럼 달콤했다.....`,
-        tags: ["현대로맨스", "현대로맨스", "현대로맨스"],
-        rating: 4.4,
-        views: 44,
-        comments: 44,
-        date: "2025.10.01",
-      },
-    ],
-    [],
-  );
+  useEffect(() => {
+    if (!series || !seriesId) return;
+    let alive = true;
+    series.getSeriesDetail(seriesId).then((data) => {
+      if (alive) setSeriesData(data);
+    });
+    series.getEpisodes(seriesId).then((data) => {
+      if (alive) setEpisodes(data);
+    });
+    series.getUniverseWorks(seriesId).then((data) => {
+      if (alive) setUniverseWorks(data);
+    });
+    series.getPopularPosts(seriesId).then((data) => {
+      if (alive) setPopularPosts(data);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [series, seriesId]);
 
   const sortedEpisodes = useMemo(() => {
     const sorted = [...episodes];
@@ -294,6 +149,38 @@ export function useSeriesDetail(params: { series?: SeriesPort }) {
     setSortOrder((prev) => (prev === "latest" ? "oldest" : "latest"));
   }, []);
 
+  if (!seriesData) {
+    return {
+      imageUrl: "",
+      universeName: "",
+      seriesName: "",
+      authorName: "",
+      description: "",
+      onViewFirstEpisode,
+      category: "",
+      rating: 0,
+      views: 0,
+      isSerializing: false,
+      tags: [],
+      likes: 0,
+      onLike,
+      onInterest,
+      onShare,
+      activeTab,
+      totalEpisodes: 0,
+      episodes: [],
+      universeWorks: [],
+      popularPosts: [],
+      filterLabel,
+      filterSubLabel,
+      onTabChange,
+      onEpisodeClick,
+      onUniverseWorkClick,
+      onPostClick,
+      onFilterToggle,
+    };
+  }
+
   return {
     // Hero section
     imageUrl: seriesData.imageUrl,
@@ -329,4 +216,3 @@ export function useSeriesDetail(params: { series?: SeriesPort }) {
     onFilterToggle,
   };
 }
-

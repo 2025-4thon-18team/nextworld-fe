@@ -1,8 +1,10 @@
 import { FC } from "react";
 import { NewView } from "./NewView";
 import { useNew } from "@/logic/useNew";
+import { createContentPort } from "@/services/content.service";
 
 export const New: FC = () => {
+  const content = createContentPort();
   const {
     activeTab,
     onTabChange,
@@ -10,7 +12,7 @@ export const New: FC = () => {
     newPosts,
     onSeriesClick,
     onPostClick,
-  } = useNew();
+  } = useNew({ content });
 
   return (
     <NewView

@@ -1,50 +1,40 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import type { SeriesPort } from "@/services/types";
 
 type StepType = "기본 설정" | "유니버스 설정" | "2차 창작 설정";
 
-export function useCreateSeriesUniverse() {
+export function useCreateSeriesUniverse(params: { series?: SeriesPort }) {
+  const { series } = params;
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState<StepType>("유니버스 설정");
   const [originalSeriesSearch, setOriginalSeriesSearch] = useState("");
   const [originalSeriesList, setOriginalSeriesList] = useState<
     Array<{ id: string; imageUrl: string; title: string }>
-  >([
-    {
-      id: "1",
-      imageUrl: "https://via.placeholder.com/134x201",
-      title: "[작품 제목]",
-    },
-    {
-      id: "2",
-      imageUrl: "https://via.placeholder.com/134x201",
-      title: "[작품 제목]",
-    },
-    {
-      id: "3",
-      imageUrl: "https://via.placeholder.com/134x201",
-      title: "[작품 제목]",
-    },
-    {
-      id: "4",
-      imageUrl: "https://via.placeholder.com/134x201",
-      title: "[작품 제목]",
-    },
-    {
-      id: "5",
-      imageUrl: "https://via.placeholder.com/134x201",
-      title: "[작품 제목]",
-    },
-  ]);
+  >([]);
   const [selectedOriginalSeriesId, setSelectedOriginalSeriesId] = useState<
     string | undefined
-  >("2");
+  >(undefined);
   const [worldviewTextAreas, setWorldviewTextAreas] = useState<string[]>([
     "",
     "",
   ]);
   const [paidSeries, setPaidSeries] = useState(false);
   const [episodePrice, setEpisodePrice] = useState("");
+
+  useEffect(() => {
+    if (!series || !originalSeriesSearch) {
+      setOriginalSeriesList([]);
+      return;
+    }
+    let alive = true;
+    series.searchOriginalSeries(originalSeriesSearch).then((data) => {
+      if (alive) setOriginalSeriesList(data);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [series, originalSeriesSearch]);
 
   const onStepChange = useCallback((step: StepType) => {
     setActiveStep(step);

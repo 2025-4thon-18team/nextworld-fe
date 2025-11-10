@@ -28,6 +28,58 @@ export type SeriesPort = {
       title: string;
     }>
   >;
+  getSeriesDetail: (id: string) => Promise<{
+    imageUrl: string;
+    universeName: string;
+    seriesName: string;
+    authorName: string;
+    description: string;
+    category: string;
+    rating: number;
+    views: number;
+    isSerializing: boolean;
+    tags: string[];
+    likes: number;
+  }>;
+  getEpisodes: (seriesId: string) => Promise<
+    Array<{
+      id: string;
+      title: string;
+      points: number;
+      rating: number;
+      views: number;
+      comments: number;
+      date: string;
+    }>
+  >;
+  getUniverseWorks: (seriesId: string) => Promise<
+    Array<{
+      id: string;
+      imageUrl: string;
+      title: string;
+      tags: string[];
+    }>
+  >;
+  getPopularPosts: (seriesId: string) => Promise<
+    Array<{
+      id: string;
+      title: string;
+      points: number;
+      content: string;
+      tags: string[];
+      rating: number;
+      views: number;
+      comments: number;
+      date: string;
+    }>
+  >;
+  searchOriginalSeries: (query: string) => Promise<
+    Array<{
+      id: string;
+      imageUrl: string;
+      title: string;
+    }>
+  >;
 };
 
 export type PointPort = {
@@ -78,4 +130,82 @@ export type AuthPort = {
     password: string;
     passwordConfirm: string;
   }) => Promise<void>;
+};
+
+export type ContentPort = {
+  getUniverseOfWeek: () => Promise<{
+    id: string;
+    imageUrl: string;
+    title: string;
+    tags: string[];
+  } | null>;
+  getPopularSeries: () => Promise<
+    Array<{
+      id: string;
+      imageUrl: string;
+      title: string;
+      tags: string[];
+    }>
+  >;
+  getPopularPosts: () => Promise<
+    Array<{
+      id: string;
+      title: string;
+      content: string;
+      points: number;
+      tags: string[];
+      rating: number;
+      views: number;
+      comments: number;
+      date: string;
+    }>
+  >;
+  getNewSeries: () => Promise<
+    Array<{
+      id: string;
+      imageUrl: string;
+      title: string;
+      tags: string[];
+    }>
+  >;
+  getNewPosts: () => Promise<
+    Array<{
+      id: string;
+      title: string;
+      content: string;
+      points: number;
+      tags: string[];
+      rating: number;
+      views: number;
+      comments: number;
+      date: string;
+    }>
+  >;
+  getFavoriteSeries: () => Promise<
+    Array<{
+      id: string;
+      imageUrl: string;
+      title: string;
+      tags: string[];
+    }>
+  >;
+  getLatestUpdates: () => Promise<
+    Array<{
+      id: string;
+      title: string;
+      points: number;
+      rating: number;
+      views: number;
+      comments: number;
+      date: string;
+    }>
+  >;
+  getNewUniverseSeries: () => Promise<
+    Array<{
+      id: string;
+      imageUrl: string;
+      title: string;
+      tags: string[];
+    }>
+  >;
 };
