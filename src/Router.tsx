@@ -6,6 +6,7 @@ import WorkPage from "@/pages/WorkPage";
 import WritingPage from "@/pages/work/WritingPage";
 import UniversePage from "@/pages/work/UniversePage";
 import ProfitPage from "@/pages/work/ProfitPage";
+import StoragePage from "@/pages/my/StoragePage";
 import Header from "@/components/Header";
 
 const queryClient = new QueryClient({
@@ -36,6 +37,7 @@ export function Router() {
           <Route element={<WritingPage />} path="/WritingPage"></Route>
           <Route element={<UniversePage />} path="/UniversePage"></Route>
           <Route element={<ProfitPage />} path="/ProfitPage"></Route>
+          <Route element={<StoragePage />} path="/StoragePage"></Route>
         </Routes>
       </ReactRouter>
       <ReactQueryDevtools initialIsOpen={false} />
