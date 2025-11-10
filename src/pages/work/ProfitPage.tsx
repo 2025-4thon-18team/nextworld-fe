@@ -60,42 +60,42 @@ const ProfitPage: React.FC = () => {
     <div className="min-h-screen bg-white text-gray-800">
       <Header />
 
-      <div className="max-w-6xl mx-auto p-10">
-        <h2 className="text-xl font-semibold mb-8">작품 생성 중</h2>
+      <div className="mx-auto max-w-6xl p-10">
+        <h2 className="mb-8 text-xl font-semibold">작품 생성 중</h2>
 
         {/* ✅ grid 기반 레이아웃 적용 */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
           {/* 왼쪽 구역 */}
-          <div className="lg:col-span-4 space-y-4 text-sm font-medium text-gray-600">
+          <div className="space-y-4 text-sm font-medium text-gray-600 lg:col-span-4">
             <div className="space-y-2">
-              <p className="text-purple-600 font-semibold">기본 정보 입력</p>
+              <p className="font-semibold text-purple-600">기본 정보 입력</p>
               <p>유니버스 정보 입력</p>
               <p className="font-semibold text-gray-900">수익 설정</p>
             </div>
           </div>
 
           {/* 오른쪽 구역 */}
-          <div className="lg:col-span-8 space-y-8">
+          <div className="space-y-8 lg:col-span-8">
             {/* 수익 유형 */}
             <div>
-              <label className="block font-semibold mb-3">수익 설정</label>
+              <label className="mb-3 block font-semibold">수익 설정</label>
               <div className="flex gap-4">
                 <button
                   onClick={() => setProfitType("free")}
-                  className={`px-5 py-2 rounded-md border text-sm transition ${
+                  className={`rounded-md border px-5 py-2 text-sm transition ${
                     profitType === "free"
-                      ? "bg-purple-500 text-white border-purple-500"
-                      : "border-gray-300 text-gray-700 bg-white"
+                      ? "border-purple-500 bg-purple-500 text-white"
+                      : "border-gray-300 bg-white text-gray-700"
                   }`}
                 >
                   무료
                 </button>
                 <button
                   onClick={() => setProfitType("paid")}
-                  className={`px-5 py-2 rounded-md border text-sm transition ${
+                  className={`rounded-md border px-5 py-2 text-sm transition ${
                     profitType === "paid"
-                      ? "bg-purple-500 text-white border-purple-500"
-                      : "border-gray-300 text-gray-700 bg-white"
+                      ? "border-purple-500 bg-purple-500 text-white"
+                      : "border-gray-300 bg-white text-gray-700"
                   }`}
                 >
                   유료
@@ -104,13 +104,13 @@ const ProfitPage: React.FC = () => {
 
               {profitType === "paid" && (
                 <div className="mt-4">
-                  <label className="block text-sm mb-1">가격 (원)</label>
+                  <label className="mb-1 block text-sm">가격 (원)</label>
                   <input
                     type="number"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                     placeholder="예: 1000"
-                    className="border border-gray-300 rounded-md p-2 w-40 text-sm"
+                    className="w-40 rounded-md border border-gray-300 p-2 text-sm"
                   />
                 </div>
               )}
@@ -118,25 +118,25 @@ const ProfitPage: React.FC = () => {
 
             {/* 저작권 수익 배분 */}
             <div>
-              <label className="block font-semibold mb-3">
+              <label className="mb-3 block font-semibold">
                 저작권 수익 배분 비율 (%)
               </label>
               <input
                 type="number"
                 value={royaltyRate}
                 onChange={(e) => setRoyaltyRate(e.target.value)}
-                className="border border-gray-300 rounded-md p-2 w-40 text-sm"
+                className="w-40 rounded-md border border-gray-300 p-2 text-sm"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="mt-1 text-xs text-gray-500">
                 예: 50 → 작가 50%, 플랫폼 50%
               </p>
             </div>
 
             {/* 2차 창작 설정 */}
             <div className="border-t pt-6">
-              <label className="block font-semibold mb-4">2차 창작 허용</label>
+              <label className="mb-4 block font-semibold">2차 창작 허용</label>
 
-              <div className="flex items-center justify-between mb-4">
+              <div className="mb-4 flex items-center justify-between">
                 <span>2차 창작 허용</span>
                 <input
                   type="checkbox"
@@ -146,7 +146,7 @@ const ProfitPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between mb-4">
+              <div className="mb-4 flex items-center justify-between">
                 <span>2차 창작물의 수익 허용</span>
                 <input
                   type="checkbox"
@@ -157,26 +157,26 @@ const ProfitPage: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">
+                <label className="mb-2 block text-sm font-medium">
                   2차 창작 가이드라인
                 </label>
                 <textarea
                   value={guideline}
                   onChange={(e) => setGuideline(e.target.value)}
                   placeholder="2차 창작자가 지켜야 할 내용을 자유롭게 작성하세요."
-                  className="w-full border border-gray-300 rounded-md p-3 text-sm h-32 resize-none"
+                  className="h-32 w-full resize-none rounded-md border border-gray-300 p-3 text-sm"
                 />
               </div>
             </div>
 
             {/* 태그 */}
             <div>
-              <label className="block font-semibold mb-3">태그</label>
-              <div className="flex flex-wrap gap-2 mb-2">
+              <label className="mb-3 block font-semibold">태그</label>
+              <div className="mb-2 flex flex-wrap gap-2">
                 {relatedTags.map((tag, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm"
+                    className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-700"
                   >
                     #{tag}
                   </span>
@@ -188,12 +188,12 @@ const ProfitPage: React.FC = () => {
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
                 onKeyDown={handleAddTag}
-                className="border border-gray-300 rounded-md p-2 w-full text-sm"
+                className="w-full rounded-md border border-gray-300 p-2 text-sm"
               />
             </div>
 
             {/* 동의 체크박스 */}
-            <div className="space-y-3 mt-8 text-sm">
+            <div className="mt-8 space-y-3 text-sm">
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -213,16 +213,16 @@ const ProfitPage: React.FC = () => {
             </div>
 
             {/* 하단 버튼 */}
-            <div className="flex justify-between mt-10">
+            <div className="mt-10 flex justify-between">
               <button
                 onClick={() => navigate(-1)}
-                className="w-1/3 py-3 border border-gray-300 rounded-md hover:bg-gray-100"
+                className="w-1/3 rounded-md border border-gray-300 py-3 hover:bg-gray-100"
               >
                 이전 단계
               </button>
               <button
                 onClick={handleSaveProfit}
-                className="w-1/3 py-3 bg-purple-500 text-white rounded-md hover:bg-purple-600"
+                className="w-1/3 rounded-md bg-purple-500 py-3 text-white hover:bg-purple-600"
               >
                 완료하기
               </button>

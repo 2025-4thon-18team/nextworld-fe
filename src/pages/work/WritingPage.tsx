@@ -17,6 +17,7 @@ const WritingPage: React.FC = () => {
   const [tags, setTags] = useState<string[]>([]);
   const [inputTag, setInputTag] = useState("");
 
+  // ✅ 표지 이미지 업로드
   const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -26,18 +27,21 @@ const WritingPage: React.FC = () => {
     }
   };
 
+  // ✅ 연재일 선택
   const toggleDay = (day: string) => {
     setSelectedDays((prev) =>
-      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
+      prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day],
     );
   };
 
+  // ✅ 장르 선택
   const toggleGenre = (genre: string) => {
     setSelectedGenres((prev) =>
-      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
+      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre],
     );
   };
 
+  // ✅ 태그 입력
   const handleTagInput = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === " " && inputTag.trim() !== "") {
       e.preventDefault();
@@ -46,11 +50,15 @@ const WritingPage: React.FC = () => {
     }
   };
 
+  // ✅ 태그 삭제
   const removeTag = (tag: string) => {
     setTags((prev) => prev.filter((t) => t !== tag));
   };
 
+  // ✅ 다음 단계
   const handleSubmit = async () => {
+    console.log("✅ 버튼 클릭됨"); // 클릭 확인용 로그
+
     const payload = {
       title,
       description,
@@ -62,7 +70,7 @@ const WritingPage: React.FC = () => {
 
     try {
       await axiosInstance.post("/api/works", payload);
-      navigate("/ProfitPage");
+      navigate("/work/ProfitPage"); // ✅ 실제 URL 경로로 수정
     } catch (error) {
       console.error("저장 실패:", error);
     }
@@ -72,27 +80,24 @@ const WritingPage: React.FC = () => {
     <div className="relative min-h-screen bg-white">
       <Header />
 
-      {/* 💡 Header에 가려지는 문제 방지 */}
-      <div className="absolute inset-0 pointer-events-none z-0" />
-
       {/* 컨텐츠 시작 */}
-      <main className="relative z-10 pointer-events-auto max-w-6xl mx-auto p-10 pt-24">
-        <h2 className="text-xl font-semibold mb-10">작품 생성 중</h2>
+      <main className="relative z-10 mx-auto max-w-6xl p-10 pt-24">
+        <h2 className="mb-10 text-xl font-semibold">작품 생성 중</h2>
 
         {/* 🔹 전체를 grid로 분리 */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
           {/* 왼쪽 구역 */}
-          <div className="lg:col-span-4 flex flex-col space-y-6">
+          <div className="flex flex-col space-y-6 lg:col-span-4">
             {/* 표지 이미지 */}
             <div>
-              <label className="block font-medium mb-2">표지 이미지 *</label>
+              <label className="mb-2 block font-medium">표지 이미지 *</label>
               <div className="flex flex-col items-start space-y-3">
-                <div className="w-40 h-56 bg-gray-200 rounded-md overflow-hidden flex items-center justify-center">
+                <div className="flex h-56 w-40 items-center justify-center overflow-hidden rounded-md bg-gray-200">
                   {coverImage ? (
                     <img
                       src={coverImage}
                       alt="cover"
-                      className="object-cover w-full h-full"
+                      className="h-full w-full object-cover"
                     />
                   ) : (
                     <span className="text-gray-400">프리셋</span>
@@ -102,24 +107,24 @@ const WritingPage: React.FC = () => {
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="border p-2 rounded-md text-sm"
+                  className="rounded-md border p-2 text-sm"
                 />
               </div>
             </div>
 
             {/* 연재일 */}
             <div>
-              <label className="block font-medium mb-2">연재일 *</label>
+              <label className="mb-2 block font-medium">연재일 *</label>
               <div className="flex flex-wrap gap-2">
                 {days.map((day) => (
                   <button
                     key={day}
                     type="button"
                     onClick={() => toggleDay(day)}
-                    className={`px-3 py-1 rounded-full border text-sm ${
+                    className={`rounded-full border px-3 py-1 text-sm ${
                       selectedDays.includes(day)
-                        ? "bg-purple-500 text-white border-purple-500"
-                        : "bg-white text-gray-700 border-gray-300"
+                        ? "border-purple-500 bg-purple-500 text-white"
+                        : "border-gray-300 bg-white text-gray-700"
                     }`}
                   >
                     {day}
@@ -130,17 +135,17 @@ const WritingPage: React.FC = () => {
 
             {/* 장르 */}
             <div>
-              <label className="block font-medium mb-2">장르 카테고리 *</label>
+              <label className="mb-2 block font-medium">장르 카테고리 *</label>
               <div className="flex flex-wrap gap-2">
                 {genres.map((genre) => (
                   <button
                     key={genre}
                     type="button"
                     onClick={() => toggleGenre(genre)}
-                    className={`px-3 py-1 rounded-full border text-sm ${
+                    className={`rounded-full border px-3 py-1 text-sm ${
                       selectedGenres.includes(genre)
-                        ? "bg-purple-500 text-white border-purple-500"
-                        : "bg-white text-gray-700 border-gray-300"
+                        ? "border-purple-500 bg-purple-500 text-white"
+                        : "border-gray-300 bg-white text-gray-700"
                     }`}
                   >
                     {genre}
@@ -151,38 +156,38 @@ const WritingPage: React.FC = () => {
           </div>
 
           {/* 오른쪽 구역 */}
-          <div className="lg:col-span-8 flex flex-col space-y-6">
+          <div className="flex flex-col space-y-6 lg:col-span-8">
             {/* 제목 */}
             <div>
-              <label className="block font-medium mb-2">제목 *</label>
+              <label className="mb-2 block font-medium">제목 *</label>
               <input
                 type="text"
                 placeholder="작품 제목을 입력하세요"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full border rounded-md p-3"
+                className="w-full rounded-md border p-3"
               />
             </div>
 
             {/* 작품 설명 */}
             <div>
-              <label className="block font-medium mb-2">작품 설명 *</label>
+              <label className="mb-2 block font-medium">작품 설명 *</label>
               <textarea
                 placeholder="작품에 대한 간단한 소개를 입력하세요"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full border rounded-md p-3 h-40 resize-none"
+                className="h-40 w-full resize-none rounded-md border p-3"
               />
             </div>
 
             {/* 태그 */}
             <div>
-              <label className="block font-medium mb-2">태그</label>
-              <div className="flex flex-wrap gap-2 mb-2">
+              <label className="mb-2 block font-medium">태그</label>
+              <div className="mb-2 flex flex-wrap gap-2">
                 {tags.map((tag) => (
                   <div
                     key={tag}
-                    className="flex items-center space-x-1 bg-gray-100 rounded-full px-3 py-1 text-sm"
+                    className="flex items-center space-x-1 rounded-full bg-gray-100 px-3 py-1 text-sm"
                   >
                     <span>{tag}</span>
                     <button
@@ -200,15 +205,16 @@ const WritingPage: React.FC = () => {
                 value={inputTag}
                 onChange={(e) => setInputTag(e.target.value)}
                 onKeyDown={handleTagInput}
-                className="w-full border rounded-md p-2"
+                className="w-full rounded-md border p-2"
               />
             </div>
 
             {/* 다음 단계 버튼 */}
             <div className="flex justify-end pt-6">
               <button
+                type="button" // ✅ 기본 submit 방지
                 onClick={handleSubmit}
-                className="bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-md transition-colors"
+                className="rounded-md bg-purple-500 px-8 py-3 text-white transition-colors hover:bg-purple-600"
               >
                 다음 단계
               </button>

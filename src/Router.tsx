@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import HomePage from "@/pages/HomePage";
 import WorkPage from "@/pages/WorkPage";
 import WritingPage from "@/pages/work/WritingPage";
+import UniversePage from "@/pages/work/UniversePage";
 import ProfitPage from "@/pages/work/ProfitPage";
 import Header from "@/components/Header";
 
@@ -33,6 +34,7 @@ export function Router() {
           <Route element={<WorkPage />} path="/WorkPage"></Route>
           <Route element={<Header />} path="/Header"></Route>
           <Route element={<WritingPage />} path="/WritingPage"></Route>
+          <Route element={<UniversePage />} path="/UniversePage"></Route>
           <Route element={<ProfitPage />} path="/ProfitPage"></Route>
         </Routes>
       </ReactRouter>
