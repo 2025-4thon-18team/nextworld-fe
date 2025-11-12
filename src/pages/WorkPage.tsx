@@ -1,159 +1,190 @@
-// src/pages/WorkPage.tsx
-import React from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import Header from "@/components/Header";
-import Webtoon from "@/assets/dummycover.png";
-import { useWorkEpisodes } from "@/hooks/useWorkEpisodes";
-import { Episode } from "@/apis/workApi";
+import DummyCover from "@/assets/dummycover.png";
 
 const WorkPage: React.FC = () => {
   const { id } = useParams();
-  const workId = Number(id) || 1;
+  const location = useLocation();
+  const workData = location.state || {
+    title: "작품명",
+    author: "작가명",
+    description:
+      "작품 설명이 여기에 들어갑니다. 세계관, 줄거리, 주요 인물의 특징 등을 요약하는 영역입니다.",
+    thumbnail: DummyCover,
+    rating: 4.9,
+    views: 2100,
+    likes: 44,
+    date: "2025.11.09",
+  };
 
-  const {
-    data: episodes = [],
-    isLoading,
-    isError,
-    error,
-  } = useWorkEpisodes(workId);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-300 bg-neutral-900">
-        불러오는 중...
-      </div>
-    );
-  }
-
-  if (isError) {
-    console.error("❌ WorkPage API Error:", error);
-  }
+  // ✅ 탭 상태 관리
+  const [activeTab, setActiveTab] = useState<"episodes" | "universe">("episodes");
 
   return (
-    <div className="min-h-screen flex flex-col bg-white relative overflow-hidden">
+    <div className="min-h-screen flex flex-col bg-white">
       <Header />
 
-      <main className="relative z-10 w-full">
-        <div className="max-w-screen-xl mx-auto px-8 py-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            {/* ===== 왼쪽: 표지 ===== */}
-            <div className="lg:col-span-4 flex flex-col items-center">
-              {/* ✅ z-0으로 묶고 overflow-hidden 유지 */}
-              <div className="relative z-0 w-[400px] h-[400px] rounded-xl overflow-hidden shadow-2xl flex items-center justify-center">
-                {/* 흐릿한 배경 */}
-                <img
-                  src={Webtoon}
-                  alt="blur background"
-                  className="absolute inset-0 w-full h-full object-cover blur-md scale-110"
-                />
-                {/* 중앙 선명한 원본 */}
-                <img
-                  src={Webtoon}
-                  alt="main cover"
-                  className="relative w-[250px] h-[350px] object-cover rounded-md shadow-lg"
-                />
-              </div>
+      <main className="max-w-screen-xl mx-auto mt-8 px-6">
+        {/* ===== 상단: 표지 + 작품 정보 ===== */}
+        <div className="flex flex-col lg:flex-row gap-10">
+          {/* 썸네일 */}
+          <div className="flex-shrink-0">
+            <img
+              src={workData.thumbnail}
+              alt={workData.title}
+              className="w-60 h-80 rounded-lg shadow-md object-cover"
+            />
 
-              <div className="w-[320px] mt-5 text-sm text-gray-700 text-center">
-                <p className="text-gray-600">
-                  장르 | 자유 연재 | 1차 창작 카테고리
-                </p>
-
-                <div className="flex items-center justify-center gap-3 mt-2 text-gray-600">
-                  <span>⭐ 4.4</span>
-                  <span>👁 44</span>
-                  <span>💬 4</span>
-                  <span className="text-gray-400">연재 중</span>
-                </div>
-
-                <div className="flex justify-center gap-2 mt-3">
-                  <span className="px-2 py-0.5 bg-gray-200 rounded-md text-xs text-gray-800">
-                    판타지
-                  </span>
-                  <span className="px-2 py-0.5 bg-gray-200 rounded-md text-xs text-gray-800">
-                    로맨스
-                  </span>
-                  <span className="px-2 py-0.5 bg-gray-200 rounded-md text-xs text-gray-800">
-                    웹소설
-                  </span>
-                </div>
-              </div>
+            {/* 평점, 조회수, 좋아요 */}
+            <div className="mt-4 text-center text-sm text-gray-600">
+              <p>
+                ⭐ {workData.rating} | 👁 {workData.views} | 💬 {workData.likes}
+              </p>
+              <p className="text-gray-400 mt-1">{workData.date}</p>
             </div>
 
-            {/* ===== 오른쪽: 설명 + 회차 목록 ===== */}
-            <div className="lg:col-span-8">
-              {/* ✅ 완전 위로 끌어올림 + isolate로 blur 간섭 차단 */}
-              <div className="relative z-[50] isolate rounded-xl shadow-lg overflow-hidden bg-black text-white">
-                <div className="h-1 bg-yellow-400"></div>
-                <div className="p-8 [&_*]:!text-white">
-                  <p className="text-xs">웹소설</p>
-                  <h2 className="text-3xl font-bold mt-1">작품명</h2>
-                  <p className="text-sm mt-1">작가명</p>
-                  <p className="mt-5 text-sm leading-relaxed">
-                    작품 소개글 소개글 소개글 소개글 소개글 소개글 소개글 소개글 소개글
-                    소개글 소개글 소개글 소개글 소개글 소개글 소개글 소개글 소개글 소개글.
-                  </p>
+            {/* 태그 */}
+            <div className="flex justify-center gap-2 mt-3 text-xs text-gray-600">
+              <span className="px-2 py-0.5 bg-gray-100 rounded-md">판타지</span>
+              <span className="px-2 py-0.5 bg-gray-100 rounded-md">로맨스</span>
+              <span className="px-2 py-0.5 bg-gray-100 rounded-md">웹소설</span>
+            </div>
 
-                  {isError && (
-                    <p className="mt-4 text-sm font-semibold !text-red-400">
-                      ⚠ 데이터를 불러오지 못했습니다. 더미 데이터를 표시합니다.
-                    </p>
-                  )}
-
-                  {/* ✅ 첫 화 보기 버튼 */}
-                  <div className="mt-8">
-                    <Link
-                      to={`/episode/${episodes[0]?.id ?? 1}`}
-                      className="inline-flex items-center justify-center rounded-md bg-yellow-400 hover:bg-yellow-500 text-white font-bold px-8 py-3 transition-colors shadow-md"
-                    >
-                      첫 화 보기
-                    </Link>
-                  </div>
-                </div>
+            {/* 버튼 아이콘 영역 */}
+            <div className="flex justify-center gap-10 mt-6 text-sm text-gray-600">
+              <div className="flex flex-col items-center">
+                <div>💗</div>
+                <div>33</div>
               </div>
-
-              {/* ===== 회차 목록 ===== */}
-              <div className="mt-6 flex justify-between items-center">
-                <div className="flex gap-2">
-                  <button className="px-5 py-2 rounded-md bg-purple-600 text-white text-sm font-semibold">
-                    회차
-                  </button>
-                  <button className="px-5 py-2 rounded-md bg-gray-200 text-gray-800 text-sm">
-                    유/무료
-                  </button>
-                </div>
-                <div className="text-xs text-gray-600">
-                  최신순 | 총 {episodes.length}화
-                </div>
+              <div className="flex flex-col items-center">
+                <div>⭐</div>
+                <div>관심</div>
               </div>
-
-              <ul className="mt-4 rounded-lg bg-white">
-                {episodes.map((ep: Episode) => (
-                  <li
-                    key={ep.id}
-                    className="flex items-center justify-between p-4 hover:bg-gray-100 transition text-gray-800"
-                  >
-                    <div className="flex items-start gap-3">
-                      <span className="mt-0.5 text-gray-500">▷</span>
-                      <div>
-                        <p className="font-semibold text-gray-900">{ep.title}</p>
-                        <p className="text-xs text-gray-600 mt-1 flex items-center gap-3">
-                          <span>⭐ {ep.star}</span>
-                          <span>👁 {ep.view}</span>
-                          <span>💬 {ep.cmt}</span>
-                          <span>{ep.date}</span>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-sm font-semibold text-yellow-500">
-                      {ep.price}
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <div className="flex flex-col items-center">
+                <div>🔗</div>
+                <div>공유</div>
+              </div>
             </div>
           </div>
+
+          {/* 작품 상세 정보 */}
+          <div className="flex-1 bg-gray-100 rounded-xl p-8 shadow-sm">
+            <p className="text-sm text-gray-400 mb-1">유니버스명</p>
+            <h1 className="text-2xl font-bold mb-2 text-gray-800">
+              {workData.title}
+            </h1>
+            <p className="text-gray-600 mb-4">작가 | {workData.author}</p>
+            <p className="text-sm text-gray-700 mb-6 leading-relaxed">
+              {workData.description}
+            </p>
+
+            <button className="bg-yellow-400 text-white px-6 py-2 rounded-md font-semibold hover:bg-yellow-500 transition">
+              첫 화 보기
+            </button>
+          </div>
         </div>
+
+        {/* ===== 탭 버튼 ===== */}
+        <div className="mt-10 flex border-b">
+          <button
+            className={`px-6 py-3 font-semibold ${
+              activeTab === "episodes"
+                ? "text-purple-600 border-b-2 border-purple-600"
+                : "text-gray-500"
+            }`}
+            onClick={() => setActiveTab("episodes")}
+          >
+            회차
+          </button>
+          <button
+            className={`px-6 py-3 font-semibold ${
+              activeTab === "universe"
+                ? "text-purple-600 border-b-2 border-purple-600"
+                : "text-gray-500"
+            }`}
+            onClick={() => setActiveTab("universe")}
+          >
+            유니버스
+          </button>
+        </div>
+
+        {/* ===== 탭 내용 ===== */}
+        {activeTab === "episodes" ? (
+          <section className="mt-6">
+            {/* 회차 리스트 */}
+            <div className="border rounded-lg divide-y">
+              {[...Array(8)].map((_, i) => (
+                <div
+                  key={i}
+                  className="flex justify-between items-center py-4 px-6 text-sm hover:bg-gray-50 transition"
+                >
+                  <div>
+                    <p className="font-semibold text-gray-800">
+                      {i + 1}화 - 더미 에피소드 제목
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      ⭐ 4.{i + 1} | 👁 {100 + i * 20} | 💬 {i * 2} | 2025.11.{9 + i}
+                    </p>
+                  </div>
+                  <p className="text-yellow-500 font-semibold text-sm">
+                    {i % 2 === 0 ? "무료" : "100 P"}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        ) : (
+          <section className="mt-10 space-y-10">
+            {/* 인기 유니버스 작품 */}
+            <div>
+              <h2 className="text-lg font-semibold mb-4">인기 유니버스 작품</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                {[...Array(5)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="border rounded-lg p-3 bg-white shadow-sm hover:shadow-md transition"
+                  >
+                    <img
+                      src={DummyCover}
+                      alt="cover"
+                      className="w-full h-40 object-cover rounded-md mb-2"
+                    />
+                    <p className="text-sm font-semibold">[작품명] {i + 1}</p>
+                    <p className="text-xs text-gray-500">작가명</p>
+                    <p className="text-xs text-yellow-500 mt-1">100 P</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 인기 포스트 */}
+            <div>
+              <h2 className="text-lg font-semibold mb-4">인기 포스트</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[...Array(3)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="border rounded-lg p-4 bg-white shadow-sm hover:shadow-md transition"
+                  >
+                    <p className="font-semibold text-gray-800">
+                      그녀가 웃던 마지막 봄날 {i + 1}화
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      작품의 주요 장면에 대한 팬 포스트 내용이 들어갑니다.
+                    </p>
+                    <div className="flex gap-3 text-xs text-gray-500 mt-2">
+                      <span>⭐ 4.{i + 3}</span>
+                      <span>👁 {200 + i * 30}</span>
+                      <span>💬 {i * 5}</span>
+                      <span>2025.11.{8 + i}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );

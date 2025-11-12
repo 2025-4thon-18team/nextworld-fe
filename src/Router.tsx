@@ -5,13 +5,14 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import HomePage from "@/pages/HomePage";
 import WorkPage from "@/pages/WorkPage";
-import WritingPage from "@/pages/work/WritingPage";
+import WritingPage from "@/pages/work/SettingPage";
 import UniversePage from "@/pages/work/UniversePage";
 import ProfitPage from "@/pages/work/ProfitPage";
 import StoragePage from "@/pages/my/StoragePage";
 import ManagementPage from "@/pages/my/ManagementPage";
 import PointPage from "@/pages/my/PointPage";
 import ProfitboardPage from "@/pages/my/ProfitboardPage";
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,7 +29,6 @@ export function Router() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/WorkPage" element={<WorkPage />} />
           <Route path="/WritingPage" element={<WritingPage />} />
           <Route path="/UniversePage" element={<UniversePage />} />
           <Route path="/ProfitPage" element={<ProfitPage />} />
@@ -36,6 +36,7 @@ export function Router() {
           <Route path="/ManagementPage" element={<ManagementPage />} />
           <Route path="/PointPage" element={<PointPage />} />
           <Route path="/ProfitboardPage" element={<ProfitboardPage />}/>
+          <Route path="/WorkPage/:id" element={<WorkPage />} />
         </Routes>
       </BrowserRouter>
 
