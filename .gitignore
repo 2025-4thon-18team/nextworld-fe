@@ -29,3 +29,6 @@ dev-dist
 
 .cursor/**
 .taskmaster/**
+
+*storybook.log
+storybook-static

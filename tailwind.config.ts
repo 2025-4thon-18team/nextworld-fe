@@ -3,7 +3,11 @@ import preset from "tailwindcss-preset-px-to-rem";
 import tailwindPreset from "./design-tokens/build/tailwind/preset.js";
 
 export default {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.stories.@(js|jsx|mjs|ts|tsx)",
+  ],
   theme: {
     extend: {},
   },
