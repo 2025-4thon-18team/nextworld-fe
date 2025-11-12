@@ -65,8 +65,11 @@ export function themeTokens({ dictionary }) {
   const tailwindMap = {
     color: "colors",
     colors: "colors",
-    spacing: "spacing",
+    foreground: "colors",
+    text: "colors",
+    background: "colors",
     border: "border",
+    spacing: "spacing",
     typography: "typography",
     opacity: "opacity",
     shadow: "boxShadow",
@@ -104,7 +107,7 @@ export function themeTokens({ dictionary }) {
     const [category, ...rest] = token.path;
     const lowerCategory = category.toLowerCase();
     const tailwindKey = tailwindMap[category];
-    const name = rest.join("-").replace(/^\d+-/, "");
+    let name = rest.join("-").replace(/^\d+-/, "");
     const value = token.$value;
 
     // 🚫 특정 카테고리는 themeTokens에서 제외
@@ -118,6 +121,7 @@ export function themeTokens({ dictionary }) {
         "headline",
         "body",
         "body large",
+        "body small",
         "caption",
         "footnote",
         "small",
@@ -139,11 +143,28 @@ export function themeTokens({ dictionary }) {
       return;
     }
 
-    // 4️⃣ 일반 속성 처리
+    // 4️⃣ 일반 속성 처리 - foreground, text, background는 prefix 추가
     if (tailwindKey) {
+      // foreground, text, background 카테고리는 이름 충돌 방지를 위해 prefix 추가
+      if (["foreground", "text", "background"].includes(lowerCategory)) {
+        name = `${lowerCategory}-${name}`;
+      }
       parseGenericToken(token, result, tailwindKey, name, value);
     }
   });
+  // boxShadow 배열을 CSS 문자열로 변환
+  if (result.boxShadow) {
+    for (const [key, value] of Object.entries(result.boxShadow)) {
+      if (Array.isArray(value)) {
+        result.boxShadow[key] = value
+          .map((shadow) => {
+            const { x, y, blur, spread, color } = shadow;
+            return `${x}px ${y}px ${blur}px ${spread}px ${color}`;
+          })
+          .join(", ");
+      }
+    }
+  }
 
   return `export default ${JSON.stringify(result, null, 2)};`;
 }
@@ -175,11 +196,31 @@ export function preset() {
   return `import themeTokens from './themeTokens.js';
 import cssVarsPlugin from './cssVarsPlugin.js';
 import textStylesPlugin from "../../config/textStylesPlugin.js";
+import { convertToRem, wrapColorsWithRgb } from "../../config/utils.js";
+
+const {
+  textStyles,
+  transitionDuration,
+  transitionTimingFunction,
+  width,
+  height,
+  colors: colorsOriginal,
+  spacing: spacingOriginal,
+  borderRadius: borderRadiusOriginal,
+  borderWidth: borderWidthOriginal,
+  fontSize: fontSizeOriginal,
+  ...restTheme
+} = themeTokens;
 
 export default {
   theme: {
     extend: {
-      ...themeTokens,
+      ...restTheme,
+      colors: wrapColorsWithRgb(colorsOriginal),
+      spacing: convertToRem(spacingOriginal),
+      borderRadius: convertToRem(borderRadiusOriginal),
+      borderWidth: convertToRem(borderWidthOriginal),
+      fontSize: convertToRem(fontSizeOriginal),
     },
   },
   plugins: [cssVarsPlugin, textStylesPlugin],

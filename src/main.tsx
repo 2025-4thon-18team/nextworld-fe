@@ -6,7 +6,7 @@ import "./index.css";
 import setupLocatorUI from "@locator/runtime";
 
 if (
-  import.meta.env.MODE === "development" &&
+  import.meta.env.VITE_APP_ENV === "development" &&
   import.meta.env.VITE_ENABLE_LOCATOR === "true"
 ) {
   setupLocatorUI();
