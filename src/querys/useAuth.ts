@@ -1,10 +1,48 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { authApi, LoginRequest, SignupRequest } from "../apis/auth";
+import { client } from "./client";
+import type {
+  LoginRequest,
+  LoginResponse,
+  SignupRequest,
+  SignupResponse,
+  UserProfileResponse,
+} from "./types";
+
+// ============================================
+// API 함수
+// ============================================
+
+export const authApi = {
+  // 회원가입
+  signup: (data: SignupRequest) =>
+    client.post<SignupResponse>("/api/auth/signup", data),
+
+  // 로그인
+  login: (data: LoginRequest) =>
+    client.post<LoginResponse>("/api/auth/login", data),
+
+  // 로그아웃
+  logout: () => client.post<string>("/api/auth/logout"),
+
+  // 토큰 재발급 (백엔드에서 직접 문자열 반환)
+  refresh: () => client.post<string>("/api/auth/refresh"),
+
+  // 내 정보 조회
+  me: () => client.get<UserProfileResponse>("/api/auth/me"),
+};
+
+// ============================================
+// Query Keys
+// ============================================
 
 export const authKeys = {
   all: ["auth"] as const,
   me: () => [...authKeys.all, "me"] as const,
 };
+
+// ============================================
+// React Query Hooks
+// ============================================
 
 // Query: 내 계정 정보 조회
 export const useGetMe = () => {
@@ -12,7 +50,7 @@ export const useGetMe = () => {
     queryKey: ["useGetMe", ...authKeys.me()],
     queryFn: async () => {
       const response = await authApi.me();
-      return response.data.data;
+      return response.data;
     },
   });
 };
@@ -23,7 +61,7 @@ export const useSignup = () => {
     mutationKey: ["useSignup"],
     mutationFn: async (data: SignupRequest) => {
       const response = await authApi.signup(data);
-      return response.data.data;
+      return response.data;
     },
   });
 };
@@ -36,10 +74,9 @@ export const useLogin = () => {
     mutationKey: ["useLogin"],
     mutationFn: async (data: LoginRequest) => {
       const response = await authApi.login(data);
-      return response.data.data;
+      return response.data;
     },
     onSuccess: () => {
-      // 로그인 성공 시 me 쿼리 무효화
       queryClient.invalidateQueries({ queryKey: authKeys.me() });
     },
   });
@@ -56,19 +93,18 @@ export const useLogout = () => {
       return response.data;
     },
     onSuccess: () => {
-      // 로그아웃 시 모든 쿼리 무효화
       queryClient.clear();
     },
   });
 };
 
-// Mutation: 액세스 토큰 재발급
+// Mutation: 액세스 토큰 재발급 (백엔드에서 직접 문자열 반환)
 export const useRefreshToken = () => {
   return useMutation({
     mutationKey: ["useRefreshToken"],
     mutationFn: async () => {
       const response = await authApi.refresh();
-      return response.data.data;
+      return response.data; // 문자열 (새로운 accessToken)
     },
   });
 };

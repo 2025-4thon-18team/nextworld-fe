@@ -1,6 +1,24 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { usersApi, UpdateProfileRequest } from "../apis/users";
+import { client } from "./client";
+import type {
+  UserProfileUpdateRequest,
+  UserProfileResponse,
+} from "./types";
 import { authKeys } from "./useAuth";
+
+// ============================================
+// API 함수
+// ============================================
+
+export const usersApi = {
+  // 프로필 수정
+  updateProfile: (data: UserProfileUpdateRequest) =>
+    client.patch<UserProfileResponse>("/api/users/me/profile", data),
+};
+
+// ============================================
+// React Query Hooks
+// ============================================
 
 // Mutation: 내 프로필 수정
 export const useUpdateProfile = () => {
@@ -8,12 +26,11 @@ export const useUpdateProfile = () => {
 
   return useMutation({
     mutationKey: ["useUpdateProfile"],
-    mutationFn: async (data: UpdateProfileRequest) => {
+    mutationFn: async (data: UserProfileUpdateRequest) => {
       const response = await usersApi.updateProfile(data);
-      return response.data.data;
+      return response.data;
     },
     onSuccess: () => {
-      // 프로필 수정 후 me 쿼리 무효화
       queryClient.invalidateQueries({ queryKey: authKeys.me() });
     },
   });

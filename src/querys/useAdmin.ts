@@ -1,118 +1,56 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { adminApi, RefundRequest, ResolveReportRequest } from "../apis/admin";
+import { client } from "./client";
+import type { PayItemResponse } from "./types";
+
+// ============================================
+// API 함수
+// ============================================
+
+export const adminApi = {
+  // 결제 목록 조회 (환불 요청 목록)
+  getPayments: () => client.get<PayItemResponse[]>("/api/admin/payments"),
+
+  // 환불 처리 (백엔드에서 문자열 반환)
+  refundPayment: (payId: number) =>
+    client.patch<string>(`/api/admin/payments/${payId}/refund`),
+};
+
+// ============================================
+// Query Keys
+// ============================================
 
 export const adminKeys = {
   all: ["admin"] as const,
-  users: (params?: {
-    page?: number;
-    pageSize?: number;
-    status?: string;
-    search?: string;
-  }) => [...adminKeys.all, "users", params] as const,
-  payments: (params?: {
-    page?: number;
-    pageSize?: number;
-    type?: string;
-    status?: string;
-  }) => [...adminKeys.all, "payments", params] as const,
-  reports: (params?: {
-    page?: number;
-    pageSize?: number;
-    status?: string;
-    category?: string;
-  }) => [...adminKeys.all, "reports", params] as const,
+  payments: () => [...adminKeys.all, "payments"] as const,
 };
 
-// Query: 전체 유저 목록 조회
-export const useGetUsers = (params?: {
-  page?: number;
-  pageSize?: number;
-  status?: string;
-  search?: string;
-}) => {
+// ============================================
+// React Query Hooks
+// ============================================
+
+// Query: 결제 목록 조회
+export const useGetPayments = () => {
   return useQuery({
-    queryKey: ["useGetUsers", ...adminKeys.users(params)],
+    queryKey: ["useGetPayments", ...adminKeys.payments()],
     queryFn: async () => {
-      const response = await adminApi.getUsers(params);
-      return response.data.data;
+      const response = await adminApi.getPayments();
+      return response.data;
     },
   });
 };
 
-// Query: 결제/환불 요청 조회
-export const useGetPayments = (params?: {
-  page?: number;
-  pageSize?: number;
-  type?: string;
-  status?: string;
-}) => {
-  return useQuery({
-    queryKey: ["useGetPayments", ...adminKeys.payments(params)],
-    queryFn: async () => {
-      const response = await adminApi.getPayments(params);
-      return response.data.data;
-    },
-  });
-};
-
-// Mutation: 특정 결제건 환불 처리
+// Mutation: 환불 처리
 export const useRefundPayment = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ["useRefundPayment"],
-    mutationFn: async ({
-      txId,
-      data,
-    }: {
-      txId: string;
-      data?: RefundRequest;
-    }) => {
-      const response = await adminApi.refundPayment(txId, data);
-      return response.data.data;
+    mutationFn: async (payId: number) => {
+      const response = await adminApi.refundPayment(payId);
+      return response.data; // string
     },
     onSuccess: () => {
-      // 환불 처리 후 결제 내역 무효화
       queryClient.invalidateQueries({ queryKey: adminKeys.payments() });
-    },
-  });
-};
-
-// Query: 신고 목록 조회
-export const useGetReports = (params?: {
-  page?: number;
-  pageSize?: number;
-  status?: string;
-  category?: string;
-}) => {
-  return useQuery({
-    queryKey: ["useGetReports", ...adminKeys.reports(params)],
-    queryFn: async () => {
-      const response = await adminApi.getReports(params);
-      return response.data.data;
-    },
-  });
-};
-
-// Mutation: 신고 처리 상태 업데이트
-export const useResolveReport = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["useResolveReport"],
-    mutationFn: async ({
-      reportId,
-      data,
-    }: {
-      reportId: string;
-      data: ResolveReportRequest;
-    }) => {
-      const response = await adminApi.resolveReport(reportId, data);
-      return response.data.data;
-    },
-    onSuccess: () => {
-      // 신고 처리 후 신고 목록 무효화
-      queryClient.invalidateQueries({ queryKey: adminKeys.reports() });
     },
   });
 };

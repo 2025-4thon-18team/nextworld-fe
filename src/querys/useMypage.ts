@@ -1,78 +1,88 @@
 import { useQuery } from "@tanstack/react-query";
-import { mypageApi } from "../apis/mypage";
+import { client } from "./client";
+import type {
+  PointsResponse,
+  PayItemResponse,
+  PostResponseDto,
+  WorkResponseDto,
+} from "./types";
+
+// ============================================
+// API 함수
+// ============================================
+
+export const mypageApi = {
+  // 포인트 조회
+  getPoints: () => client.get<PointsResponse>("/api/mypage/points"),
+
+  // 결제 내역 조회
+  getPaylist: () => client.get<PayItemResponse[]>("/api/mypage/paylist"),
+
+  // 결제한 Post 목록 조회
+  getPurchasedPosts: () =>
+    client.get<PostResponseDto[]>("/api/mypage/purchased/posts"),
+
+  // 결제한 Work 목록 조회
+  getPurchasedWorks: () =>
+    client.get<WorkResponseDto[]>("/api/mypage/purchased/works"),
+};
+
+// ============================================
+// Query Keys
+// ============================================
 
 export const mypageKeys = {
   all: ["mypage"] as const,
-  works: (params?: { page?: number; pageSize?: number }) =>
-    [...mypageKeys.all, "works", params] as const,
-  bookmarks: (params?: { page?: number; pageSize?: number }) =>
-    [...mypageKeys.all, "bookmarks", params] as const,
   points: () => [...mypageKeys.all, "points"] as const,
-  paylist: (params?: { page?: number; pageSize?: number }) =>
-    [...mypageKeys.all, "paylist", params] as const,
-  revenue: () => [...mypageKeys.all, "revenue"] as const,
+  paylist: () => [...mypageKeys.all, "paylist"] as const,
+  purchasedPosts: () => [...mypageKeys.all, "purchasedPosts"] as const,
+  purchasedWorks: () => [...mypageKeys.all, "purchasedWorks"] as const,
 };
 
-// Query: 내 작품 리스트 조회
-export const useGetMyWorks = (params?: {
-  page?: number;
-  pageSize?: number;
-}) => {
-  return useQuery({
-    queryKey: ["useGetMyWorks", ...mypageKeys.works(params)],
-    queryFn: async () => {
-      const response = await mypageApi.getMyWorks(params);
-      return response.data.data;
-    },
-  });
-};
-
-// Query: 내 북마크 작품 리스트 조회
-export const useGetMyBookmarks = (params?: {
-  page?: number;
-  pageSize?: number;
-}) => {
-  return useQuery({
-    queryKey: ["useGetMyBookmarks", ...mypageKeys.bookmarks(params)],
-    queryFn: async () => {
-      const response = await mypageApi.getMyBookmarks(params);
-      return response.data.data;
-    },
-  });
-};
+// ============================================
+// React Query Hooks
+// ============================================
 
 // Query: 내 포인트
 export const useGetMyPoints = () => {
   return useQuery({
     queryKey: ["useGetMyPoints", ...mypageKeys.points()],
     queryFn: async () => {
-      const response = await mypageApi.getMyPoints();
-      return response.data.data;
+      const response = await mypageApi.getPoints();
+      return response.data;
     },
   });
 };
 
 // Query: 포인트 결제 내역
-export const useGetPaylist = (params?: {
-  page?: number;
-  pageSize?: number;
-}) => {
+export const useGetPaylist = () => {
   return useQuery({
-    queryKey: ["useGetPaylist", ...mypageKeys.paylist(params)],
+    queryKey: ["useGetPaylist", ...mypageKeys.paylist()],
     queryFn: async () => {
-      const response = await mypageApi.getPaylist(params);
-      return response.data.data;
+      const response = await mypageApi.getPaylist();
+      return response.data;
     },
   });
 };
 
-// Query: 내 수익
-export const useGetRevenue = () => {
+// Query: 결제한 Post 목록 조회
+export const useGetPurchasedPosts = () => {
   return useQuery({
-    queryKey: ["useGetRevenue", ...mypageKeys.revenue()],
+    queryKey: ["useGetPurchasedPosts", ...mypageKeys.purchasedPosts()],
     queryFn: async () => {
-      const response = await mypageApi.getRevenue();
-      return response.data.data;
+      const response = await mypageApi.getPurchasedPosts();
+      return response.data;
+    },
+  });
+};
+
+// Query: 결제한 Work 목록 조회
+export const useGetPurchasedWorks = () => {
+  return useQuery({
+    queryKey: ["useGetPurchasedWorks", ...mypageKeys.purchasedWorks()],
+    queryFn: async () => {
+      const response = await mypageApi.getPurchasedWorks();
+      return response.data;
     },
   });
 };

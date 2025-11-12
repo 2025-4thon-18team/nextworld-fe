@@ -1,276 +1,134 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  worksApi,
-  OriginalWorkRequest,
-  UpdateOriginalWorkRequest,
-  DerivativeWorkRequest,
-  UpdateDerivativeWorkRequest,
-  SaveDraftRequest,
-  ContinueWritingRequest,
-  AICheckRequest,
-  CreateCommentRequest,
-} from "../apis/works";
-import { mypageKeys } from "./useMypage";
+import { client } from "./client";
+import type {
+  WorkRequestDto,
+  WorkResponseDto,
+  WorkTypeEnum,
+  PostResponseDto,
+} from "./types";
+
+// ============================================
+// API 함수
+// ============================================
+
+export const worksApi = {
+  // 작품 생성
+  createWork: (data: WorkRequestDto) =>
+    client.post<WorkResponseDto>("/api/works", data),
+
+  // 작품 목록 조회 (workType 필터링 가능)
+  getAllWorks: (workType?: WorkTypeEnum) =>
+    client.get<WorkResponseDto[]>("/api/works", {
+      params: workType ? { workType } : undefined,
+    }),
+
+  // 작품 상세 조회
+  getWorkById: (id: number) => client.get<WorkResponseDto>(`/api/works/${id}`),
+
+  // 작품의 회차 목록 조회
+  getWorkEpisodes: (workId: number) =>
+    client.get<PostResponseDto[]>(`/api/works/${workId}/posts`),
+
+  // 작품의 원작 참조 포스트 목록 조회
+  getDerivativePosts: (workId: number) =>
+    client.get<PostResponseDto[]>(`/api/works/${workId}/derivatives`),
+
+  // 작품 삭제
+  deleteWork: (id: number) => client.delete<string>(`/api/works/${id}`),
+};
+
+// ============================================
+// Query Keys
+// ============================================
 
 export const worksKeys = {
   all: ["works"] as const,
-  detail: (workId: string) => [...worksKeys.all, "detail", workId] as const,
-  likes: (workId: string) => [...worksKeys.all, "likes", workId] as const,
-  comments: (workId: string, params?: { page?: number; pageSize?: number }) =>
-    [...worksKeys.all, "comments", workId, params] as const,
-  drafts: () => [...worksKeys.all, "drafts"] as const,
-  draft: (draftId: string) => [...worksKeys.drafts(), draftId] as const,
+  lists: () => [...worksKeys.all, "list"] as const,
+  detail: (id: number) => [...worksKeys.all, "detail", id] as const,
+  episodes: (workId: number) => [...worksKeys.all, "episodes", workId] as const,
+  derivatives: (workId: number) =>
+    [...worksKeys.all, "derivatives", workId] as const,
 };
 
-// Mutation: 1차 작품 등록
-export const useCreateOriginalWork = () => {
+// ============================================
+// React Query Hooks
+// ============================================
+
+// Mutation: 작품 생성
+export const useCreateWork = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ["useCreateOriginalWork"],
-    mutationFn: async (data: OriginalWorkRequest) => {
-      const response = await worksApi.createOriginalWork(data);
-      return response.data.data;
-    },
-    onSuccess: () => {
-      // 작품 생성 후 내 작품 리스트 무효화
-      queryClient.invalidateQueries({ queryKey: mypageKeys.works() });
-    },
-  });
-};
-
-// Mutation: 1차 작품 수정
-export const useUpdateOriginalWork = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["useUpdateOriginalWork"],
-    mutationFn: async (data: UpdateOriginalWorkRequest) => {
-      const response = await worksApi.updateOriginalWork(data);
-      return response.data.data;
-    },
-    onSuccess: (data) => {
-      // 작품 수정 후 관련 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: mypageKeys.works() });
-      queryClient.invalidateQueries({
-        queryKey: worksKeys.detail(data.workId),
-      });
-    },
-  });
-};
-
-// Mutation: 2차 작품 등록
-export const useCreateDerivativeWork = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["useCreateDerivativeWork"],
-    mutationFn: async (data: DerivativeWorkRequest) => {
-      const response = await worksApi.createDerivativeWork(data);
-      return response.data.data;
-    },
-    onSuccess: () => {
-      // 작품 생성 후 내 작품 리스트 무효화
-      queryClient.invalidateQueries({ queryKey: mypageKeys.works() });
-    },
-  });
-};
-
-// Mutation: 2차 작품 수정
-export const useUpdateDerivativeWork = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["useUpdateDerivativeWork"],
-    mutationFn: async ({
-      workId,
-      data,
-    }: {
-      workId: string;
-      data: UpdateDerivativeWorkRequest;
-    }) => {
-      const response = await worksApi.updateDerivativeWork(workId, data);
-      return response.data.data;
-    },
-    onSuccess: (data) => {
-      // 작품 수정 후 관련 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: mypageKeys.works() });
-      queryClient.invalidateQueries({
-        queryKey: worksKeys.detail(data.workId),
-      });
-    },
-  });
-};
-
-// Mutation: 2차 작품 임시저장
-export const useSaveDraft = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["useSaveDraft"],
-    mutationFn: async (data: SaveDraftRequest) => {
-      const response = await worksApi.saveDraft(data);
-      return response.data.data;
-    },
-    onSuccess: () => {
-      // 임시저장 후 drafts 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: worksKeys.drafts() });
-    },
-  });
-};
-
-// Query: 임시저장 작품 조회
-export const useGetDraft = (draftId: string) => {
-  return useQuery({
-    queryKey: ["useGetDraft", ...worksKeys.draft(draftId)],
-    queryFn: async () => {
-      const response = await worksApi.getDraft(draftId);
-      return response.data.data;
-    },
-    enabled: !!draftId,
-  });
-};
-
-// Mutation: 임시저장 작품 삭제
-export const useDeleteDraft = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["useDeleteDraft"],
-    mutationFn: async (draftId: string) => {
-      const response = await worksApi.deleteDraft(draftId);
+    mutationKey: ["useCreateWork"],
+    mutationFn: async (data: WorkRequestDto) => {
+      const response = await worksApi.createWork(data);
       return response.data;
     },
     onSuccess: () => {
-      // 임시저장 삭제 후 drafts 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: worksKeys.drafts() });
+      queryClient.invalidateQueries({ queryKey: worksKeys.lists() });
     },
   });
 };
 
-// Mutation: 2차 작품 이어쓰기
-export const useContinueWriting = () => {
+// Query: 작품 목록 조회
+export const useGetAllWorks = (workType?: WorkTypeEnum) => {
+  return useQuery({
+    queryKey: ["useGetAllWorks", ...worksKeys.lists(), workType],
+    queryFn: async () => {
+      const response = await worksApi.getAllWorks(workType);
+      return response.data;
+    },
+  });
+};
+
+// Query: 작품 상세 조회
+export const useGetWorkById = (id: number) => {
+  return useQuery({
+    queryKey: ["useGetWorkById", ...worksKeys.detail(id)],
+    queryFn: async () => {
+      const response = await worksApi.getWorkById(id);
+      return response.data;
+    },
+    enabled: !!id,
+  });
+};
+
+// Query: 작품의 회차 목록 조회
+export const useGetWorkEpisodes = (workId: number) => {
+  return useQuery({
+    queryKey: ["useGetWorkEpisodes", ...worksKeys.episodes(workId)],
+    queryFn: async () => {
+      const response = await worksApi.getWorkEpisodes(workId);
+      return response.data;
+    },
+    enabled: !!workId,
+  });
+};
+
+// Query: 작품의 원작 참조 포스트 목록 조회
+export const useGetDerivativePosts = (workId: number) => {
+  return useQuery({
+    queryKey: ["useGetDerivativePosts", ...worksKeys.derivatives(workId)],
+    queryFn: async () => {
+      const response = await worksApi.getDerivativePosts(workId);
+      return response.data;
+    },
+    enabled: !!workId,
+  });
+};
+
+// Mutation: 작품 삭제
+export const useDeleteWork = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ["useContinueWriting"],
-    mutationFn: async ({
-      draftId,
-      data,
-    }: {
-      draftId: string;
-      data: ContinueWritingRequest;
-    }) => {
-      const response = await worksApi.continueWriting(draftId, data);
-      return response.data.data;
+    mutationKey: ["useDeleteWork"],
+    mutationFn: async (id: number) => {
+      const response = await worksApi.deleteWork(id);
+      return response.data;
     },
     onSuccess: () => {
-      // 이어쓰기 완료 후 관련 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: mypageKeys.works() });
-      queryClient.invalidateQueries({ queryKey: worksKeys.drafts() });
-    },
-  });
-};
-
-// Mutation: AI 가이드라인 검토
-export const useCheckAI = () => {
-  return useMutation({
-    mutationKey: ["useCheckAI"],
-    mutationFn: async (data: AICheckRequest) => {
-      const response = await worksApi.checkAI(data);
-      return response.data.data;
-    },
-  });
-};
-
-// Mutation: 작품 좋아요
-export const useLikeWork = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["useLikeWork"],
-    mutationFn: async (workId: string) => {
-      const response = await worksApi.likeWork(workId);
-      return response.data.data;
-    },
-    onSuccess: (data) => {
-      // 좋아요 후 관련 쿼리 무효화
-      queryClient.invalidateQueries({ queryKey: worksKeys.likes(data.workId) });
-      queryClient.invalidateQueries({
-        queryKey: worksKeys.detail(data.workId),
-      });
-    },
-  });
-};
-
-// Query: 작품 좋아요 조회
-export const useGetLikes = (workId: string) => {
-  return useQuery({
-    queryKey: ["useGetLikes", ...worksKeys.likes(workId)],
-    queryFn: async () => {
-      const response = await worksApi.getLikes(workId);
-      return response.data.data;
-    },
-    enabled: !!workId,
-  });
-};
-
-// Mutation: 작품 북마크
-export const useBookmarkWork = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["useBookmarkWork"],
-    mutationFn: async (workId: string) => {
-      const response = await worksApi.bookmarkWork(workId);
-      return response.data.data;
-    },
-    onSuccess: (data) => {
-      // 북마크 후 관련 쿼리 무효화
-      queryClient.invalidateQueries({
-        queryKey: worksKeys.detail(data.workId),
-      });
-      queryClient.invalidateQueries({ queryKey: mypageKeys.bookmarks() });
-    },
-  });
-};
-
-// Query: 댓글 목록 조회
-export const useGetComments = (
-  workId: string,
-  params?: { page?: number; pageSize?: number },
-) => {
-  return useQuery({
-    queryKey: ["useGetComments", ...worksKeys.comments(workId, params)],
-    queryFn: async () => {
-      const response = await worksApi.getComments(workId, params);
-      return response.data.data;
-    },
-    enabled: !!workId,
-  });
-};
-
-// Mutation: 댓글 작성
-export const useCreateComment = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: ["useCreateComment"],
-    mutationFn: async ({
-      workId,
-      data,
-    }: {
-      workId: string;
-      data: CreateCommentRequest;
-    }) => {
-      const response = await worksApi.createComment(workId, data);
-      return response.data.data;
-    },
-    onSuccess: (data) => {
-      // 댓글 작성 후 댓글 리스트 무효화
-      queryClient.invalidateQueries({
-        queryKey: worksKeys.comments(data.comment.workId),
-      });
+      queryClient.invalidateQueries({ queryKey: worksKeys.lists() });
     },
   });
 };
