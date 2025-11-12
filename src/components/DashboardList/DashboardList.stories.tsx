@@ -1,0 +1,32 @@
+import type { Meta, StoryObj } from "@storybook/react";
+import { DashboardList } from "./DashboardList";
+
+const meta = {
+  title: "Components/DashboardList",
+  component: DashboardList,
+  parameters: {
+    layout: "centered",
+  },
+  tags: ["autodocs"],
+} satisfies Meta<typeof DashboardList>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+export const Default: Story = {
+  args: {
+    points: 2000,
+  },
+};
+
+export const NoActiveMenu: Story = {
+  args: {
+    points: 5000,
+  },
+};
+
+export const LargePoints: Story = {
+  args: {
+    points: 100000,
+  },
+};
