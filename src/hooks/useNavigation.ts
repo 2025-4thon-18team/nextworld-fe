@@ -13,6 +13,12 @@ export function useNavigation() {
     },
     [navigate],
   );
+  const navigateToSeriesContent = useCallback(
+    (id: string | number, contentId: string | number) => {
+      navigate(`/series/${id}/content/${contentId}`);
+    },
+    [navigate],
+  );
 
   const navigateToPost = useCallback(
     (id: string | number) => {
@@ -63,12 +69,17 @@ export function useNavigation() {
     navigate("/my-page/profile/edit");
   }, [navigate]);
 
+  const navigateToCreateSeries = useCallback(() => {
+    navigate("/create-series/basic");
+  }, [navigate]);
+
   const navigateBack = useCallback(() => {
     navigate(-1);
   }, [navigate]);
 
   return {
     navigateToSeries,
+    navigateToSeriesContent,
     navigateToPost,
     navigateToViewer,
     navigateToContent,
@@ -79,8 +90,8 @@ export function useNavigation() {
     navigateToSignup,
     navigateToMyPageMain,
     navigateToProfileEdit,
+    navigateToCreateSeries,
     navigateBack,
     navigate, // 원본 navigate도 필요시 사용 가능
   };
 }
-
