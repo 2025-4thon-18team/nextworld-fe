@@ -10,6 +10,7 @@ interface ContentItemProps {
   views: number;
   comments: number;
   date: string;
+  onClick?: () => void;
   className?: string;
 }
 
@@ -20,10 +21,17 @@ export const ContentItem: FC<ContentItemProps> = ({
   views,
   comments,
   date,
+  onClick,
   className,
 }) => {
   return (
-    <div className={cn("h-84 w-full border-t-2 border-[#f8f8f8]", className)}>
+    <div
+      className={cn(
+        "h-84 w-full cursor-pointer border-t-2 border-[#f8f8f8] select-none",
+        className,
+      )}
+      onClick={onClick}
+    >
       <div className="py-lg px-md flex h-84 w-full items-center justify-between">
         {/* Left section: Title and Article Info */}
         <div className="gap-sm flex flex-col items-start">

@@ -22,21 +22,22 @@ export const PaymentItem: FC<PaymentItemProps> = ({
 }) => {
   return (
     <div
-      className={`px-md py-lg flex items-center justify-between w-797 ${className || ""}`}
+      className={`px-md py-lg flex w-full items-center justify-between ${className || ""}`}
     >
-      <div className="flex flex-col gap-xs items-start w-312 shrink-0 text-body-medium">
-        <p className="text-body-large-medium text-black tracking-tight w-full">{title}</p>
-        <p className="text-body-small-medium text-subtle tracking-tight w-full">
+      <div className="text-body-medium gap-xs flex w-312 shrink-0 flex-col items-start">
+        <p className="text-body-large-medium w-full tracking-tight text-black">
+          {title}
+        </p>
+        <p className="text-body-small-medium text-subtle w-full tracking-tight">
           {subtitle}
         </p>
       </div>
-      <div className="flex flex-col gap-xs items-end w-77 shrink-0">
+      <div className="gap-xs flex shrink-0 flex-col items-end">
         <Point value={points} showPrefix={true} prefix="-" />
-        <p className="text-body-small-medium text-subtle text-right tracking-tight w-min-content">
+        <p className="text-body-small-medium text-subtle w-min-content text-right tracking-tight">
           {date}
         </p>
       </div>
     </div>
   );
 };
-

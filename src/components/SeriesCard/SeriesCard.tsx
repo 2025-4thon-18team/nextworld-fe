@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import { cn } from "@/utils";
 import { Tag } from "@/components/Tag/Tag";
 import { useNavigation } from "@/hooks";
@@ -18,24 +18,34 @@ export const SeriesCard: FC<SeriesCardProps> = ({
   title,
   tags,
   selected = false,
+  seriesId,
   onClick,
   className,
 }) => {
+  const { navigateToSeries } = useNavigation();
+  const handleSeriesClick = useCallback(() => {
+    if (seriesId) {
+      navigateToSeries(Number(seriesId));
+    } else {
+      onClick?.();
+    }
+  }, [navigateToSeries, seriesId, onClick]);
   return (
     <div
       className={cn(
-        "gap-sm p-sm flex w-203 flex-col items-start rounded-md",
+        "gap-sm p-sm flex w-203 flex-col items-start rounded-md select-none",
         selected && "bg-foreground-default",
         className,
       )}
-      onClick={onClick}
+      onClick={handleSeriesClick}
     >
       {/* Image */}
       <div className="relative aspect-150/225 w-full shrink-0 overflow-hidden rounded-sm">
         <img
           alt={title}
           src={imageUrl}
-          className="pointer-events-none absolute inset-0 size-full rounded-sm object-cover object-center"
+          className="pointer-events-none absolute inset-0 size-full rounded-sm object-cover object-center select-none"
+          draggable={false}
         />
       </div>
 

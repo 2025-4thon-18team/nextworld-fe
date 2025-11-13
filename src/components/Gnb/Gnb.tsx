@@ -52,7 +52,7 @@ export const Gnb: FC<GnbProps> = ({
           {isAuthorized ? (
             <>
               <ButtonSmall variant="subtle" onClick={onWriteClick}>
-                글 쓰기
+                연재하기
               </ButtonSmall>
               {profileImageUrl && (
                 <ProfileImg imageUrl={profileImageUrl} size="sm" />

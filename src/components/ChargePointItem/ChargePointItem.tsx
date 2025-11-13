@@ -16,14 +16,17 @@ export const ChargePointItem: FC<ChargePointItemProps> = ({
 }) => {
   return (
     <div
-      className={`px-md py-lg flex items-center justify-between w-846 ${className || ""}`}
+      className={`px-md py-lg flex w-full items-center justify-between ${className || ""}`}
     >
-      <div className="flex flex-col items-start text-right w-144 shrink-0 text-body-medium text-nowrap whitespace-pre">
-        <p className="text-body-large-medium text-black tracking-tight">{title}</p>
-        <p className="text-body-small-medium text-[#c1c1c1] tracking-tight">{date}</p>
+      <div className="text-body-medium flex shrink-0 flex-col items-start text-right text-nowrap whitespace-pre">
+        <p className="text-body-large-medium tracking-tight text-black">
+          {title}
+        </p>
+        <p className="text-body-small-medium tracking-tight text-[#c1c1c1]">
+          {date}
+        </p>
       </div>
       <Point value={points} showPrefix={true} prefix="+" />
     </div>
   );
 };
-

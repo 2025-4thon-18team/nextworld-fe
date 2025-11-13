@@ -19,58 +19,53 @@ const menuItems = [
 
 export const DashboardList: FC<DashboardListProps> = ({
   points,
-  activeMenu = "내 작품 관리",
+  activeMenu,
   onMenuClick,
   className,
 }) => {
   return (
-    <div className={cn("h-333 w-140", className)}>
-      <div className="absolute flex flex-col gap-24 items-center left-15 top-0 w-110">
-        {/* Points Section */}
-        <div className="flex flex-col gap-5 items-center relative shrink-0 w-96">
-          <p className="text-headings-heading-4 text-black text-nowrap text-right tracking-tight whitespace-pre">
-            보유 포인트
+    <div className={cn("flex w-110 flex-col items-center gap-24", className)}>
+      {/* Points Section */}
+      <div className="flex w-96 shrink-0 flex-col items-center gap-5">
+        <p className="text-headings-heading-4 text-right tracking-tight text-nowrap whitespace-pre text-black">
+          보유 포인트
+        </p>
+        <div className="flex w-full shrink-0 items-center justify-center">
+          <p className="text-headings-heading-1 tracking-tight text-nowrap whitespace-pre text-black">
+            {points.toLocaleString()}
           </p>
-          <div className="flex items-center justify-center relative shrink-0 w-full">
-            <p className="text-headings-heading-1 text-black text-nowrap tracking-tight whitespace-pre">
-              {points.toLocaleString()}
-            </p>
-            <IconPoint className="flex size-24 items-center justify-center gap-10 relative shrink-0" />
-          </div>
+          <IconPoint className="flex size-24 shrink-0 items-center justify-center gap-10" />
         </div>
+      </div>
 
-        {/* Menu Items */}
-        <div className="flex flex-col gap-20 items-start justify-center relative shrink-0 w-full">
-          {menuItems.map((menu) => (
-            <button
-              key={menu}
-              type="button"
-              onClick={() => onMenuClick?.(menu)}
+      {/* Menu Items */}
+      <div className="flex w-full shrink-0 flex-col items-start justify-center gap-20">
+        {menuItems.map((menu) => (
+          <button
+            key={menu}
+            type="button"
+            onClick={() => onMenuClick?.(menu)}
+            className={cn(
+              "flex shrink-0 items-center justify-center",
+              menu === activeMenu && "gap-10",
+            )}
+          >
+            <p
               className={cn(
-                "flex items-center justify-center relative shrink-0",
-                menu === activeMenu && "gap-10",
+                "text-headings-heading-4 w-100 text-center",
+                menu === activeMenu ? "text-foreground-default" : "text-black",
               )}
             >
-              <p
-                className={cn(
-                  "text-headings-heading-4 text-center w-100",
-                  menu === activeMenu
-                    ? "text-foreground-default"
-                    : "text-black",
-                )}
-              >
-                {menu}
-              </p>
-              {menu === activeMenu && (
-                <div className="flex size-24 items-center justify-center relative shrink-0">
-                  <IconChevron className="size-24 rotate-90" />
-                </div>
-              )}
-            </button>
-          ))}
-        </div>
+              {menu}
+            </p>
+            {menu === activeMenu && (
+              <div className="flex size-24 shrink-0 items-center justify-center">
+                <IconChevron className="size-24 rotate-90" />
+              </div>
+            )}
+          </button>
+        ))}
       </div>
     </div>
   );
 };
-

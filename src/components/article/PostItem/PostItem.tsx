@@ -16,6 +16,7 @@ interface PostItemProps {
   date: string;
   showIconPicture?: boolean;
   showPoint?: boolean;
+  onClick?: () => void;
   className?: string;
 }
 
@@ -30,14 +31,16 @@ export const PostItem: FC<PostItemProps> = ({
   date,
   showIconPicture = true,
   showPoint = true,
+  onClick,
   className,
 }) => {
   return (
     <div
       className={cn(
-        "border-t-md border-grayscale-g1 h-230 min-h-230 w-401 rounded-xs border-r-0 border-b-0 border-l-0 border-solid bg-white",
+        "border-t-md border-grayscale-g1 h-230 min-h-230 w-401 cursor-pointer rounded-xs border-r-0 border-b-0 border-l-0 border-solid bg-white",
         className,
       )}
+      onClick={onClick}
     >
       <div className="min-h-inherit px-md py-lg relative box-border flex h-230 w-401 flex-col items-start justify-between overflow-hidden rounded-[inherit]">
         {/* Title and Content Section */}
