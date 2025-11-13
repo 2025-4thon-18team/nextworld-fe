@@ -8,6 +8,7 @@ import {
   worksHandlers,
   feedHandlers,
   adminHandlers,
+  scrapHandlers,
 } from "./handlers";
 import { serverUrl } from "./utils";
 
@@ -39,4 +40,5 @@ export const handlers = [
   ...worksHandlers,
   ...feedHandlers,
   ...adminHandlers,
+  ...scrapHandlers,
 ];

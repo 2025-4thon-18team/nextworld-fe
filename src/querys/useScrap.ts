@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { client } from "./client";
-import type { ScrapResponse } from "./types";
+import type { ScrapResponse, WorkResponseDto } from "./types";
 
 // ============================================
 // API 함수
@@ -22,6 +22,11 @@ export const scrapApi = {
   // POST 스크랩 삭제
   unscrapPost: (postId: number) =>
     client.delete<string>(`/api/scraps/posts/${postId}`),
+
+  // 스크랩된 작품 목록 조회
+  // TODO: 백엔드 API가 추가되면 연결 필요
+  getScrappedWorks: () =>
+    client.get<WorkResponseDto[]>("/api/scraps/works"),
 };
 
 // ============================================
@@ -30,6 +35,7 @@ export const scrapApi = {
 
 export const scrapKeys = {
   all: ["scraps"] as const,
+  works: () => [...scrapKeys.all, "works"] as const,
   work: (workId: number) => [...scrapKeys.all, "work", workId] as const,
   post: (postId: number) => [...scrapKeys.all, "post", postId] as const,
 };
@@ -98,6 +104,17 @@ export const useUnscrapPost = () => {
     },
     onSuccess: (_, postId) => {
       queryClient.invalidateQueries({ queryKey: scrapKeys.post(postId) });
+    },
+  });
+};
+
+// Query: 스크랩된 작품 목록 조회
+export const useGetScrappedWorks = () => {
+  return useQuery({
+    queryKey: ["useGetScrappedWorks", ...scrapKeys.works()],
+    queryFn: async () => {
+      const response = await scrapApi.getScrappedWorks();
+      return response.data;
     },
   });
 };

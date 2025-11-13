@@ -6,3 +6,4 @@ export * from "./revenue";
 export * from "./works";
 export * from "./feed";
 export * from "./admin";
+export * from "./scrap";
