@@ -22,9 +22,9 @@ export const paymentApi = {
   // 포인트 사용 (백엔드에서 빈 응답)
   use: (data: UseRequest) => client.post<void>("/api/payment/use", data),
 
-  // 환불 요청 (백엔드에서 문자열 반환)
+  // 환불 요청 (백엔드에서 빈 응답)
   refund: (data: RefundRequest) =>
-    client.post<string>("/api/payment/refund", data),
+    client.post<void>("/api/payment/refund", data),
 
   // 포인트 충전 (백엔드에서 빈 응답)
   charge: (data: ChargeRequest) =>
@@ -91,8 +91,7 @@ export const useRefundPayment = () => {
   return useMutation({
     mutationKey: ["useRefundPayment"],
     mutationFn: async (data: RefundRequest) => {
-      const response = await paymentApi.refund(data);
-      return response.data; // string
+      await paymentApi.refund(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: mypageKeys.points() });
