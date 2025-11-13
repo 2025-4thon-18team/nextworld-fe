@@ -44,7 +44,9 @@ type Props = {
   latestUpdates: ContentItemData[];
   newPosts: PostItem[];
   newUniverseSeries: SeriesItem[];
+  selectedWorkId: number | null;
   onContentClick?: (id: string) => void;
+  onSeriesClick?: (seriesId: string) => void;
 };
 
 export const InterestsView: FC<Props> = ({
@@ -55,12 +57,14 @@ export const InterestsView: FC<Props> = ({
   latestUpdates,
   newPosts,
   newUniverseSeries,
+  selectedWorkId,
   onContentClick,
+  onSeriesClick,
 }) => {
   return (
     <div className={cn("flex size-full flex-col bg-white", className)}>
       {/* Home Category */}
-      <div className="flex justify-center px-[calc(8.333%+67px)] pt-96">
+      <div className="flex justify-center">
         <HomeCategory
           activeTab={activeTab as "홈" | "신규" | "관심"}
           onTabChange={(tab) => onTabChange(tab as HomeCategoryTab)}
@@ -76,30 +80,23 @@ export const InterestsView: FC<Props> = ({
             관심 작품
           </h2>
           <div className="gap-lg flex h-1138 shrink-0 flex-col items-start overflow-hidden">
-            {/* Featured Series Card (Selected) */}
-            {favoriteSeries.length > 0 && (
-              <SeriesCard
-                imageUrl={favoriteSeries[0].imageUrl}
-                title={favoriteSeries[0].title}
-                tags={favoriteSeries[0].tags}
-                seriesId={favoriteSeries[0].id}
-                selected={true}
-                className="gap-sm p-sm flex w-203 shrink-0 flex-col items-start rounded-md"
-              />
-            )}
-
-            {/* Other Series Cards */}
-            {favoriteSeries.slice(1).map((series) => (
-              <SeriesCard
-                key={series.id}
-                imageUrl={series.imageUrl}
-                title={series.title}
-                tags={series.tags}
-                seriesId={series.id}
-                selected={false}
-                className="gap-sm p-sm flex w-203 shrink-0 flex-col items-start rounded-md"
-              />
-            ))}
+            {/* Series Cards */}
+            {favoriteSeries.map((series) => {
+              const isSelected =
+                selectedWorkId !== null && Number(series.id) === selectedWorkId;
+              return (
+                <SeriesCard
+                  key={series.id}
+                  imageUrl={series.imageUrl}
+                  title={series.title}
+                  tags={series.tags}
+                  seriesId={series.id}
+                  selected={isSelected}
+                  onClick={() => onSeriesClick?.(series.id)}
+                  className="gap-sm p-sm flex w-203 shrink-0 flex-col items-start rounded-md"
+                />
+              );
+            })}
           </div>
         </div>
 

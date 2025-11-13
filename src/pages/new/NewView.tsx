@@ -43,7 +43,7 @@ export const NewView: FC<Props> = ({
   return (
     <div className={cn("flex size-full flex-col bg-white", className)}>
       {/* Home Category */}
-      <div className="flex justify-center px-[calc(8.333%+68px)] pt-96">
+      <div className="flex justify-center">
         <HomeCategory
           activeTab={activeTab as "홈" | "신규" | "관심"}
           onTabChange={(tab) => onTabChange(tab as HomeCategoryTab)}
