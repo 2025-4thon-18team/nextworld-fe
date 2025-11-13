@@ -35,15 +35,25 @@ client.interceptors.response.use(
       // 발급 시도 프로미스, 이미 발급 중이면 대기
       if (!isRefreshing) {
         isRefreshing = true;
+        // TODO: Refresh 토큰 가져오기
+        const refreshToken = ""; // useAuthStore.getState().refreshToken;
         refreshPromise = client
-          .post(`${import.meta.env.VITE_SERVER_URL}/api/auth/refresh`, {
-            withCredentials: true,
-          })
+          .post(
+            `${import.meta.env.VITE_SERVER_URL}/api/auth/refresh`,
+            {},
+            {
+              headers: {
+                "Refresh-Token": refreshToken,
+              },
+              withCredentials: true,
+            },
+          )
           .then((res) => {
-            const { accessToken, refreshToken } = res.data.data;
+            // 백엔드에서 직접 문자열(새로운 accessToken) 반환
+            const newAccessToken = res.data;
             // TODO: Refresh 토큰 저장
-            // setTokens({ accessToken, refreshToken });
-            return accessToken;
+            // setTokens({ accessToken: newAccessToken, refreshToken });
+            return newAccessToken;
           })
           .catch((err) => {
             // 발급 실패 시 처리, 예시 : 로그아웃 후 에러 페이지로 이동

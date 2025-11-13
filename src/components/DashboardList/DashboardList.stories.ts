@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DashboardList } from "./DashboardList";
 
 const meta = {
@@ -32,4 +32,3 @@ export const LargePoints: Story = {
     activeMenu: "포인트",
   },
 };
-

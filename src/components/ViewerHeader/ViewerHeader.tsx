@@ -11,6 +11,15 @@ interface ViewerHeaderProps {
   className?: string;
 }
 
+// IconChevronFlip - 뒤집힌 Chevron 아이콘
+const IconChevronFlip = ({ className }: { className?: string }) => {
+  return (
+    <div className={cn("size-24 overflow-hidden shrink-0 flex items-center justify-center", className)}>
+      <IconChevron className="size-24 rotate-180 scale-y-[-100%]" />
+    </div>
+  );
+};
+
 export const ViewerHeader: FC<ViewerHeaderProps> = ({
   seriesTitle,
   episodeTitle,
@@ -35,38 +44,26 @@ export const ViewerHeader: FC<ViewerHeaderProps> = ({
             >
               <IconChevron className="size-24 overflow-hidden shrink-0" />
             </button>
-            <div className="flex flex-col gap-xs items-start text-black w-161 shrink-0">
+            <div className="flex flex-col gap-xs items-start justify-between text-black h-56 shrink-0 w-161">
               {seriesTitle && (
                 <p className="text-body-medium tracking-tight w-full">{seriesTitle}</p>
               )}
-              <p className="text-headings-heading-1 tracking-tight w-full">
+              <p className="text-headings-heading-2 tracking-tight w-full">
                 {episodeTitle}
               </p>
             </div>
           </div>
           <div className="gap-sm flex items-center shrink-0">
-            <button
-              type="button"
+            <IconWithLabel
+              icon={<IconChevron className="size-24 overflow-hidden shrink-0" />}
+              label="저번화"
               onClick={onPrevious}
-              className="flex flex-col gap-xs items-center justify-center px-12 py-0"
-            >
-              <IconChevron className="size-24 overflow-hidden shrink-0" />
-              <p className="text-body-medium text-black text-center text-nowrap tracking-tight whitespace-pre">
-                저번화
-              </p>
-            </button>
-            <button
-              type="button"
+            />
+            <IconWithLabel
+              icon={<IconChevronFlip />}
+              label="다음화"
               onClick={onNext}
-              className="flex flex-col gap-xs items-center justify-center px-12 py-0"
-            >
-              <div className="size-24 overflow-hidden shrink-0 flex items-center justify-center">
-                <IconChevron className="size-24 rotate-180" />
-              </div>
-              <p className="text-body-medium text-black text-center text-nowrap tracking-tight whitespace-pre">
-                다음화
-              </p>
-            </button>
+            />
           </div>
         </div>
       </div>

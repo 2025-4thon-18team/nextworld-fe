@@ -15,26 +15,34 @@ export const ArticleInfo: FC<ArticleInfoProps> = ({
   date,
 }) => {
   return (
-    <div className="gap-lg flex flex-row items-center">
-      <div className="gap-xs flex items-center">
-        <IconStar className="text-grayscale-g5" />
-        <span className="text-body-small-medium text-grayscale-g5">
+    <div className="gap-lg flex items-center relative shrink-0">
+      <div className="gap-xs flex items-center relative shrink-0">
+        <div className="relative shrink-0 size-24">
+          <IconStar className="size-24" />
+        </div>
+        <p className="text-body-small-medium text-muted text-nowrap tracking-tight whitespace-pre">
           {rating.toFixed(1)}
-        </span>
+        </p>
       </div>
-      <div className="gap-xs flex items-center">
-        <IconEye className="text-grayscale-g5" />
-        <span className="text-body-small-medium text-grayscale-g5">
+      <div className="gap-xs flex items-center relative shrink-0">
+        <div className="overflow-hidden relative shrink-0 size-24">
+          <IconEye className="size-24" />
+        </div>
+        <p className="text-body-small-medium text-muted text-nowrap tracking-tight whitespace-pre">
           {views}
-        </span>
+        </p>
       </div>
-      <div className="gap-xs flex items-center">
-        <IconComment className="text-grayscale-g5" />
-        <span className="text-body-small-medium text-grayscale-g5">
+      <div className="gap-xs flex items-center relative shrink-0">
+        <div className="overflow-hidden relative shrink-0 size-24">
+          <IconComment className="size-24" />
+        </div>
+        <p className="text-body-small-medium text-muted text-nowrap tracking-tight whitespace-pre">
           {comments}
-        </span>
+        </p>
       </div>
-      <span className="text-body-small-medium text-grayscale-g5">{date}</span>
+      <p className="text-body-small-medium text-muted text-nowrap tracking-tight whitespace-pre">
+        {date}
+      </p>
     </div>
   );
 };

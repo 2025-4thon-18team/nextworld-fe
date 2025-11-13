@@ -19,7 +19,7 @@ export const InputLabel: FC<InputLabelProps> = ({
         {children}
       </p>
       {required && (
-        <p className="text-foreground-default w-13 text-20 leading-normal font-medium">
+        <p className="text-foreground-default text-20 w-13 leading-normal font-medium">
           *
         </p>
       )}
@@ -63,3 +63,32 @@ export const TextArea: FC<TextAreaProps> = ({ className, ...props }) => {
   );
 };
 
+interface TagsInputProps {
+  className?: string;
+  tags: string[];
+  onTagsChange: (tags: string[]) => void;
+}
+
+export const TagsInput: FC<TagsInputProps> = ({
+  className,
+  tags,
+  onTagsChange,
+}) => {
+  return (
+    <div className={cn("flex flex-wrap items-start gap-4", className)}>
+      {tags.map((tag) => (
+        <button
+          key={tag}
+          type="button"
+          className={cn(
+            "text-headings-heading-4 text-muted whitespace-nowrap",
+            className,
+          )}
+          onClick={() => onTagsChange(tags.filter((t) => t !== tag))}
+        >
+          {tag}
+        </button>
+      ))}
+    </div>
+  );
+};

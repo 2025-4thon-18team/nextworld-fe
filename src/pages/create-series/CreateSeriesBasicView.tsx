@@ -1,9 +1,9 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import {
   InputLabel,
   TextInput,
   TextArea,
-  TagInput,
+  TagsInput,
 } from "@/components/Input/Input";
 import { Tag } from "@/components/Tag/Tag";
 import { IconChevron } from "@/assets/icons";
@@ -20,6 +20,7 @@ type Props = {
   serialDays: string[];
   genres: string[];
   tags: string[];
+  onTagsChange: (tags: string[]) => void;
   onStepChange: (step: StepType) => void;
   onCoverImageClick: () => void;
   onTitleChange: (value: string) => void;
@@ -37,6 +38,7 @@ export const CreateSeriesBasicView: FC<Props> = ({
   serialDays,
   genres,
   tags,
+  onTagsChange,
   onStepChange,
   onCoverImageClick,
   onTitleChange,
@@ -238,7 +240,7 @@ export const CreateSeriesBasicView: FC<Props> = ({
           {/* Tags */}
           <div className="gap-sm flex w-full flex-col items-start">
             <InputLabel>태그</InputLabel>
-            <TagInput tags={tags} />
+            <TagsInput tags={tags} onTagsChange={onTagsChange} />
           </div>
         </div>
 
