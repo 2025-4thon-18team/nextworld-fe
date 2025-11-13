@@ -24,9 +24,18 @@ client.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Access 토큰 만료 시 자동으로 재발급하는 인터셉터
+// BaseResponse 래핑 해제 및 응답 처리
 client.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // BaseResponse로 래핑된 경우 data 추출
+    if (response.data && typeof response.data === 'object' && 'data' in response.data) {
+      return {
+        ...response,
+        data: response.data.data,
+      };
+    }
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
@@ -49,8 +58,8 @@ client.interceptors.response.use(
             },
           )
           .then((res) => {
-            // 백엔드에서 직접 문자열(새로운 accessToken) 반환
-            const newAccessToken = res.data;
+            // 백엔드에서 BaseResponse로 래핑된 문자열(새로운 accessToken) 반환
+            const newAccessToken = res.data?.data || res.data;
             // TODO: Refresh 토큰 저장
             // setTokens({ accessToken: newAccessToken, refreshToken });
             return newAccessToken;

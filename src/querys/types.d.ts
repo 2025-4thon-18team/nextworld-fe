@@ -1,13 +1,13 @@
 /**
  * 백엔드 API DTO 타입 정의
- * 잘 준비된 부분 + 수정 필요 사항 반영
+ * 백엔드 컨트롤러와 DTO에 맞게 업데이트됨
  */
 
 // ============================================
 // 공통 응답 형식
 // ============================================
 
-export interface BaseResponseDTO<T = unknown> {
+export interface BaseResponse<T = unknown> {
   success: boolean;
   code: number;
   message: string;
@@ -53,7 +53,6 @@ export interface UserProfileResponse {
   name: string;
   profileImageUrl?: string;
   pointsBalance: number;
-  totalEarned: number;
 }
 
 export interface UserProfileUpdateRequest {
@@ -89,19 +88,26 @@ export interface WorkResponseDto {
   title: string;
   description: string;
   coverImageUrl: string;
-  tags: string; // 구분자로 구분된 태그
+  tags: string[]; // 배열로 변경 (백엔드에서 List<String>)
   category: string; // 장르 카테고리
   serializationSchedule?: string; // 구분자로 구분된 연재 일정
   allowDerivative?: boolean;
-  guidelineRelation?: string; // 가이드라인: 관계
-  guidelineContent?: string; // 가이드라인: 내용
-  guidelineBackground?: string; // 가이드라인: 배경
-  bannedWords?: string; // 구분자로 구분된 금지어
   // 통계 (작품의 모든 포스트 집계)
   totalLikesCount: number; // 작품의 모든 포스트 좋아요 합계
   totalViewsCount: number; // 작품의 모든 포스트 조회수 합계
   totalRating: number; // 작품의 모든 포스트 평점 평균
   authorName: string;
+  parentWorkId?: number;
+  parentWorkTitle?: string;
+}
+
+export interface WorkGuidelineResponseDto {
+  workId: number;
+  workTitle: string;
+  guidelineRelation?: string;
+  guidelineContent?: string;
+  guidelineBackground?: string;
+  bannedWords?: string; // 구분자로 구분된 금지어
 }
 
 // ============================================
@@ -141,12 +147,11 @@ export interface PostResponseDto {
   hasImage: boolean; // 이미지 포함 여부
   isPaid: boolean;
   price?: number;
-  tags: string; // 구분자로 구분된 태그
+  tags: string[]; // 배열로 변경 (백엔드에서 List<String>)
   // 통계
-  likesCount: number;
-  viewsCount: number;
-  commentsCount: number;
-  rating: number;
+  viewsCount: number; // 백엔드: viewsCount
+  commentsCount: number; // 백엔드: commentsCount
+  rating: number; // 백엔드: rating (BigDecimal)
   // 상태
   status: WorkStatus;
   aiCheck?: string; // AI 검수 결과
@@ -259,5 +264,40 @@ export interface VerifyRequest {
 
 export interface DistributeRequest {
   payId: number;
-  postId: number; // 수익 분배할 Post ID
+  derivativeWorkId: number; // 수익 분배할 2차 창작 작품 ID
+}
+
+// ============================================
+// 좋아요 관련 (Like)
+// ============================================
+
+export interface LikeResponse {
+  id: number;
+  workId: number;
+  workName: string;
+  createdAt: string; // ISO 8601 date-time
+}
+
+// ============================================
+// 스크랩 관련 (Scrap)
+// ============================================
+
+export interface ScrapResponse {
+  id: number;
+  targetType: string; // "WORK" | "POST"
+  targetId: number;
+  title: string;
+  createdAt: string; // ISO 8601 date-time
+}
+
+// ============================================
+// 마이페이지 프로필 업데이트
+// ============================================
+
+export interface ProfileUpdateRequest {
+  name: string;
+  bio: string;
+  contactEmail: string;
+  twitter: string;
+  profileImage?: File; // multipart/form-data
 }

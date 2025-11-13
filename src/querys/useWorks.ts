@@ -4,6 +4,7 @@ import type {
   WorkRequestDto,
   WorkResponseDto,
   WorkTypeEnum,
+  WorkGuidelineResponseDto,
   PostResponseDto,
 } from "./types";
 
@@ -35,6 +36,10 @@ export const worksApi = {
 
   // 작품 삭제
   deleteWork: (id: number) => client.delete<string>(`/api/works/${id}`),
+
+  // 작품 가이드라인 조회
+  getWorkGuideline: (workId: number) =>
+    client.get<WorkGuidelineResponseDto>(`/api/works/${workId}/guideline`),
 };
 
 // ============================================
@@ -48,6 +53,8 @@ export const worksKeys = {
   episodes: (workId: number) => [...worksKeys.all, "episodes", workId] as const,
   derivatives: (workId: number) =>
     [...worksKeys.all, "derivatives", workId] as const,
+  guideline: (workId: number) =>
+    [...worksKeys.all, "guideline", workId] as const,
 };
 
 // ============================================
@@ -130,5 +137,17 @@ export const useDeleteWork = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: worksKeys.lists() });
     },
+  });
+};
+
+// Query: 작품 가이드라인 조회
+export const useGetWorkGuideline = (workId: number) => {
+  return useQuery({
+    queryKey: ["useGetWorkGuideline", ...worksKeys.guideline(workId)],
+    queryFn: async () => {
+      const response = await worksApi.getWorkGuideline(workId);
+      return response.data;
+    },
+    enabled: !!workId,
   });
 };

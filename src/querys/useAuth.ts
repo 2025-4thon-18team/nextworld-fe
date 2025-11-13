@@ -21,11 +21,16 @@ export const authApi = {
   login: (data: LoginRequest) =>
     client.post<LoginResponse>("/api/auth/login", data),
 
-  // 로그아웃
-  logout: () => client.post<string>("/api/auth/logout"),
+  // 로그아웃 (Authorization 헤더 필요)
+  logout: () => client.post<void>("/api/auth/logout"),
 
-  // 토큰 재발급 (백엔드에서 직접 문자열 반환)
-  refresh: () => client.post<string>("/api/auth/refresh"),
+  // 토큰 재발급 (Refresh-Token 헤더 필요, BaseResponse<String> 반환)
+  refresh: () =>
+    client.post<string>("/api/auth/refresh", {}, {
+      headers: {
+        "Refresh-Token": "", // TODO: 실제 refresh token으로 교체
+      },
+    }),
 
   // 내 정보 조회
   me: () => client.get<UserProfileResponse>("/api/auth/me"),

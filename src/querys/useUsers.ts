@@ -1,9 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { client } from "./client";
-import type {
-  UserProfileUpdateRequest,
-  UserProfileResponse,
-} from "./types";
+import type { ProfileUpdateRequest } from "./types";
 import { authKeys } from "./useAuth";
 
 // ============================================
@@ -11,9 +8,22 @@ import { authKeys } from "./useAuth";
 // ============================================
 
 export const usersApi = {
-  // 프로필 수정
-  updateProfile: (data: UserProfileUpdateRequest) =>
-    client.patch<UserProfileResponse>("/api/users/me/profile", data),
+  // 프로필 수정 (multipart/form-data)
+  updateProfile: (data: ProfileUpdateRequest) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("bio", data.bio);
+    formData.append("contactEmail", data.contactEmail);
+    formData.append("twitter", data.twitter);
+    if (data.profileImage) {
+      formData.append("profileImage", data.profileImage);
+    }
+    return client.put<void>("/api/mypage/profile", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
 };
 
 // ============================================
@@ -26,9 +36,8 @@ export const useUpdateProfile = () => {
 
   return useMutation({
     mutationKey: ["useUpdateProfile"],
-    mutationFn: async (data: UserProfileUpdateRequest) => {
-      const response = await usersApi.updateProfile(data);
-      return response.data;
+    mutationFn: async (data: ProfileUpdateRequest) => {
+      await usersApi.updateProfile(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: authKeys.me() });
