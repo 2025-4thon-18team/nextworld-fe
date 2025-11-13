@@ -70,7 +70,7 @@ export const feedHandlers = [
       ? allPosts.filter((post) => post.workId === workId)
       : allPosts.filter((post) => !post.workId);
 
-    return HttpResponse.json(filteredPosts);
+    return HttpResponse.json({ data: filteredPosts });
   }),
 
   // 포스트 상세 조회
@@ -81,7 +81,7 @@ export const feedHandlers = [
       postId % 3 === 0 ? undefined : Math.floor(Math.random() * 10) + 1;
     const post = createMockPost(postId, workId);
 
-    return HttpResponse.json(post);
+    return HttpResponse.json({ data: post });
   }),
 
   // 메인 피드 조회

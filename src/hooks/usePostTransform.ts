@@ -45,7 +45,7 @@ export function usePostTransform(
   contentPreviewLength: number = 100,
 ) {
   const postList = useMemo(() => {
-    if (!posts) return [];
+    if (!posts || !Array.isArray(posts)) return [];
     const sliced = maxLength ? posts.slice(0, maxLength) : posts;
     return sliced.map((post) => ({
       id: String(post.id),
@@ -74,7 +74,7 @@ export function useContentItemTransform(
   maxLength?: number,
 ) {
   const contentList = useMemo(() => {
-    if (!posts) return [];
+    if (!posts || !Array.isArray(posts)) return [];
     const sliced = maxLength ? posts.slice(0, maxLength) : posts;
     return sliced.map((post) => ({
       id: String(post.id),
@@ -95,7 +95,7 @@ export function useContentItemTransform(
  */
 export function useEpisodeTransform(posts: PostResponseDto[] | undefined) {
   const episodeList = useMemo(() => {
-    if (!posts) return [];
+    if (!posts || !Array.isArray(posts)) return [];
     return posts.map((post) => ({
       id: String(post.id),
       title: post.title,

@@ -45,7 +45,7 @@ export const worksHandlers = [
       ? allWorks.filter((work) => work.workType === workType)
       : allWorks;
 
-    return HttpResponse.json(filteredWorks);
+    return HttpResponse.json({ data: filteredWorks });
   }),
 
   // 작품 상세 조회
@@ -57,7 +57,7 @@ export const worksHandlers = [
 
     const work = createMockWork(workId, workType);
 
-    return HttpResponse.json(work);
+    return HttpResponse.json({ data: work });
   }),
 
   // 1차 작품 등록

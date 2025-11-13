@@ -35,7 +35,7 @@ export const scrapHandlers = [
       return createMockWork(id, workType);
     });
 
-    return HttpResponse.json(scrappedWorks);
+    return HttpResponse.json({ data: scrappedWorks });
   }),
 
   // WORK 스크랩 등록
@@ -49,11 +49,13 @@ export const scrapHandlers = [
     }
 
     return HttpResponse.json({
-      id: Date.now(),
-      targetType: "WORK",
-      targetId: workIdNum,
-      title: `작품 제목 ${workIdNum}`,
-      createdAt: new Date().toISOString(),
+      data: {
+        id: Date.now(),
+        targetType: "WORK",
+        targetId: workIdNum,
+        title: `작품 제목 ${workIdNum}`,
+        createdAt: new Date().toISOString(),
+      },
     });
   }),
 
@@ -63,11 +65,13 @@ export const scrapHandlers = [
     const postIdNum = parseInt(postId as string);
 
     return HttpResponse.json({
-      id: Date.now(),
-      targetType: "POST",
-      targetId: postIdNum,
-      title: `포스트 제목 ${postIdNum}`,
-      createdAt: new Date().toISOString(),
+      data: {
+        id: Date.now(),
+        targetType: "POST",
+        targetId: postIdNum,
+        title: `포스트 제목 ${postIdNum}`,
+        createdAt: new Date().toISOString(),
+      },
     });
   }),
 
@@ -82,12 +86,12 @@ export const scrapHandlers = [
       scrappedWorkIds.splice(index, 1);
     }
 
-    return HttpResponse.json("스크랩 취소 완료");
+    return HttpResponse.json({ data: "스크랩 취소 완료" });
   }),
 
   // POST 스크랩 삭제
   http.delete(serverUrl("/api/scraps/posts/:postId"), () => {
-    return HttpResponse.json("스크랩 취소 완료");
+    return HttpResponse.json({ data: "스크랩 취소 완료" });
   }),
 ];
 
