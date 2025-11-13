@@ -1,9 +1,8 @@
 import { FC } from "react";
 import { cn } from "@/utils";
-import { Gnb } from "@/components/Gnb/Gnb";
-import { SeriesDetailHeroView } from "@/components/SeriesDetailHero/SeriesDetailHeroView";
-import { ContentInfo } from "@/components/ContentInfo/ContentInfo";
-import { SeriesDetailContentView } from "@/components/SeriesDetailContent/SeriesDetailContentView";
+import { SeriesDetailHeroView } from "./components/SeriesDetailHeroView";
+import { SeriesInfo } from "./components/SeriesInfo";
+import { SeriesDetailContentView } from "./components/SeriesDetailContentView";
 
 interface Episode {
   id: string;
@@ -102,12 +101,9 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
   className,
 }) => {
   return (
-    <div className={cn("bg-white relative size-full", className)}>
-      {/* GNB */}
-      <Gnb className="absolute bg-white border-b border-grayscale-g2 left-[-3px] top-px w-1440" />
-
+    <div className={cn("flex size-full flex-col bg-white", className)}>
       {/* Hero Section */}
-      <div className="absolute left-82 top-101">
+      <div className="absolute top-101 left-82">
         <SeriesDetailHeroView
           imageUrl={imageUrl}
           universeName={universeName}
@@ -118,40 +114,42 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
         />
       </div>
 
-      {/* Content Info Sidebar */}
-      <div className="absolute left-118 top-600">
-        <ContentInfo
-          category={category}
-          rating={rating}
-          views={views}
-          isSerializing={isSerializing}
-          tags={tags}
-          likes={likes}
-          onLike={onLike}
-          onInterest={onInterest}
-          onShare={onShare}
-        />
-      </div>
+      {/* Main Content Area */}
+      <div className="flex items-start gap-20 px-118 pt-20">
+        {/* Content Info Sidebar */}
+        <div className="flex shrink-0">
+          <ContentInfo
+            category={category}
+            rating={rating}
+            views={views}
+            isSerializing={isSerializing}
+            tags={tags}
+            likes={likes}
+            onLike={onLike}
+            onInterest={onInterest}
+            onShare={onShare}
+          />
+        </div>
 
-      {/* Content Section */}
-      <div className="absolute left-[calc(33.333%+35px)] top-572">
-        <SeriesDetailContentView
-          activeTab={activeTab}
-          totalEpisodes={totalEpisodes}
-          episodes={episodes}
-          universeWorks={universeWorks}
-          popularPosts={popularPosts}
-          filterLabel={filterLabel}
-          filterSubLabel={filterSubLabel}
-          onTabChange={onTabChange}
-          onEpisodeClick={onEpisodeClick}
-          onUniverseWorkClick={onUniverseWorkClick}
-          onPostClick={onPostClick}
-          onFilterToggle={onFilterToggle}
-          className="w-833"
-        />
+        {/* Content Section */}
+        <div className="flex flex-1 shrink-0">
+          <SeriesDetailContentView
+            activeTab={activeTab}
+            totalEpisodes={totalEpisodes}
+            episodes={episodes}
+            universeWorks={universeWorks}
+            popularPosts={popularPosts}
+            filterLabel={filterLabel}
+            filterSubLabel={filterSubLabel}
+            onTabChange={onTabChange}
+            onEpisodeClick={onEpisodeClick}
+            onUniverseWorkClick={onUniverseWorkClick}
+            onPostClick={onPostClick}
+            onFilterToggle={onFilterToggle}
+            className="w-833"
+          />
+        </div>
       </div>
     </div>
   );
 };
-
