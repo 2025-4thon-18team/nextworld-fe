@@ -43,7 +43,7 @@ const Header: React.FC = () => {
           {/* 오른쪽: 글쓰기 + 프로필 */}
           <div className="flex items-center space-x-4">
             <Link
-              to="/WritingPage"
+              to="/FirstpostPage"
               className="rounded-md bg-purple-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-600"
             >
               글 쓰기

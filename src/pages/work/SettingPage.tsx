@@ -57,13 +57,13 @@ const WritingPage: React.FC = () => {
 
   // ✅ 다음 단계
   const handleSubmit = async () => {
-    console.log("✅ 버튼 클릭됨"); // 클릭 확인용 로그
+    console.log("✅ 버튼 클릭됨");
 
     const payload = { title, description, selectedDays, selectedGenres, tags };
 
     try {
       await axiosInstance.post("/works", payload);
-      navigate("/UniversePage"); // ✅ ProfitPage → UniversePage로 변경
+      navigate("/work/UniversePage"); // ⭐ 변경된 라우팅 경로
     } catch (error) {
       console.error("저장 실패:", error);
     }
@@ -73,13 +73,11 @@ const WritingPage: React.FC = () => {
     <div className="relative min-h-screen bg-white">
       <Header />
 
-      {/* 컨텐츠 시작 */}
       <main className="relative z-10 mx-auto max-w-6xl p-10 pt-24">
         <h2 className="mb-10 text-xl font-semibold">작품 생성 중</h2>
 
-        {/* 🔹 전체를 grid로 분리 */}
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
-          {/* 왼쪽 구역 */}
+          {/* 왼쪽 ---------------------------------------------------------------- */}
           <div className="flex flex-col space-y-6 lg:col-span-4">
             {/* 표지 이미지 */}
             <div>
@@ -148,7 +146,7 @@ const WritingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* 오른쪽 구역 */}
+          {/* 오른쪽 --------------------------------------------------------------- */}
           <div className="flex flex-col space-y-6 lg:col-span-8">
             {/* 제목 */}
             <div>
@@ -162,7 +160,7 @@ const WritingPage: React.FC = () => {
               />
             </div>
 
-            {/* 작품 설명 */}
+            {/* 설명 */}
             <div>
               <label className="mb-2 block font-medium">작품 설명 *</label>
               <textarea
@@ -202,7 +200,7 @@ const WritingPage: React.FC = () => {
               />
             </div>
 
-            {/* 다음 단계 버튼 */}
+            {/* 버튼 */}
             <div className="flex justify-end pt-6">
               <button
                 type="button"

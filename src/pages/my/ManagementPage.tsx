@@ -39,7 +39,11 @@ const ManagementPage: React.FC = () => {
               </p>
             </div>
             <div className="ml-auto flex space-x-3">
-              <button className="rounded-md border px-4 py-1 text-sm text-gray-700 hover:bg-gray-100">
+              {/* ✅ 프로필 수정 버튼 클릭 시 /Profile 이동 */}
+              <button
+                onClick={() => navigate("/ProfilePage")}
+                className="rounded-md border px-4 py-1 text-sm text-gray-700 hover:bg-gray-100"
+              >
                 프로필 수정
               </button>
               <button className="rounded-md border px-4 py-1 text-sm text-gray-700 hover:bg-gray-100">

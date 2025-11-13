@@ -14,7 +14,7 @@ const ProfitPage: React.FC = () => {
   const [price, setPrice] = useState("");
   const [royaltyRate, setRoyaltyRate] = useState("50");
 
-  // ✅ 추가 항목
+  // 추가 항목
   const [allowSecondary, setAllowSecondary] = useState(true);
   const [allowPaidSecondary, setAllowPaidSecondary] = useState(true);
   const [guideline, setGuideline] = useState("");
@@ -23,14 +23,23 @@ const ProfitPage: React.FC = () => {
   const [agreeCopyright, setAgreeCopyright] = useState(false);
   const [confirmOwnership, setConfirmOwnership] = useState(false);
 
+  /** ⛳ 스페이스바 입력 시 태그 생성 */
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === " " && newTag.trim() !== "") {
-      setRelatedTags([...relatedTags, newTag.trim()]);
+      if (!relatedTags.includes(newTag.trim())) {
+        setRelatedTags([...relatedTags, newTag.trim()]);
+      }
       setNewTag("");
       e.preventDefault();
     }
   };
 
+  /** ⛳ 태그 클릭 시 삭제 */
+  const handleRemoveTag = (target: string) => {
+    setRelatedTags((prev) => prev.filter((tag) => tag !== target));
+  };
+
+  /** 저장 */
   const handleSaveProfit = async () => {
     if (!agreeCopyright || !confirmOwnership) {
       alert("모든 항목에 동의해야 등록할 수 있습니다.");
@@ -47,9 +56,12 @@ const ProfitPage: React.FC = () => {
         guideline,
         relatedTags,
       };
+
       await axiosInstance.post("/api/works/profit", payload);
       alert("작품 등록이 완료되었습니다!");
-      navigate("/");
+
+      // ✅ FinishPage 로 이동하도록 수정
+      navigate("/FinishPage");
     } catch (error) {
       console.error("저장 실패:", error);
       alert("저장 중 오류가 발생했습니다.");
@@ -63,9 +75,8 @@ const ProfitPage: React.FC = () => {
       <div className="mx-auto max-w-6xl p-10">
         <h2 className="mb-8 text-xl font-semibold">작품 생성 중</h2>
 
-        {/* ✅ grid 기반 레이아웃 적용 */}
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-12">
-          {/* 왼쪽 구역 */}
+          {/* 좌측 메뉴 */}
           <div className="space-y-4 text-sm font-medium text-gray-600 lg:col-span-4">
             <div className="space-y-2">
               <p className="font-semibold text-purple-600">기본 정보 입력</p>
@@ -74,7 +85,7 @@ const ProfitPage: React.FC = () => {
             </div>
           </div>
 
-          {/* 오른쪽 구역 */}
+          {/* 우측 내용 */}
           <div className="space-y-8 lg:col-span-8">
             {/* 수익 유형 */}
             <div>
@@ -90,6 +101,7 @@ const ProfitPage: React.FC = () => {
                 >
                   무료
                 </button>
+
                 <button
                   onClick={() => setProfitType("paid")}
                   className={`rounded-md border px-5 py-2 text-sm transition ${
@@ -169,19 +181,25 @@ const ProfitPage: React.FC = () => {
               </div>
             </div>
 
-            {/* 태그 */}
+            {/* 태그 입력 */}
             <div>
               <label className="mb-3 block font-semibold">태그</label>
+
+              {/* 생성된 태그들 */}
               <div className="mb-2 flex flex-wrap gap-2">
                 {relatedTags.map((tag, idx) => (
                   <span
                     key={idx}
-                    className="rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-700"
+                    onClick={() => handleRemoveTag(tag)}
+                    className="cursor-pointer rounded-full bg-purple-100 px-3 py-1 text-sm text-purple-700 hover:bg-purple-200"
+                    title="클릭하여 삭제"
                   >
                     #{tag}
                   </span>
                 ))}
               </div>
+
+              {/* 입력창 */}
               <input
                 type="text"
                 placeholder="태그 입력 후 스페이스바를 눌러주세요"
@@ -202,6 +220,7 @@ const ProfitPage: React.FC = () => {
                 />
                 저작권 관련 정책을 모두 이해하고 동의합니다.
               </label>
+
               <label className="flex items-center gap-2">
                 <input
                   type="checkbox"
@@ -212,7 +231,7 @@ const ProfitPage: React.FC = () => {
               </label>
             </div>
 
-            {/* 하단 버튼 */}
+            {/* 버튼 */}
             <div className="mt-10 flex justify-between">
               <button
                 onClick={() => navigate(-1)}
@@ -220,6 +239,7 @@ const ProfitPage: React.FC = () => {
               >
                 이전 단계
               </button>
+
               <button
                 onClick={handleSaveProfit}
                 className="w-1/3 rounded-md bg-purple-500 py-3 text-white hover:bg-purple-600"
