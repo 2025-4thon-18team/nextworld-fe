@@ -54,7 +54,7 @@ export const EditorHeader: FC<EditorHeaderProps> = ({
           )}
           {onSettle && (
             <ButtonSmall variant="default" onClick={onSettle}>
-              정산하기
+              발행하기
             </ButtonSmall>
           )}
         </div>

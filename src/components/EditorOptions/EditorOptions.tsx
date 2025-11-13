@@ -37,10 +37,6 @@ export const EditorOptions: FC<EditorOptionsProps> = ({
           icon={<IconWarning className="size-24 shrink-0 overflow-hidden" />}
           label="가이드라인"
         />
-        <IconWithLabel
-          icon={<IconDocument className="size-24 shrink-0 overflow-hidden" />}
-          label="세계관"
-        />
       </div>
     );
   }
@@ -55,10 +51,6 @@ export const EditorOptions: FC<EditorOptionsProps> = ({
         <IconWithLabel
           icon={<IconWarning className="size-24 shrink-0 overflow-hidden" />}
           label="가이드라인"
-        />
-        <IconWithLabel
-          icon={<IconDocument className="size-24 shrink-0 overflow-hidden" />}
-          label="세계관"
         />
       </div>
     );
@@ -75,14 +67,6 @@ export const EditorOptions: FC<EditorOptionsProps> = ({
           icon={<IconWarning className="size-24 shrink-0 overflow-hidden" />}
           label="가이드라인"
         />
-        <IconWithLabel
-          icon={<IconDocument className="size-24 shrink-0 overflow-hidden" />}
-          label="세계관"
-        />
-        <IconWithLabel
-          icon={<IconPosnts className="size-24 shrink-0 overflow-hidden" />}
-          label="정산"
-        />
       </div>
     );
   }
@@ -92,10 +76,6 @@ export const EditorOptions: FC<EditorOptionsProps> = ({
       <IconWithLabel
         icon={<IconPost className="size-24 shrink-0 overflow-hidden" />}
         label="포스트"
-      />
-      <IconWithLabel
-        icon={<IconPosnts className="size-24 shrink-0 overflow-hidden" />}
-        label="정산"
       />
     </div>
   );

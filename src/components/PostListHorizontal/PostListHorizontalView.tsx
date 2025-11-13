@@ -69,6 +69,7 @@ export const PostListHorizontalView: FC<Props> = ({
               <TagList
                 tags={item.tags}
                 className="relative flex shrink-0 items-center"
+                type="muted"
               />
               <ArticleInfo
                 rating={item.rating}

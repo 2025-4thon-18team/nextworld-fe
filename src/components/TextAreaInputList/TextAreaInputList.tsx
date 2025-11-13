@@ -13,7 +13,7 @@ interface TextAreaInputListProps {
 
 export const TextAreaInputList: FC<TextAreaInputListProps> = ({
   title,
-  textAreas = ["", ""],
+  textAreas = [""],
   onTextAreasChange,
   className,
   defaultExpanded = false,
