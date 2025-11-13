@@ -18,13 +18,11 @@ export const mypageApi = {
   // 결제 내역 조회
   getPaylist: () => client.get<PayItemResponse[]>("/api/mypage/paylist"),
 
-  // 결제한 Post 목록 조회
-  getPurchasedPosts: () =>
-    client.get<PostResponseDto[]>("/api/mypage/purchased/posts"),
+  // 내 작품 리스트 조회
+  getMyWorks: () => client.get<WorkResponseDto[]>("/api/mypage/works"),
 
-  // 결제한 Work 목록 조회
-  getPurchasedWorks: () =>
-    client.get<WorkResponseDto[]>("/api/mypage/purchased/works"),
+  // 내 포스트 리스트 조회
+  getMyPosts: () => client.get<PostResponseDto[]>("/api/mypage/posts"),
 };
 
 // ============================================
@@ -35,8 +33,8 @@ export const mypageKeys = {
   all: ["mypage"] as const,
   points: () => [...mypageKeys.all, "points"] as const,
   paylist: () => [...mypageKeys.all, "paylist"] as const,
-  purchasedPosts: () => [...mypageKeys.all, "purchasedPosts"] as const,
-  purchasedWorks: () => [...mypageKeys.all, "purchasedWorks"] as const,
+  works: () => [...mypageKeys.all, "works"] as const,
+  posts: () => [...mypageKeys.all, "posts"] as const,
 };
 
 // ============================================
@@ -65,23 +63,23 @@ export const useGetPaylist = () => {
   });
 };
 
-// Query: 결제한 Post 목록 조회
-export const useGetPurchasedPosts = () => {
+// Query: 내 작품 리스트 조회
+export const useGetMyWorks = () => {
   return useQuery({
-    queryKey: ["useGetPurchasedPosts", ...mypageKeys.purchasedPosts()],
+    queryKey: ["useGetMyWorks", ...mypageKeys.works()],
     queryFn: async () => {
-      const response = await mypageApi.getPurchasedPosts();
+      const response = await mypageApi.getMyWorks();
       return response.data;
     },
   });
 };
 
-// Query: 결제한 Work 목록 조회
-export const useGetPurchasedWorks = () => {
+// Query: 내 포스트 리스트 조회
+export const useGetMyPosts = () => {
   return useQuery({
-    queryKey: ["useGetPurchasedWorks", ...mypageKeys.purchasedWorks()],
+    queryKey: ["useGetMyPosts", ...mypageKeys.posts()],
     queryFn: async () => {
-      const response = await mypageApi.getPurchasedWorks();
+      const response = await mypageApi.getMyPosts();
       return response.data;
     },
   });

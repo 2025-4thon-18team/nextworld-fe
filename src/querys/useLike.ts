@@ -11,7 +11,7 @@ export const likeApi = {
   like: (workId: number) => client.post<LikeResponse>(`/api/likes/${workId}`),
 
   // 좋아요 취소
-  unlike: (workId: number) => client.delete<string>(`/api/likes/${workId}`),
+  unlike: (workId: number) => client.delete<void>(`/api/likes/${workId}`),
 };
 
 // ============================================
@@ -50,8 +50,7 @@ export const useUnlike = () => {
   return useMutation({
     mutationKey: ["useUnlike"],
     mutationFn: async (workId: number) => {
-      const response = await likeApi.unlike(workId);
-      return response.data;
+      await likeApi.unlike(workId);
     },
     onSuccess: (_, workId) => {
       queryClient.invalidateQueries({ queryKey: likeKeys.work(workId) });
