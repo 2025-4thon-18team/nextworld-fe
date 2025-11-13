@@ -1,25 +1,30 @@
 import { useState, useMemo, useCallback } from "react";
 import { SeriesDetailView } from "./SeriesDetailView";
-import { useGetWorkById, useGetWorkEpisodes, useGetDerivativePosts } from "@/querys/useWorks";
+import {
+  useGetWorkById,
+  useGetWorkEpisodes,
+  useGetDerivativePosts,
+} from "@/querys/useWorks";
 import { useGetAllPosts } from "@/querys/usePosts";
 import { useTab } from "@/hooks/useTab";
 import { useNavigation } from "@/hooks/useNavigation";
-import { usePostTransform, useEpisodeTransform } from "@/hooks/usePostTransform";
+import {
+  usePostTransform,
+  useEpisodeTransform,
+} from "@/hooks/usePostTransform";
 import { useSeriesId } from "@/hooks/useUrlParams";
 import { useSort, useSortLabels } from "@/hooks/useSort";
 
 const SeriesDetail = () => {
-  const { activeTab, onTabChange } = useTab<"episodes" | "universe">("episodes");
+  const { activeTab, onTabChange } = useTab<"episodes" | "universe">(
+    "episodes",
+  );
   const [sortOrder, setSortOrder] = useState<"latest" | "oldest">("latest");
-  const {
-    navigateToViewer,
-    navigateToSeries,
-    navigateToPost,
-  } = useNavigation();
+  const { navigateToViewer, navigateToPost } = useNavigation();
 
   // Extract series ID from URL path
   const seriesId = useSeriesId();
-  
+
   // React Query hooks 직접 사용
   const { data: workData } = useGetWorkById(seriesId);
   const { data: episodesData } = useGetWorkEpisodes(seriesId);
@@ -65,13 +70,6 @@ const SeriesDetail = () => {
       navigateToViewer(id);
     },
     [navigateToViewer],
-  );
-
-  const onUniverseWorkClick = useCallback(
-    (id: string) => {
-      navigateToSeries(id);
-    },
-    [navigateToSeries],
   );
 
   const onPostClick = useCallback(
@@ -127,7 +125,6 @@ const SeriesDetail = () => {
         filterSubLabel={filterSubLabel}
         onTabChange={onTabChange}
         onEpisodeClick={onEpisodeClick}
-        onUniverseWorkClick={onUniverseWorkClick}
         onPostClick={onPostClick}
         onFilterToggle={onFilterToggle}
       />
@@ -160,7 +157,6 @@ const SeriesDetail = () => {
       filterSubLabel={filterSubLabel}
       onTabChange={onTabChange}
       onEpisodeClick={onEpisodeClick}
-      onUniverseWorkClick={onUniverseWorkClick}
       onPostClick={onPostClick}
       onFilterToggle={onFilterToggle}
     />

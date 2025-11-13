@@ -13,7 +13,7 @@ type Props = {
   profileImageUrl?: string;
   activeTab: TabType;
   seriesList: Array<{
-    id: number;
+    id: string;
     imageUrl: string;
     title: string;
     tags: string[];
@@ -31,7 +31,7 @@ export const AuthorPageView: FC<Props> = ({
   onTabChange,
 }) => {
   return (
-    <div className="bg-white relative flex min-h-screen w-full flex-col items-center gap-32">
+    <div className="relative flex min-h-screen w-full flex-col items-center gap-32 bg-white">
       {/* Profile Section */}
       <div className="flex w-1062 flex-col items-start gap-10">
         <div className="flex w-full flex-col items-start gap-47">
@@ -81,6 +81,7 @@ export const AuthorPageView: FC<Props> = ({
                 imageUrl={series.imageUrl}
                 title={series.title}
                 tags={series.tags}
+                seriesId={series.id}
               />
             ))}
           </div>
@@ -89,4 +90,3 @@ export const AuthorPageView: FC<Props> = ({
     </div>
   );
 };
-

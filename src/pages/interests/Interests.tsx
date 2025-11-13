@@ -15,13 +15,7 @@ type HomeCategoryTab = "홈" | "신규" | "관심";
 export const Interests: FC = () => {
   const { activeTab, onTabChange: setActiveTab } =
     useTab<HomeCategoryTab>("관심");
-  const {
-    navigateToNew,
-    navigateToHome,
-    navigateToSeries,
-    navigateToPost,
-    navigateToContent,
-  } = useNavigation();
+  const { navigateToNew, navigateToHome, navigateToContent } = useNavigation();
 
   // React Query hooks 직접 사용
   // TODO: 백엔드에 관심 작품, 최신 업데이트, 신규 유니버스 API가 없어서 임시로 모든 작품/포스트 조회
@@ -46,20 +40,6 @@ export const Interests: FC = () => {
     [setActiveTab, navigateToNew, navigateToHome],
   );
 
-  const handleSeriesClick = useCallback(
-    (id: string) => {
-      navigateToSeries(id);
-    },
-    [navigateToSeries],
-  );
-
-  const handlePostClick = useCallback(
-    (id: string) => {
-      navigateToPost(id);
-    },
-    [navigateToPost],
-  );
-
   const handleContentClick = useCallback(
     (id: string) => {
       navigateToContent(id);
@@ -75,12 +55,9 @@ export const Interests: FC = () => {
       latestUpdates={latestUpdates}
       newPosts={newPosts}
       newUniverseSeries={newUniverseSeries}
-      onSeriesClick={handleSeriesClick}
-      onPostClick={handlePostClick}
       onContentClick={handleContentClick}
     />
   );
 };
 
 export default Interests;
-

@@ -39,8 +39,6 @@ type Props = {
   universeOfWeek: UniverseItem | null;
   popularSeries: SeriesItem[];
   popularPosts: PostItem[];
-  onSeriesClick?: (id: string) => void;
-  onPostClick?: (id: string) => void;
 };
 
 export const HomeView: FC<Props> = ({
@@ -50,8 +48,6 @@ export const HomeView: FC<Props> = ({
   universeOfWeek,
   popularSeries,
   popularPosts,
-  onSeriesClick,
-  onPostClick,
 }) => {
   return (
     <div className={cn("flex size-full flex-col bg-white", className)}>
@@ -89,12 +85,10 @@ export const HomeView: FC<Props> = ({
             <div className="gap-lg flex flex-1 shrink-0 flex-col">
               <PostListHorizontal
                 items={popularPosts.slice(0, 4)}
-                onItemClick={onPostClick}
                 className="flex w-full items-center"
               />
               <PostListHorizontal
                 items={popularPosts.slice(4, 8)}
-                onItemClick={onPostClick}
                 className="flex w-full items-center"
               />
             </div>
@@ -108,7 +102,6 @@ export const HomeView: FC<Props> = ({
           </h2>
           <SeriesListHorizontal
             items={popularSeries}
-            onItemClick={onSeriesClick}
             className="flex w-full items-center"
           />
         </div>
@@ -121,12 +114,10 @@ export const HomeView: FC<Props> = ({
           <div className="flex w-full flex-col items-start">
             <PostListHorizontal
               items={popularPosts.slice(0, 4)}
-              onItemClick={onPostClick}
               className="flex w-full items-center"
             />
             <PostListHorizontal
               items={popularPosts.slice(4, 8)}
-              onItemClick={onPostClick}
               className="flex w-full items-center"
             />
           </div>

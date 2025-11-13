@@ -44,7 +44,7 @@ type Props = {
   latestUpdates: ContentItemData[];
   newPosts: PostItem[];
   newUniverseSeries: SeriesItem[];
-  onPostClick?: (id: string) => void;
+  onContentClick?: (id: string) => void;
 };
 
 export const InterestsView: FC<Props> = ({
@@ -55,7 +55,7 @@ export const InterestsView: FC<Props> = ({
   latestUpdates,
   newPosts,
   newUniverseSeries,
-  onPostClick,
+  onContentClick,
 }) => {
   return (
     <div className={cn("flex size-full flex-col bg-white", className)}>
@@ -82,6 +82,7 @@ export const InterestsView: FC<Props> = ({
                 imageUrl={favoriteSeries[0].imageUrl}
                 title={favoriteSeries[0].title}
                 tags={favoriteSeries[0].tags}
+                seriesId={favoriteSeries[0].id}
                 selected={true}
                 className="gap-sm p-sm flex w-203 shrink-0 flex-col items-start rounded-md"
               />
@@ -94,6 +95,7 @@ export const InterestsView: FC<Props> = ({
                 imageUrl={series.imageUrl}
                 title={series.title}
                 tags={series.tags}
+                seriesId={series.id}
                 selected={false}
                 className="gap-sm p-sm flex w-203 shrink-0 flex-col items-start rounded-md"
               />
@@ -127,6 +129,7 @@ export const InterestsView: FC<Props> = ({
                   views={item.views}
                   comments={item.comments}
                   date={item.date}
+                  onClick={() => onContentClick?.(item.id)}
                 />
               ))}
             </div>
@@ -139,7 +142,6 @@ export const InterestsView: FC<Props> = ({
             </h2>
             <PostListHorizontal
               items={newPosts}
-              onItemClick={onPostClick}
               className="flex w-full items-center"
             />
           </div>
@@ -157,6 +159,7 @@ export const InterestsView: FC<Props> = ({
                     imageUrl={series.imageUrl}
                     title={series.title}
                     tags={series.tags}
+                    seriesId={series.id}
                     selected={false}
                     className="gap-sm p-sm flex w-203 shrink-0 flex-col items-start rounded-md"
                   />

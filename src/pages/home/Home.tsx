@@ -10,15 +10,11 @@ import { usePostTransform } from "@/hooks/usePostTransform";
 type HomeCategoryTab = "홈" | "신규" | "관심";
 
 export const Home: FC = () => {
-  const { activeTab, onTabChange: setActiveTab } = useTab<HomeCategoryTab>("홈");
-  const {
-    navigateToNew,
-    navigateToInterests,
-    navigateToHome,
-    navigateToSeries,
-    navigateToPost,
-  } = useNavigation();
-  
+  const { activeTab, onTabChange: setActiveTab } =
+    useTab<HomeCategoryTab>("홈");
+  const { navigateToNew, navigateToInterests, navigateToHome } =
+    useNavigation();
+
   // React Query hooks 직접 사용
   // TODO: 백엔드에 주간 유니버스, 인기 작품/포스트 API가 없어서 임시로 모든 작품/포스트 조회
   const { data: worksData } = useGetAllWorks("ORIGINAL");
@@ -52,27 +48,6 @@ export const Home: FC = () => {
     [setActiveTab, navigateToNew, navigateToInterests, navigateToHome],
   );
 
-  const handleUniverseClick = useCallback(
-    (id: string) => {
-      navigateToSeries(id);
-    },
-    [navigateToSeries],
-  );
-
-  const handleSeriesClick = useCallback(
-    (id: string) => {
-      navigateToSeries(id);
-    },
-    [navigateToSeries],
-  );
-
-  const handlePostClick = useCallback(
-    (id: string) => {
-      navigateToPost(id);
-    },
-    [navigateToPost],
-  );
-
   return (
     <HomeView
       activeTab={activeTab}
@@ -80,9 +55,6 @@ export const Home: FC = () => {
       universeOfWeek={universeOfWeek}
       popularSeries={popularSeries}
       popularPosts={popularPosts}
-      onUniverseClick={handleUniverseClick}
-      onSeriesClick={handleSeriesClick}
-      onPostClick={handlePostClick}
     />
   );
 };

@@ -31,8 +31,6 @@ type Props = {
   onTabChange: (tab: HomeCategoryTab) => void;
   newSeries: SeriesItem[];
   newPosts: PostItem[];
-  onSeriesClick?: (id: string) => void;
-  onPostClick?: (id: string) => void;
 };
 
 export const NewView: FC<Props> = ({
@@ -41,11 +39,9 @@ export const NewView: FC<Props> = ({
   onTabChange,
   newSeries,
   newPosts,
-  onSeriesClick,
-  onPostClick,
 }) => {
   return (
-    <div className={cn("flex flex-col bg-white size-full", className)}>
+    <div className={cn("flex size-full flex-col bg-white", className)}>
       {/* Home Category */}
       <div className="flex justify-center px-[calc(8.333%+68px)] pt-96">
         <HomeCategory
@@ -56,48 +52,48 @@ export const NewView: FC<Props> = ({
       </div>
 
       {/* Main Content */}
-      <div className="flex gap-37 items-start px-[calc(8.333%+68px)] pt-20">
+      <div className="flex items-start gap-37 px-[calc(8.333%+68px)] pt-20">
         {/* Left Sidebar - New Series Grid */}
-        <div className="flex flex-col gap-md items-start shrink-0">
-          <h2 className="text-headings-heading-2 text-black text-nowrap tracking-tight">
+        <div className="gap-md flex shrink-0 flex-col items-start">
+          <h2 className="text-headings-heading-2 tracking-tight text-nowrap text-black">
             신규 작품
           </h2>
-          <div className="flex flex-wrap gap-0 items-center shrink-0 w-609">
+          <div className="flex w-609 shrink-0 flex-wrap items-center gap-0">
             {newSeries.map((series) => (
               <SeriesCard
                 key={series.id}
                 imageUrl={series.imageUrl}
                 title={series.title}
                 tags={series.tags}
+                seriesId={series.id}
+                contentId={series.id}
                 selected={false}
-                className="flex flex-col gap-sm items-start rounded-md p-sm shrink-0 w-203"
+                className="gap-sm p-sm flex w-203 shrink-0 flex-col items-start rounded-md"
               />
             ))}
           </div>
         </div>
 
         {/* Vertical Divider */}
-        <div className="flex items-center justify-center self-stretch shrink-0 w-1">
-          <div className="flex-none h-full rotate-90">
+        <div className="flex w-1 shrink-0 items-center justify-center self-stretch">
+          <div className="h-full flex-none rotate-90">
             <div className="h-full w-full">
-              <div className="bottom-0 left-0 right-0 top-[-2px] border-t border-grayscale-g2" />
+              <div className="border-grayscale-g2 top-[-2px] right-0 bottom-0 left-0 border-t" />
             </div>
           </div>
         </div>
 
         {/* Right Content Area - New Posts */}
-        <div className="flex flex-col gap-md items-start shrink-0">
-          <h2 className="text-headings-heading-2 text-black tracking-tight w-min-content min-w-full">
+        <div className="gap-md flex shrink-0 flex-col items-start">
+          <h2 className="text-headings-heading-2 w-min-content min-w-full tracking-tight text-black">
             신규 포스트
           </h2>
           <PostListVertical
             items={newPosts}
-            onItemClick={onPostClick}
-            className="flex flex-wrap gap-lg items-start shrink-0 w-403"
+            className="gap-lg flex w-403 shrink-0 flex-wrap items-start"
           />
         </div>
       </div>
     </div>
   );
 };
-

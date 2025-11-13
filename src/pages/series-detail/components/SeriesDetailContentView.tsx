@@ -44,9 +44,8 @@ interface SeriesDetailContentViewProps {
   filterLabel: string;
   filterSubLabel?: string;
   onTabChange: (tab: "episodes" | "universe") => void;
-  onEpisodeClick: (id: string) => void;
-  onUniverseWorkClick: (id: string) => void;
-  onPostClick: (id: string) => void;
+  onEpisodeClick?: (id: string) => void;
+  onPostClick?: (id: string) => void;
   onFilterToggle?: () => void;
   className?: string;
 }
@@ -61,7 +60,6 @@ export const SeriesDetailContentView: FC<SeriesDetailContentViewProps> = ({
   filterSubLabel,
   onTabChange,
   onEpisodeClick,
-  onUniverseWorkClick,
   onPostClick,
   onFilterToggle,
   className,
@@ -112,10 +110,10 @@ export const SeriesDetailContentView: FC<SeriesDetailContentViewProps> = ({
                 views={episode.views}
                 comments={episode.comments}
                 date={episode.date}
+                onClick={() => onEpisodeClick?.(episode.id)}
                 className={
                   index > 0 ? "border-background-subtle border-t-2" : ""
                 }
-                onClick={() => onEpisodeClick(episode.id)}
               />
             ))}
           </div>
@@ -134,8 +132,9 @@ export const SeriesDetailContentView: FC<SeriesDetailContentViewProps> = ({
                   imageUrl={work.imageUrl}
                   title={work.title}
                   tags={work.tags}
+                  seriesId={work.id}
+                  contentId={work.id}
                   className="w-203 shrink-0"
-                  onClick={() => onUniverseWorkClick(work.id)}
                 />
               ))}
             </div>
@@ -158,8 +157,8 @@ export const SeriesDetailContentView: FC<SeriesDetailContentViewProps> = ({
                   views={post.views}
                   comments={post.comments}
                   date={post.date}
+                  onClick={() => onPostClick?.(post.id)}
                   className="w-403 shrink-0"
-                  onClick={() => onPostClick(post.id)}
                 />
               ))}
             </div>

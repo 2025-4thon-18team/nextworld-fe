@@ -62,9 +62,8 @@ interface SeriesDetailViewProps {
   filterLabel: string;
   filterSubLabel?: string;
   onTabChange: (tab: "episodes" | "universe") => void;
-  onEpisodeClick: (id: string) => void;
-  onUniverseWorkClick: (id: string) => void;
-  onPostClick: (id: string) => void;
+  onEpisodeClick?: (id: string) => void;
+  onPostClick?: (id: string) => void;
   onFilterToggle?: () => void;
 
   className?: string;
@@ -95,24 +94,24 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
   filterSubLabel,
   onTabChange,
   onEpisodeClick,
-  onUniverseWorkClick,
   onPostClick,
   onFilterToggle,
   className,
 }) => {
   return (
-    <div className={cn("flex size-full flex-col bg-white", className)}>
+    <div
+      className={cn("flex size-full flex-col items-center bg-white", className)}
+    >
       {/* Hero Section */}
-      <div className="absolute top-101 left-82">
-        <SeriesDetailHeroView
-          imageUrl={imageUrl}
-          universeName={universeName}
-          seriesName={seriesName}
-          authorName={authorName}
-          description={description}
-          onViewFirstEpisode={onViewFirstEpisode}
-        />
-      </div>
+      <SeriesDetailHeroView
+        imageUrl={imageUrl}
+        universeName={universeName}
+        seriesName={seriesName}
+        authorName={authorName}
+        description={description}
+        onViewFirstEpisode={onViewFirstEpisode}
+        className="w-full max-w-1280"
+      />
 
       {/* Main Content Area */}
       <div className="flex items-start gap-20 px-118 pt-20">
@@ -143,7 +142,6 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
             filterSubLabel={filterSubLabel}
             onTabChange={onTabChange}
             onEpisodeClick={onEpisodeClick}
-            onUniverseWorkClick={onUniverseWorkClick}
             onPostClick={onPostClick}
             onFilterToggle={onFilterToggle}
             className="w-833"
