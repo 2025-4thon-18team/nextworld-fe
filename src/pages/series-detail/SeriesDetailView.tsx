@@ -118,7 +118,7 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
       <div className="flex items-start gap-20 px-118 pt-20">
         {/* Content Info Sidebar */}
         <div className="flex shrink-0">
-          <ContentInfo
+          <SeriesInfo
             category={category}
             rating={rating}
             views={views}
