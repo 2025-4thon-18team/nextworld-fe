@@ -28,7 +28,11 @@ dev-dist
 .env
 
 .cursor/**
+.cursor/
+.cursor/rules/
 .taskmaster/**
+.taskmaster/
+.taskmaster/rules/
 
 *storybook.log
 storybook-static
