@@ -1,10 +1,8 @@
 import { FC } from "react";
 import { InterestsView } from "./InterestsView";
 import { useInterests } from "@/logic/useInterests";
-import { createContentPort } from "@/services/content.service";
 
 export const Interests: FC = () => {
-  const content = createContentPort();
   const {
     activeTab,
     onTabChange,
@@ -15,7 +13,7 @@ export const Interests: FC = () => {
     onSeriesClick,
     onPostClick,
     onContentClick,
-  } = useInterests({ content });
+  } = useInterests();
 
   return (
     <InterestsView

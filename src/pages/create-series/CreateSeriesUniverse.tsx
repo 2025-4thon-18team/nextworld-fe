@@ -1,9 +1,7 @@
 import { CreateSeriesUniverseView } from "./CreateSeriesUniverseView";
 import { useCreateSeriesUniverse } from "@/logic/useCreateSeriesUniverse";
-import { createSeriesPort } from "@/services/series.service";
 
 const CreateSeriesUniverse = () => {
-  const series = createSeriesPort();
   const {
     activeStep,
     originalSeriesSearch,
@@ -18,7 +16,7 @@ const CreateSeriesUniverse = () => {
     onEpisodePriceChange,
     onPrevious,
     onNext,
-  } = useCreateSeriesUniverse({ series });
+  } = useCreateSeriesUniverse();
 
   return (
     <CreateSeriesUniverseView

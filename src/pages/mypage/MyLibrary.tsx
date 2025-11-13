@@ -1,15 +1,8 @@
 import { MyLibraryView } from "./MyLibraryView";
 import { useMyLibrary } from "@/logic/useMyLibrary";
-import { createUserPort } from "@/services/user.service";
-import { createSeriesPort } from "@/services/series.service";
 
 const MyLibrary = () => {
-  const user = createUserPort();
-  const series = createSeriesPort();
-  const { activeTab, seriesList, points, onTabChange } = useMyLibrary({
-    user,
-    series,
-  });
+  const { activeTab, seriesList, points, onTabChange } = useMyLibrary();
 
   return (
     <MyLibraryView

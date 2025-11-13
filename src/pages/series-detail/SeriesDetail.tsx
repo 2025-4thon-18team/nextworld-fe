@@ -1,13 +1,10 @@
 import { SeriesDetailView } from "./SeriesDetailView";
 import { useSeriesDetail } from "@/logic/useSeriesDetail";
-import { createSeriesPort } from "@/services/series.service";
 
 const SeriesDetail = () => {
-  const series = createSeriesPort();
-  const props = useSeriesDetail({ series });
+  const props = useSeriesDetail();
 
   return <SeriesDetailView {...props} />;
 };
 
 export default SeriesDetail;
-

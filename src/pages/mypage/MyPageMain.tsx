@@ -1,11 +1,7 @@
 import { MyPageMainView } from "./MyPageMainView";
 import { useMyPageMain } from "@/logic/useMyPageMain";
-import { createUserPort } from "@/services/user.service";
-import { createSeriesPort } from "@/services/series.service";
 
 const MyPageMain = () => {
-  const user = createUserPort();
-  const series = createSeriesPort();
   const {
     activeTab,
     seriesList,
@@ -14,7 +10,7 @@ const MyPageMain = () => {
     onTabChange,
     onProfileEdit,
     onLogout,
-  } = useMyPageMain({ user, series });
+  } = useMyPageMain();
 
   return (
     <MyPageMainView

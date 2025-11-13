@@ -1,18 +1,14 @@
 import { PointHistoryView } from "./PointHistoryView";
 import { usePointHistory } from "@/logic/usePointHistory";
-import { createUserPort } from "@/services/user.service";
-import { createPointPort } from "@/services/point.service";
 
 const PointHistory = () => {
-  const user = createUserPort();
-  const point = createPointPort();
   const {
     activeTab,
     points,
     chargeHistory,
     usageHistory,
     onTabChange,
-  } = usePointHistory({ user, point });
+  } = usePointHistory();
 
   return (
     <PointHistoryView

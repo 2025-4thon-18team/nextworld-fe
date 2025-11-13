@@ -1,9 +1,7 @@
 import { AuthorPageView } from "./AuthorPageView";
 import { useAuthorPage } from "@/logic/useAuthorPage";
-import { createSeriesPort } from "@/services/series.service";
 
 const AuthorPage = () => {
-  const series = createSeriesPort();
   const {
     authorName,
     authorBio,
@@ -12,7 +10,7 @@ const AuthorPage = () => {
     activeTab,
     seriesList,
     onTabChange,
-  } = useAuthorPage({ series });
+  } = useAuthorPage();
 
   return (
     <AuthorPageView

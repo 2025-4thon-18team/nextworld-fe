@@ -1,9 +1,7 @@
 import { SignUpView } from "./SignUpView";
 import { useSignUp } from "@/logic/useSignUp";
-import { createAuthPort } from "@/services/auth.service";
 
 const SignUp = () => {
-  const auth = createAuthPort();
   const {
     name,
     nickname,
@@ -17,7 +15,7 @@ const SignUp = () => {
     onPasswordConfirmChange,
     onSubmit,
     onLoginClick,
-  } = useSignUp({ auth });
+  } = useSignUp();
 
   return (
     <SignUpView

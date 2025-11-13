@@ -1,10 +1,8 @@
 import { FC } from "react";
 import { HomeView } from "./HomeView";
 import { useHome } from "@/logic/useHome";
-import { createContentPort } from "@/services/content.service";
 
 export const Home: FC = () => {
-  const content = createContentPort();
   const {
     activeTab,
     onTabChange,
@@ -14,7 +12,7 @@ export const Home: FC = () => {
     onUniverseClick,
     onSeriesClick,
     onPostClick,
-  } = useHome({ content });
+  } = useHome();
 
   return (
     <HomeView
@@ -31,4 +29,3 @@ export const Home: FC = () => {
 };
 
 export default Home;
-
