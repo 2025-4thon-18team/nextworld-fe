@@ -15,7 +15,7 @@ const dirname =
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   // GitHub Pages 배포를 위한 base path 설정
-  base: process.env.GITHUB_PAGES === 'true' ? '/nextworld-fe/' : '/',
+  base: process.env.GITHUB_PAGES === "true" ? "/nextworld-fe/" : "/",
   plugins: [
     react({
       babel: {

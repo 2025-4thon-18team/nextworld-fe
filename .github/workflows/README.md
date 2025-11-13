@@ -12,15 +12,29 @@
 
 다음 환경변수를 GitHub Secrets에 추가하세요:
 
-- `VITE_SERVER_URL`: 백엔드 서버 URL (필수)
-- `VITE_APP_ENV`: 앱 환경 (선택, 기본값: 'production')
-- `VITE_ENABLE_LOCATOR`: Locator 활성화 여부 (선택, 기본값: 'false')
+**필수:**
+- `VITE_SERVER_URL`: 백엔드 서버 URL (예: `http://localhost:8080` 또는 `https://api.example.com`)
+
+**선택 (기본값 제공):**
+- `VITE_APP_ENV`: 앱 환경 (기본값: `production`)
+- `VITE_ENABLE_MOCK`: MSW 활성화 여부 (기본값: `false`)
+- `VITE_ENABLE_LOCATOR`: Locator 활성화 여부 (기본값: `false`)
+- `VITE_ENABLE_QUERY_DEVTOOLS`: Tanstack Query DevTools 활성화 여부 (기본값: `false`)
 
 **설정 방법:**
 1. GitHub 리포지토리로 이동
 2. Settings > Secrets and variables > Actions로 이동
 3. "New repository secret" 클릭
 4. Name과 Value 입력 후 저장
+
+**예시:**
+```
+VITE_SERVER_URL = http://localhost:8080
+VITE_APP_ENV = development
+VITE_ENABLE_MOCK = true
+VITE_ENABLE_LOCATOR = true
+VITE_ENABLE_QUERY_DEVTOOLS = true
+```
 
 ### 3. 배포 트리거
 

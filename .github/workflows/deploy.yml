@@ -21,7 +21,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,8 +29,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -42,8 +42,10 @@ jobs:
         env:
           VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
           VITE_APP_ENV: ${{ secrets.VITE_APP_ENV || 'production' }}
+          VITE_ENABLE_MOCK: ${{ secrets.VITE_ENABLE_MOCK || 'false' }}
           VITE_ENABLE_LOCATOR: ${{ secrets.VITE_ENABLE_LOCATOR || 'false' }}
-          GITHUB_PAGES: 'true'
+          VITE_ENABLE_QUERY_DEVTOOLS: ${{ secrets.VITE_ENABLE_QUERY_DEVTOOLS || 'false' }}
+          GITHUB_PAGES: "true"
         run: npm run build
 
       - name: Setup Pages
@@ -52,7 +54,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './dist'
+          path: "./dist"
 
   deploy:
     environment:
@@ -64,4 +66,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
