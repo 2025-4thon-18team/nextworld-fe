@@ -1,45 +1,40 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import type { UserPort, SeriesPort } from "@/services/types";
+import { useGetMyPoints } from "@/querys/useMypage";
+import { useGetMe } from "@/querys/useAuth";
+import { useGetAllWorks } from "@/querys/useWorks";
 
 type TabType = "작품" | "포스트";
 
-export function useMyPageMain(params: {
-  user?: UserPort;
-  series?: SeriesPort;
-}) {
-  const { user, series } = params;
+export function useMyPageMain() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>("작품");
-  const [seriesList, setSeriesList] = useState<
-    Array<{ id: number; imageUrl: string; title: string }>
-  >([]);
-  const [points, setPoints] = useState<number>(0);
-  const [profile, setProfile] = useState<{
-    name: string;
-    bio: string[];
-    contact: string;
-    profileImageUrl?: string;
-  } | null>(null);
+  
+  // React Query hooks 직접 사용
+  const { data: pointsData } = useGetMyPoints();
+  const { data: profileData } = useGetMe();
+  const { data: worksData } = useGetAllWorks("ORIGINAL");
 
-  useEffect(() => {
-    if (!user) return;
-    let alive = true;
-    user.getPoints().then((p) => alive && setPoints(p));
-    user.getProfile().then((p) => alive && setProfile(p));
-    return () => {
-      alive = false;
-    };
-  }, [user]);
+  const points = useMemo(() => pointsData?.balance || 0, [pointsData]);
 
-  useEffect(() => {
-    if (!series) return;
-    let alive = true;
-    series.getMySeries().then((list) => alive && setSeriesList(list));
-    return () => {
-      alive = false;
+  const profile = useMemo(() => {
+    if (!profileData) return null;
+    return {
+      name: profileData.name,
+      bio: [], // TODO: bio 필드가 API에 없음
+      contact: "", // TODO: contact 필드가 API에 없음
+      profileImageUrl: profileData.profileImageUrl,
     };
-  }, [series]);
+  }, [profileData]);
+
+  const seriesList = useMemo(() => {
+    if (!worksData) return [];
+    return worksData.map((work) => ({
+      id: work.id,
+      imageUrl: work.coverImageUrl,
+      title: work.title,
+    }));
+  }, [worksData]);
 
   const onTabChange = useCallback((tab: TabType) => {
     setActiveTab(tab);

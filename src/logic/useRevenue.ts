@@ -1,62 +1,44 @@
-import { useState, useEffect, useCallback } from "react";
-import type { RevenuePort, UserPort } from "@/services/types";
+import { useState, useMemo, useCallback } from "react";
+import { useGetMyPoints } from "@/querys/useMypage";
+import { useGetRevenueDashboard, useGetSales } from "@/querys/useRevenue";
 
 type RevenueTab = "대시보드" | "판매내역";
 
-export function useRevenue(params: { user?: UserPort; revenue?: RevenuePort }) {
-  const { user, revenue } = params;
+export function useRevenue() {
   const [activeTab, setActiveTab] = useState<RevenueTab>("대시보드");
-  const [points, setPoints] = useState<number>(0);
-  const [revenueData, setRevenueData] = useState<{
-    totalSales: number;
-    totalRevenue: number;
-    authorFee: number;
-    platformFee: number;
-  } | null>(null);
-  const [salesHistory, setSalesHistory] = useState<
-    Array<{
-      id: number;
-      contentTitle: string;
-      buyer: string;
-      points: number;
-      date: string;
-    }>
-  >([]);
+  
+  // React Query hooks 직접 사용
+  const { data: pointsData } = useGetMyPoints();
+  const { data: dashboardData } = useGetRevenueDashboard();
+  const { data: salesData } = useGetSales();
 
-  useEffect(() => {
-    if (!user) return;
-    let alive = true;
-    user.getPoints().then((p) => alive && setPoints(p));
-    return () => {
-      alive = false;
-    };
-  }, [user]);
+  const points = useMemo(() => pointsData?.balance || 0, [pointsData]);
 
-  useEffect(() => {
-    if (!revenue) return;
-    let alive = true;
-    revenue.getRevenueData().then((data) => alive && setRevenueData(data));
-    revenue
-      .getSalesHistory()
-      .then((history) => alive && setSalesHistory(history));
-    return () => {
-      alive = false;
+  const formattedRevenueData = useMemo(() => {
+    if (!dashboardData) return null;
+    return {
+      totalSales: `${dashboardData.totalSalesCount} 개`,
+      totalRevenue: `₩ ${dashboardData.totalRevenue.toLocaleString()}`,
+      authorFee: `₩ ${dashboardData.originalAuthorFee.toLocaleString()}`,
+      platformFee: `₩ ${dashboardData.platformFee.toLocaleString()}`,
+      finalRevenue: `₩ ${dashboardData.netIncome.toLocaleString()}`,
     };
-  }, [revenue]);
+  }, [dashboardData]);
+
+  const salesHistory = useMemo(() => {
+    if (!salesData) return [];
+    return salesData.map((item, index) => ({
+      id: index + 1,
+      contentTitle: item.postTitle,
+      buyer: item.buyerNickname,
+      points: item.amount,
+      date: item.date,
+    }));
+  }, [salesData]);
 
   const onTabChange = useCallback((tab: RevenueTab) => {
     setActiveTab(tab);
   }, []);
-
-  const formattedRevenueData = revenueData
-    ? {
-        totalSales: `${revenueData.totalSales} 개`,
-        totalRevenue: `₩ ${revenueData.totalRevenue.toLocaleString()}`,
-        authorFee: `₩ ${revenueData.authorFee.toLocaleString()}`,
-        platformFee: `₩ ${revenueData.platformFee.toLocaleString()}`,
-        finalRevenue: `₩ ${(revenueData.totalRevenue - revenueData.authorFee - revenueData.platformFee).toLocaleString()}`,
-      }
-    : null;
 
   return {
     activeTab,

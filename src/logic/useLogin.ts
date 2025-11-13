@@ -1,10 +1,10 @@
 import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import type { AuthPort } from "@/services/types";
+import { useLogin as useLoginMutation } from "@/querys/useAuth";
 
-export function useLogin(params: { auth?: AuthPort }) {
-  const { auth } = params;
+export function useLogin() {
   const navigate = useNavigate();
+  const loginMutation = useLoginMutation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,10 +17,9 @@ export function useLogin(params: { auth?: AuthPort }) {
   }, []);
 
   const onSubmit = useCallback(async () => {
-    if (!auth) return;
-    await auth.login(email, password);
+    await loginMutation.mutateAsync({ email, password });
     navigate("/my-page/main");
-  }, [auth, navigate, email, password]);
+  }, [loginMutation, navigate, email, password]);
 
   const onSignupClick = useCallback(() => {
     navigate("/signup");
@@ -35,4 +34,3 @@ export function useLogin(params: { auth?: AuthPort }) {
     onSignupClick,
   };
 }
-

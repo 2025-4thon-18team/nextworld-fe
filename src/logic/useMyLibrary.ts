@@ -1,33 +1,26 @@
-import { useState, useEffect, useCallback } from "react";
-import type { SeriesPort, UserPort } from "@/services/types";
+import { useState, useMemo, useCallback } from "react";
+import { useGetMyPoints } from "@/querys/useMypage";
+import { useGetPurchasedWorks } from "@/querys/useMypage";
 
 type TabType = "구매한 작품" | "구매한 포스트";
 
-export function useMyLibrary(params: { user?: UserPort; series?: SeriesPort }) {
-  const { user, series } = params;
+export function useMyLibrary() {
   const [activeTab, setActiveTab] = useState<TabType>("구매한 작품");
-  const [seriesList, setSeriesList] = useState<
-    Array<{ id: number; imageUrl: string; title: string }>
-  >([]);
-  const [points, setPoints] = useState<number>(0);
+  
+  // React Query hooks 직접 사용
+  const { data: pointsData } = useGetMyPoints();
+  const { data: purchasedWorks } = useGetPurchasedWorks();
 
-  useEffect(() => {
-    if (!user) return;
-    let alive = true;
-    user.getPoints().then((p) => alive && setPoints(p));
-    return () => {
-      alive = false;
-    };
-  }, [user]);
-
-  useEffect(() => {
-    if (!series) return;
-    let alive = true;
-    series.getLibrarySeries().then((list) => alive && setSeriesList(list));
-    return () => {
-      alive = false;
-    };
-  }, [series]);
+  const points = useMemo(() => pointsData?.balance || 0, [pointsData]);
+  
+  const seriesList = useMemo(() => {
+    if (!purchasedWorks) return [];
+    return purchasedWorks.map((work) => ({
+      id: work.id,
+      imageUrl: work.coverImageUrl,
+      title: work.title,
+    }));
+  }, [purchasedWorks]);
 
   const onTabChange = useCallback((tab: TabType) => {
     setActiveTab(tab);

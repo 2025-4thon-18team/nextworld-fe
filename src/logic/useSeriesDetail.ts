@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import type { SeriesPort } from "@/services/types";
+import { useGetWorkById, useGetWorkEpisodes, useGetDerivativePosts } from "@/querys/useWorks";
+import { useGetAllPosts } from "@/querys/usePosts";
 
 interface Episode {
   id: string;
@@ -31,57 +32,76 @@ interface Post {
   date: string;
 }
 
-export function useSeriesDetail(params: { series?: SeriesPort }) {
-  const { series } = params;
+export function useSeriesDetail() {
   const navigate = useNavigate();
   const location = useLocation();
 
   // Extract series ID from URL path (e.g., /series/123 -> "123")
   const seriesId = useMemo(() => {
     const match = location.pathname.match(/\/series\/([^/]+)/);
-    return match ? match[1] : "";
+    return match ? parseInt(match[1]) : 0;
   }, [location.pathname]);
 
   const [activeTab, setActiveTab] = useState<"episodes" | "universe">(
     "episodes",
   );
   const [sortOrder, setSortOrder] = useState<"latest" | "oldest">("latest");
-  const [seriesData, setSeriesData] = useState<{
-    imageUrl: string;
-    universeName: string;
-    seriesName: string;
-    authorName: string;
-    description: string;
-    category: string;
-    rating: number;
-    views: number;
-    isSerializing: boolean;
-    tags: string[];
-    likes: number;
-  } | null>(null);
-  const [episodes, setEpisodes] = useState<Episode[]>([]);
-  const [universeWorks, setUniverseWorks] = useState<UniverseWork[]>([]);
-  const [popularPosts, setPopularPosts] = useState<Post[]>([]);
+  
+  // React Query hooks 직접 사용
+  const { data: workData } = useGetWorkById(seriesId);
+  const { data: episodesData } = useGetWorkEpisodes(seriesId);
+  const { data: derivativePostsData } = useGetDerivativePosts(seriesId);
+  const { data: allPostsData } = useGetAllPosts(seriesId || undefined);
 
-  useEffect(() => {
-    if (!series || !seriesId) return;
-    let alive = true;
-    series.getSeriesDetail(seriesId).then((data) => {
-      if (alive) setSeriesData(data);
-    });
-    series.getEpisodes(seriesId).then((data) => {
-      if (alive) setEpisodes(data);
-    });
-    series.getUniverseWorks(seriesId).then((data) => {
-      if (alive) setUniverseWorks(data);
-    });
-    series.getPopularPosts(seriesId).then((data) => {
-      if (alive) setPopularPosts(data);
-    });
-    return () => {
-      alive = false;
+  const seriesData = useMemo(() => {
+    if (!workData) return null;
+    return {
+      imageUrl: workData.coverImageUrl,
+      universeName: workData.parentWorkTitle || "",
+      seriesName: workData.title,
+      authorName: workData.authorName,
+      description: workData.description,
+      category: workData.category,
+      rating: Number(workData.totalRating),
+      views: workData.totalViewsCount,
+      isSerializing: true, // TODO: 백엔드에 연재 상태 필드가 없음
+      tags: workData.tags,
+      likes: workData.totalLikesCount,
     };
-  }, [series, seriesId]);
+  }, [workData]);
+
+  const episodes = useMemo(() => {
+    if (!episodesData) return [];
+    return episodesData.map((post) => ({
+      id: String(post.id),
+      title: post.title,
+      points: post.price || 0,
+      rating: post.rating,
+      views: post.viewsCount,
+      comments: post.commentsCount,
+      date: post.createdAt,
+    }));
+  }, [episodesData]);
+
+  const universeWorks = useMemo(() => {
+    // TODO: PostResponseDto를 Work 형태로 변환 필요, 임시로 빈 배열 반환
+    return [];
+  }, []);
+
+  const popularPosts = useMemo(() => {
+    if (!allPostsData) return [];
+    return allPostsData.slice(0, 4).map((post) => ({
+      id: String(post.id),
+      title: post.title,
+      points: post.price || 0,
+      content: post.content.substring(0, 100) + "...",
+      tags: post.tags,
+      rating: post.rating,
+      views: post.viewsCount,
+      comments: post.commentsCount,
+      date: post.createdAt,
+    }));
+  }, [allPostsData]);
 
   const sortedEpisodes = useMemo(() => {
     const sorted = [...episodes];

@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import type { ContentPort } from "@/services/types";
+import { useGetAllWorks } from "@/querys/useWorks";
+import { useGetAllPosts } from "@/querys/usePosts";
 
 type HomeCategoryTab = "홈" | "신규" | "관심";
 
@@ -23,26 +24,39 @@ type PostItem = {
   date: string;
 };
 
-export function useNew(params: { content?: ContentPort }) {
-  const { content } = params;
+export function useNew() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<HomeCategoryTab>("신규");
-  const [newSeries, setNewSeries] = useState<SeriesItem[]>([]);
-  const [newPosts, setNewPosts] = useState<PostItem[]>([]);
+  
+  // React Query hooks 직접 사용
+  // TODO: 백엔드에 신규 작품/포스트 API가 없어서 임시로 모든 작품/포스트 조회
+  const { data: worksData } = useGetAllWorks("ORIGINAL");
+  const { data: postsData } = useGetAllPosts();
 
-  useEffect(() => {
-    if (!content) return;
-    let alive = true;
-    content.getNewSeries().then((data) => {
-      if (alive) setNewSeries(data);
-    });
-    content.getNewPosts().then((data) => {
-      if (alive) setNewPosts(data);
-    });
-    return () => {
-      alive = false;
-    };
-  }, [content]);
+  const newSeries = useMemo(() => {
+    if (!worksData) return [];
+    return worksData.slice(0, 12).map((work) => ({
+      id: String(work.id),
+      imageUrl: work.coverImageUrl,
+      title: work.title,
+      tags: work.tags,
+    }));
+  }, [worksData]);
+
+  const newPosts = useMemo(() => {
+    if (!postsData) return [];
+    return postsData.slice(0, 9).map((post) => ({
+      id: String(post.id),
+      title: post.title,
+      content: post.content.substring(0, 100) + "...",
+      points: post.price || 0,
+      tags: post.tags,
+      rating: post.rating,
+      views: post.viewsCount,
+      comments: post.commentsCount,
+      date: post.createdAt,
+    }));
+  }, [postsData]);
 
   const handleTabChange = useCallback(
     (tab: HomeCategoryTab) => {

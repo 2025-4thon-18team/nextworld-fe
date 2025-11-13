@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import type { ContentPort } from "@/services/types";
+import { useGetAllWorks } from "@/querys/useWorks";
+import { useGetAllPosts } from "@/querys/usePosts";
 
 type HomeCategoryTab = "홈" | "신규" | "관심";
 
@@ -33,34 +34,63 @@ type ContentItemData = {
   date: string;
 };
 
-export function useInterests(params: { content?: ContentPort }) {
-  const { content } = params;
+export function useInterests() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<HomeCategoryTab>("관심");
-  const [favoriteSeries, setFavoriteSeries] = useState<SeriesItem[]>([]);
-  const [latestUpdates, setLatestUpdates] = useState<ContentItemData[]>([]);
-  const [newPosts, setNewPosts] = useState<PostItem[]>([]);
-  const [newUniverseSeries, setNewUniverseSeries] = useState<SeriesItem[]>([]);
 
-  useEffect(() => {
-    if (!content) return;
-    let alive = true;
-    content.getFavoriteSeries().then((data) => {
-      if (alive) setFavoriteSeries(data);
-    });
-    content.getLatestUpdates().then((data) => {
-      if (alive) setLatestUpdates(data);
-    });
-    content.getNewPosts().then((data) => {
-      if (alive) setNewPosts(data);
-    });
-    content.getNewUniverseSeries().then((data) => {
-      if (alive) setNewUniverseSeries(data);
-    });
-    return () => {
-      alive = false;
-    };
-  }, [content]);
+  // React Query hooks 직접 사용
+  // TODO: 백엔드에 관심 작품, 최신 업데이트, 신규 유니버스 API가 없어서 임시로 모든 작품/포스트 조회
+  const { data: originalWorks } = useGetAllWorks("ORIGINAL");
+  const { data: derivativeWorks } = useGetAllWorks("DERIVATIVE");
+  const { data: postsData } = useGetAllPosts();
+
+  const favoriteSeries = useMemo(() => {
+    if (!originalWorks) return [];
+    return originalWorks.slice(0, 5).map((work) => ({
+      id: String(work.id),
+      imageUrl: work.coverImageUrl,
+      title: work.title,
+      tags: work.tags,
+    }));
+  }, [originalWorks]);
+
+  const latestUpdates = useMemo(() => {
+    if (!postsData) return [];
+    return postsData.slice(0, 4).map((post) => ({
+      id: String(post.id),
+      title: post.title,
+      points: post.price || 0,
+      rating: post.rating,
+      views: post.viewsCount,
+      comments: post.commentsCount,
+      date: post.createdAt,
+    }));
+  }, [postsData]);
+
+  const newPosts = useMemo(() => {
+    if (!postsData) return [];
+    return postsData.slice(0, 9).map((post) => ({
+      id: String(post.id),
+      title: post.title,
+      content: post.content.substring(0, 100) + "...",
+      points: post.price || 0,
+      tags: post.tags,
+      rating: post.rating,
+      views: post.viewsCount,
+      comments: post.commentsCount,
+      date: post.createdAt,
+    }));
+  }, [postsData]);
+
+  const newUniverseSeries = useMemo(() => {
+    if (!derivativeWorks) return [];
+    return derivativeWorks.slice(0, 6).map((work) => ({
+      id: String(work.id),
+      imageUrl: work.coverImageUrl,
+      title: work.title,
+      tags: work.tags,
+    }));
+  }, [derivativeWorks]);
 
   const handleTabChange = useCallback(
     (tab: HomeCategoryTab) => {

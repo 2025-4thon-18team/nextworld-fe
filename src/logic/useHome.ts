@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import type { ContentPort } from "@/services/types";
+import { useGetAllWorks } from "@/querys/useWorks";
+import { useGetAllPosts } from "@/querys/usePosts";
 
 type HomeCategoryTab = "홈" | "신규" | "관심";
 
@@ -30,33 +31,51 @@ type SeriesItem = {
   tags: string[];
 };
 
-export function useHome(params: { content?: ContentPort }) {
-  const { content } = params;
+export function useHome() {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<HomeCategoryTab>("홈");
-  const [universeOfWeek, setUniverseOfWeek] = useState<UniverseItem | null>(
-    null,
-  );
-  const [popularSeries, setPopularSeries] = useState<SeriesItem[]>([]);
-  const [popularPosts, setPopularPosts] = useState<PostItem[]>([]);
+  
+  // React Query hooks 직접 사용
+  // TODO: 백엔드에 주간 유니버스, 인기 작품/포스트 API가 없어서 임시로 모든 작품/포스트 조회
+  const { data: worksData } = useGetAllWorks("ORIGINAL");
+  const { data: postsData } = useGetAllPosts();
 
-  useEffect(() => {
-    if (!content) return;
-    let alive = true;
-    content.getUniverseOfWeek().then((data) => {
-      if (alive) setUniverseOfWeek(data);
-    });
-    content.getPopularSeries().then((data) => {
-      if (alive) setPopularSeries(data);
-    });
-    content.getPopularPosts().then((data) => {
-      if (alive) setPopularPosts(data);
-    });
-    return () => {
-      alive = false;
+  const universeOfWeek = useMemo(() => {
+    if (!worksData || worksData.length === 0) return null;
+    const work = worksData[0];
+    return {
+      id: String(work.id),
+      imageUrl: work.coverImageUrl,
+      title: work.title,
+      tags: work.tags,
     };
-  }, [content]);
+  }, [worksData]);
+
+  const popularSeries = useMemo(() => {
+    if (!worksData) return [];
+    return worksData.slice(0, 4).map((work) => ({
+      id: String(work.id),
+      imageUrl: work.coverImageUrl,
+      title: work.title,
+      tags: work.tags,
+    }));
+  }, [worksData]);
+
+  const popularPosts = useMemo(() => {
+    if (!postsData) return [];
+    return postsData.slice(0, 8).map((post) => ({
+      id: String(post.id),
+      title: post.title,
+      content: post.content.substring(0, 100) + "...",
+      points: post.price || 0,
+      tags: post.tags,
+      rating: post.rating,
+      views: post.viewsCount,
+      comments: post.commentsCount,
+      date: post.createdAt,
+    }));
+  }, [postsData]);
 
   const handleTabChange = useCallback(
     (tab: HomeCategoryTab) => {

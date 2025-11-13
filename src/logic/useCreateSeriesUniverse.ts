@@ -1,36 +1,35 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import type { SeriesPort } from "@/services/types";
+import { useGetAllWorks } from "@/querys/useWorks";
 
 type StepType = "기본 설정" | "유니버스 설정" | "2차 창작 설정";
 
-export function useCreateSeriesUniverse(params: { series?: SeriesPort }) {
-  const { series } = params;
+export function useCreateSeriesUniverse() {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState<StepType>("유니버스 설정");
   const [originalSeriesSearch, setOriginalSeriesSearch] = useState("");
-  const [originalSeriesList, setOriginalSeriesList] = useState<
-    Array<{ id: string; imageUrl: string; title: string }>
-  >([]);
   const [selectedOriginalSeriesId, setSelectedOriginalSeriesId] = useState<
     string | undefined
   >(undefined);
   const [paidSeries, setPaidSeries] = useState(false);
   const [episodePrice, setEpisodePrice] = useState("");
 
-  useEffect(() => {
-    if (!series || !originalSeriesSearch) {
-      setOriginalSeriesList([]);
-      return;
-    }
-    let alive = true;
-    series.searchOriginalSeries(originalSeriesSearch).then((data) => {
-      if (alive) setOriginalSeriesList(data);
-    });
-    return () => {
-      alive = false;
-    };
-  }, [series, originalSeriesSearch]);
+  // React Query hooks 직접 사용
+  const { data: allWorks } = useGetAllWorks("ORIGINAL");
+
+  const originalSeriesList = useMemo(() => {
+    if (!allWorks || !originalSeriesSearch) return [];
+    return allWorks
+      .filter((work) =>
+        work.title.toLowerCase().includes(originalSeriesSearch.toLowerCase()),
+      )
+      .slice(0, 10)
+      .map((work) => ({
+        id: String(work.id),
+        imageUrl: work.coverImageUrl,
+        title: work.title,
+      }));
+  }, [allWorks, originalSeriesSearch]);
 
   const onStepChange = useCallback((step: StepType) => {
     setActiveStep(step);
