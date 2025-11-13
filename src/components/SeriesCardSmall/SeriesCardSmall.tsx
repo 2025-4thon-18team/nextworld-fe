@@ -4,18 +4,29 @@ import { cn } from "@/utils";
 interface SeriesCardSmallProps {
   imageUrl: string;
   title: string;
+  selected?: boolean;
+  onClick?: () => void;
   className?: string;
 }
 
 export const SeriesCardSmall: FC<SeriesCardSmallProps> = ({
   imageUrl,
   title,
+  selected = false,
+  onClick,
   className,
 }) => {
   return (
-    <div className={cn("gap-xs flex flex-col items-start", className)}>
+    <div
+      className={cn(
+        "gap-sm flex flex-col items-start rounded-md p-sm",
+        selected && "bg-foreground-default",
+        className,
+      )}
+      onClick={onClick}
+    >
       {/* Image */}
-      <div className="relative h-225 w-150 shrink-0 overflow-hidden rounded-sm">
+      <div className="relative h-201 w-134 shrink-0 overflow-hidden rounded-sm">
         <img
           alt={title}
           src={imageUrl}
@@ -24,7 +35,12 @@ export const SeriesCardSmall: FC<SeriesCardSmallProps> = ({
       </div>
 
       {/* Title */}
-      <p className="text-body-medium w-min-content min-w-full tracking-tight text-black">
+      <p
+        className={cn(
+          "text-body-medium w-min-content min-w-full tracking-tight",
+          selected ? "text-grayscale-white" : "text-black",
+        )}
+      >
         {title}
       </p>
     </div>
