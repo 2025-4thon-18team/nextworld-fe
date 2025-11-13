@@ -1,8 +1,18 @@
+import { useCallback } from "react";
 import { ViewerView } from "./ViewerView";
-import { useViewer } from "@/logic/useViewer";
 
 const Viewer = () => {
-  const { onPrevious, onNext, onOriginalSeriesClick } = useViewer();
+  const onPrevious = useCallback(() => {
+    // TODO: 이전 화로 이동
+  }, []);
+
+  const onNext = useCallback(() => {
+    // TODO: 다음 화로 이동
+  }, []);
+
+  const onOriginalSeriesClick = useCallback(() => {
+    // TODO: 원작 작품으로 이동
+  }, []);
 
   return (
     <ViewerView
