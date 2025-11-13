@@ -31,9 +31,11 @@ export interface LoginResponse {
 }
 
 export interface SignupRequest {
+  name: string;                    // 한글 2-10자 (정규식: ^[가-힣]{2,10}$)
+  nickname: string;                // 영문+숫자 조합 8자 이상 (정규식: ^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{8,}$)
   email: string;
-  password: string;
-  nickname: string;
+  password: string;                 // 8자 이상
+  passwordConfirm: string;
 }
 
 export interface SignupResponse {
@@ -50,113 +52,90 @@ export interface UserProfileResponse {
   userId: number;
   email: string;
   nickname: string;
-  name: string;
-  profileImageUrl?: string;
   pointsBalance: number;
+  totalEarned: number;
+  guideline: string;
 }
 
-export interface UserProfileUpdateRequest {
-  nickname: string;
-}
 
 // ============================================
 // 작품 관련 (Work/Series)
 // ============================================
 
+export type Genre = "ROMANCE" | "FANTASY" | "THRILLER" | "MARTIAL_ARTS" | "DRAMA" | "SF" | "COMEDY";
 export type WorkType = "SHORT" | "SERIALIZED";
-export type WorkTypeEnum = "ORIGINAL" | "DERIVATIVE";
-export type WorkStatus = "DRAFT" | "PUBLISHED" | "ARCHIVED";
+export type CreationType = "ORIGINAL" | "DERIVATIVE";
+export type PostStatus = "DRAFT" | "PUBLISHED";
 
 export interface WorkRequestDto {
-  workType: WorkTypeEnum; // ORIGINAL, DERIVATIVE
-  title: string;
-  description: string;
-  coverImageUrl: string;
-  tags: string; // 구분자로 구분된 태그 (예: "태그1|태그2|태그3")
-  category: string; // 장르 카테고리
-  serializationSchedule?: string; // 구분자로 구분된 연재 일정 (예: "월|화|수")
-  allowDerivative?: boolean; // 2차 창작 허용 여부 (1차 창작인 경우만)
-  guidelineRelation?: string; // 가이드라인: 관계
-  guidelineContent?: string; // 가이드라인: 내용
-  guidelineBackground?: string; // 가이드라인: 배경
-  bannedWords?: string; // 구분자로 구분된 금지어 (예: "금지어1|금지어2|금지어3")
+  title?: string;
+  description?: string;
+  coverImageUrl?: string;
+  tags?: string[];
+  genre?: Genre;
+  universeDescription?: string;
+  allowDerivative?: boolean;
+  guidelineRelation?: string;
+  guidelineContent?: string;
+  guidelineBackground?: string;
+  bannedWords?: string[];
+  isPaid?: boolean;
+  price?: number;
+  allowDerivativeProfit?: boolean;
 }
 
 export interface WorkResponseDto {
   id: number;
-  workType: WorkTypeEnum;
   title: string;
   description: string;
   coverImageUrl: string;
-  tags: string[]; // 배열로 변경 (백엔드에서 List<String>)
-  category: string; // 장르 카테고리
-  serializationSchedule?: string; // 구분자로 구분된 연재 일정
-  allowDerivative?: boolean;
-  // 통계 (작품의 모든 포스트 집계)
-  totalLikesCount: number; // 작품의 모든 포스트 좋아요 합계
-  totalViewsCount: number; // 작품의 모든 포스트 조회수 합계
-  totalRating: number; // 작품의 모든 포스트 평점 평균
+  tags: string[];
+  universeDescription: string;
+  allowDerivative: boolean;
+  guidelineRelation: string;
+  guidelineContent: string;
+  guidelineBackground: string;
+  bannedWords: string[];
+  isPaid: boolean;
+  price: number;
+  allowDerivativeProfit: boolean;
   authorName: string;
-  parentWorkId?: number;
-  parentWorkTitle?: string;
-}
-
-export interface WorkGuidelineResponseDto {
-  workId: number;
-  workTitle: string;
-  guidelineRelation?: string;
-  guidelineContent?: string;
-  guidelineBackground?: string;
-  bannedWords?: string; // 구분자로 구분된 금지어
 }
 
 // ============================================
 // 포스트 관련 (Post)
 // ============================================
 
-export type PostType = "POST" | "EPISODE"; // 포스트/회차
-export type CreationType = "ORIGINAL" | "DERIVATIVE"; // 1차/2차 창작
-
 export interface PostRequestDto {
-  workId?: number; // 작품 회차인 경우 소속 작품 ID
-  title: string;
-  content: string; // 마크다운 형식 (이미지 포함)
-  hasImage: boolean; // 이미지 포함 여부
-  postType: PostType; // POST, EPISODE
-  episodeNumber?: number; // 회차 번호
-  parentWorkId?: number; // 원작 참조 (원작 작품 지정)
-  creationType?: CreationType; // ORIGINAL, DERIVATIVE (NULL 가능)
-  isPaid: boolean;
-  price?: number; // 포인트 가격 (유료인 경우)
-  tags?: string; // 구분자로 구분된 태그 (예: "태그1|태그2|태그3")
-  status: WorkStatus;
+  title?: string;
+  content?: string;
+  workType?: WorkType;
+  creationType?: CreationType;
+  workId?: number;
+  status?: PostStatus;
+  parentId?: number;
 }
 
 export interface PostResponseDto {
   id: number;
-  workId?: number; // 소속 작품 ID
-  workTitle?: string; // 소속 작품 제목
-  postType: PostType;
-  episodeNumber?: number; // 회차 번호
-  parentWorkId?: number; // 원작 작품 ID
-  parentWorkTitle?: string; // 원작 작품 제목
-  authorName: string;
-  creationType?: CreationType;
   title: string;
-  content: string; // 마크다운 형식 (이미지 포함)
-  hasImage: boolean; // 이미지 포함 여부
-  isPaid: boolean;
-  price?: number;
-  tags: string[]; // 배열로 변경 (백엔드에서 List<String>)
-  // 통계
-  viewsCount: number; // 백엔드: viewsCount
-  commentsCount: number; // 백엔드: commentsCount
-  rating: number; // 백엔드: rating (BigDecimal)
-  // 상태
-  status: WorkStatus;
-  aiCheck?: string; // AI 검수 결과
-  createdAt: string; // ISO 8601 date-time
-  updatedAt: string; // ISO 8601 date-time
+  content: string;
+  authorName: string;
+  workTitle: string;
+  status: PostStatus;
+  workType: WorkType;
+  creationType: CreationType;
+  createdAt: string;               // ISO 8601 date-time
+  updatedAt: string;                // ISO 8601 date-time
+}
+
+// ============================================
+// 피드 및 검색 관련 (Feed & Search)
+// ============================================
+
+export interface ListResponse {
+  works: WorkResponseDto[];
+  posts: PostResponseDto[];
 }
 
 // ============================================
@@ -247,9 +226,8 @@ export interface ChargeRequest {
 
 export interface UseRequest {
   amount: number;
-  postId?: number; // 결제할 Post ID
-  derivativeWorkId?: number;
-  authorId?: number;
+  derivativeWorkId: number;
+  authorId: number;
 }
 
 export interface RefundRequest {
@@ -291,13 +269,38 @@ export interface ScrapResponse {
 }
 
 // ============================================
+// 댓글 관련 (Comment)
+// ============================================
+
+export interface CreateCommentRequest {
+  content: string;                   // 댓글 내용
+  parentCommentId?: number | null;  // 부모 댓글 ID (대댓글 작성 시 전달, 일반 댓글은 null)
+}
+
+export interface UpdateCommentRequest {
+  content: string;                   // 수정할 댓글 내용
+}
+
+export interface CommentResponse {
+  id: number;
+  postId: number;
+  parentCommentId: number | null;
+  authorId: number;
+  authorName: string;
+  authorImageUrl: string;
+  content: string;
+  createdAt: string;                // ISO 8601 date-time
+  updatedAt: string;                // ISO 8601 date-time
+}
+
+// ============================================
 // 마이페이지 프로필 업데이트
 // ============================================
 
 export interface ProfileUpdateRequest {
-  name: string;
-  bio: string;
-  contactEmail: string;
-  twitter: string;
+  name?: string;
+  bio?: string;
+  contactEmail?: string;
+  twitter?: string;
   profileImage?: File; // multipart/form-data
 }
