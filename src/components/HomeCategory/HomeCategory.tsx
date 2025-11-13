@@ -1,12 +1,12 @@
 import { FC } from "react";
 import { cn } from "@/utils";
 
-type HomeCategoryTab = "홈" | "신규" | "관심" | "내 작품" | "원작";
+type HomeCategoryTab = "홈" | "신규" | "관심" | "내 작품" | "원작" | "포스트" | "작품 연재";
 
 interface HomeCategoryProps {
   activeTab: HomeCategoryTab;
   onTabChange: (tab: HomeCategoryTab) => void;
-  variant?: "home" | "editor";
+  variant?: "home" | "editor" | "post-series";
   className?: string;
 }
 
@@ -17,7 +17,11 @@ export const HomeCategory: FC<HomeCategoryProps> = ({
   className,
 }) => {
   const tabs: HomeCategoryTab[] =
-    variant === "editor" ? ["내 작품", "원작"] : ["홈", "신규", "관심"];
+    variant === "editor"
+      ? ["내 작품", "원작"]
+      : variant === "post-series"
+        ? ["포스트", "작품 연재"]
+        : ["홈", "신규", "관심"];
 
   return (
     <div className={cn("flex h-48 items-center", className)}>
