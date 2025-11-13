@@ -5,5 +5,4 @@ export * from "./payment";
 export * from "./revenue";
 export * from "./works";
 export * from "./feed";
-export * from "./report";
 export * from "./admin";

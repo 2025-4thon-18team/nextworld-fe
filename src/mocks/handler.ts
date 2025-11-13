@@ -7,7 +7,6 @@ import {
   revenueHandlers,
   worksHandlers,
   feedHandlers,
-  reportHandlers,
   adminHandlers,
 } from "./handlers";
 
@@ -38,6 +37,5 @@ export const handlers = [
   ...revenueHandlers,
   ...worksHandlers,
   ...feedHandlers,
-  ...reportHandlers,
   ...adminHandlers,
 ];

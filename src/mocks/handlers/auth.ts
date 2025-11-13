@@ -15,13 +15,16 @@ export const authHandlers = [
     const body = await request.json();
     return HttpResponse.json(
       {
+        success: true,
+        code: 200,
+        message: "회원가입이 완료되었습니다.",
         data: {
-          userId: "user-" + Math.random().toString(36).substr(2, 9),
+          userId: Math.floor(Math.random() * 1000),
           email: (body as { email: string }).email,
           nickname: (body as { nickname: string }).nickname,
         },
       },
-      { status: 201 },
+      { status: 200 },
     );
   }),
 
@@ -39,10 +42,14 @@ export const authHandlers = [
     }
 
     return HttpResponse.json({
+      success: true,
+      code: 200,
+      message: "로그인 성공",
       data: {
         accessToken: "mock-access-token-" + Date.now(),
         refreshToken: "mock-refresh-token-" + Date.now(),
-        user: mockUser,
+        email: mockUser.email,
+        nickname: mockUser.nickname,
       },
     });
   }),
@@ -50,24 +57,37 @@ export const authHandlers = [
   // 로그아웃
   http.post("/api/auth/logout", () => {
     return HttpResponse.json({
-      message: "로그아웃되었습니다.",
+      success: true,
+      code: 200,
+      message: "로그아웃 되었습니다.",
+      data: null,
     });
   }),
 
   // 액세스 토큰 재발급
   http.post("/api/auth/refresh", () => {
     return HttpResponse.json({
-      data: {
-        accessToken: "mock-access-token-refreshed-" + Date.now(),
-        refreshToken: "mock-refresh-token-refreshed-" + Date.now(),
-      },
+      success: true,
+      code: 200,
+      message: "액세스 토큰이 재발급되었습니다.",
+      data: "mock-access-token-refreshed-" + Date.now(),
     });
   }),
 
   // 내 계정 정보 조회
   http.get("/api/auth/me", () => {
     return HttpResponse.json({
-      data: mockUser,
+      success: true,
+      code: 200,
+      message: "프로필 조회 성공",
+      data: {
+        userId: 1,
+        email: mockUser.email,
+        nickname: mockUser.nickname,
+        name: "테스트유저",
+        profileImageUrl: mockUser.profileImage,
+        pointsBalance: 2000,
+      },
     });
   }),
 ];

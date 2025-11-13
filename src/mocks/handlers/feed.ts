@@ -134,4 +134,173 @@ export const feedHandlers = [
       },
     });
   }),
+
+  // 주간 유니버스 조회 (ContentPort.getUniverseOfWeek)
+  http.get("/api/feed/universe-of-week", () => {
+    return HttpResponse.json({
+      success: true,
+      code: 200,
+      message: "주간 유니버스 조회 성공",
+      data: {
+        id: "1",
+        imageUrl: "https://via.placeholder.com/310x476",
+        title: "[작품 제목]",
+        tags: ["현대로맨스", "판타지"],
+      },
+    });
+  }),
+
+  // 인기 작품 조회 (ContentPort.getPopularSeries)
+  http.get("/api/feed/popular-series", () => {
+    return HttpResponse.json({
+      success: true,
+      code: 200,
+      message: "인기 작품 조회 성공",
+      data: [
+        {
+          id: "1",
+          imageUrl: "https://via.placeholder.com/203x305",
+          title: "[작품 제목]",
+          tags: ["현대로맨스"],
+        },
+        {
+          id: "2",
+          imageUrl: "https://via.placeholder.com/203x305",
+          title: "[작품 제목]",
+          tags: ["현대로맨스"],
+        },
+        {
+          id: "3",
+          imageUrl: "https://via.placeholder.com/203x305",
+          title: "[작품 제목]",
+          tags: ["현대로맨스"],
+        },
+        {
+          id: "4",
+          imageUrl: "https://via.placeholder.com/203x305",
+          title: "[작품 제목]",
+          tags: ["현대로맨스"],
+        },
+      ],
+    });
+  }),
+
+  // 인기 포스트 조회 (ContentPort.getPopularPosts)
+  http.get("/api/feed/popular-posts", () => {
+    return HttpResponse.json({
+      success: true,
+      code: 200,
+      message: "인기 포스트 조회 성공",
+      data: [
+        {
+          id: "1",
+          title: "그녀가 웃던 마지막 봄날 2화",
+          content:
+            '처형장에선 늘 바람이 분다.그리고 그날도 마찬가지였다 — 나의 세 번째 사형식이 시작되던 아침. "이번엔 제발 죽게 해주세요." ....',
+          points: 100,
+          tags: ["현대로맨스", "판타지"],
+          rating: 4.4,
+          views: 44,
+          comments: 44,
+          date: "2025.10.01",
+        },
+        {
+          id: "2",
+          title: "그녀가 웃던 마지막 봄날 2화",
+          content:
+            '처형장에선 늘 바람이 분다.그리고 그날도 마찬가지였다 — 나의 세 번째 사형식이 시작되던 아침. "이번엔 제발 죽게 해주세요." ....',
+          points: 100,
+          tags: ["현대로맨스", "판타지"],
+          rating: 4.4,
+          views: 44,
+          comments: 44,
+          date: "2025.10.01",
+        },
+      ],
+    });
+  }),
+
+  // 신규 작품 조회 (ContentPort.getNewSeries)
+  http.get("/api/feed/new-series", () => {
+    return HttpResponse.json({
+      success: true,
+      code: 200,
+      message: "신규 작품 조회 성공",
+      data: Array.from({ length: 12 }, (_, i) => ({
+        id: String(i + 1),
+        imageUrl: "https://via.placeholder.com/203x305",
+        title: "[작품 제목]",
+        tags: ["현대로맨스"],
+      })),
+    });
+  }),
+
+  // 신규 포스트 조회 (ContentPort.getNewPosts)
+  http.get("/api/feed/new-posts", () => {
+    return HttpResponse.json({
+      success: true,
+      code: 200,
+      message: "신규 포스트 조회 성공",
+      data: Array.from({ length: 9 }, (_, i) => ({
+        id: String(i + 1),
+        title: "그녀가 웃던 마지막 봄날 2화",
+        content:
+          '처형장에선 늘 바람이 분다.그리고 그날도 마찬가지였다 — 나의 세 번째 사형식이 시작되던 아침. "이번엔 제발 죽게 해주세요." ....',
+        points: 100,
+        tags: ["현대로맨스", "판타지"],
+        rating: 4.4,
+        views: 44,
+        comments: 44,
+        date: "2025.10.01",
+      })),
+    });
+  }),
+
+  // 관심 작품 조회 (ContentPort.getFavoriteSeries)
+  http.get("/api/feed/favorite-series", () => {
+    return HttpResponse.json({
+      success: true,
+      code: 200,
+      message: "관심 작품 조회 성공",
+      data: Array.from({ length: 5 }, (_, i) => ({
+        id: String(i + 1),
+        imageUrl: "https://via.placeholder.com/203x305",
+        title: "[작품 제목]",
+        tags: ["현대로맨스", "판타지"],
+      })),
+    });
+  }),
+
+  // 최신 업데이트 조회 (ContentPort.getLatestUpdates)
+  http.get("/api/feed/latest-updates", () => {
+    return HttpResponse.json({
+      success: true,
+      code: 200,
+      message: "최신 업데이트 조회 성공",
+      data: Array.from({ length: 4 }, (_, i) => ({
+        id: String(i + 1),
+        title: "제목제목",
+        points: 100,
+        rating: 4.4,
+        views: 44,
+        comments: 44,
+        date: "2025.10.01",
+      })),
+    });
+  }),
+
+  // 신규 유니버스 작품 조회 (ContentPort.getNewUniverseSeries)
+  http.get("/api/feed/new-universe-series", () => {
+    return HttpResponse.json({
+      success: true,
+      code: 200,
+      message: "신규 유니버스 작품 조회 성공",
+      data: Array.from({ length: 6 }, (_, i) => ({
+        id: String(i + 1),
+        imageUrl: "https://via.placeholder.com/203x305",
+        title: "[작품 제목]",
+        tags: ["현대로맨스"],
+      })),
+    });
+  }),
 ];

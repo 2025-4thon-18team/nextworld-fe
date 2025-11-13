@@ -66,42 +66,39 @@ export const mypageHandlers = [
   // 내 포인트
   http.get("/api/mypage/points", () => {
     return HttpResponse.json({
+      success: true,
+      code: 200,
+      message: "포인트 조회가 완료되었습니다.",
       data: {
-        totalPoints: 50000,
-        availablePoints: 45000,
-        lockedPoints: 5000,
+        balance: 2000,
       },
     });
   }),
 
   // 포인트 결제 내역
-  http.get("/api/mypage/paylist", ({ request }) => {
-    const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get("page") || "1");
-    const pageSize = parseInt(url.searchParams.get("pageSize") || "10");
-
-    const payments = Array.from({ length: 20 }, (_, i) => ({
-      transactionId: `tx-${i + 1}`,
-      type: i % 3 === 0 ? "charge" : i % 3 === 1 ? "use" : "refund",
-      amount: (i + 1) * 1000,
-      status: "completed",
-      createdAt: new Date(
-        Date.now() - i * 86400000,
-      ).toISOString() as unknown as string,
-      description: `결제 내역 ${i + 1}`,
-    }));
-
-    const startIdx = (page - 1) * pageSize;
-    const endIdx = startIdx + pageSize;
-    const pagePayments = payments.slice(startIdx, endIdx);
-
+  http.get("/api/mypage/paylist", () => {
     return HttpResponse.json({
-      data: {
-        payments: pagePayments,
-        totalCount: payments.length,
-        page,
-        pageSize,
-      },
+      success: true,
+      code: 200,
+      message: "결제 내역 조회가 완료되었습니다.",
+      data: [
+        {
+          payId: 1,
+          amount: 1000,
+          type: "CHARGE",
+          status: "COMPLETED",
+          impUid: "imp_1234567890",
+          createdAt: "2025-10-23T00:00:00",
+        },
+        {
+          payId: 2,
+          amount: 500,
+          type: "USE",
+          status: "COMPLETED",
+          impUid: "imp_0987654321",
+          createdAt: "2025-10-22T00:00:00",
+        },
+      ],
     });
   }),
 
