@@ -8,6 +8,7 @@ interface TextAreaInputListProps {
   textAreas?: string[];
   onTextAreasChange?: (textAreas: string[]) => void;
   className?: string;
+  defaultExpanded?: boolean;
 }
 
 export const TextAreaInputList: FC<TextAreaInputListProps> = ({
@@ -15,8 +16,9 @@ export const TextAreaInputList: FC<TextAreaInputListProps> = ({
   textAreas = ["", ""],
   onTextAreasChange,
   className,
+  defaultExpanded = false,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
   const handleAddTextArea = () => {
     const newTextAreas = [...textAreas, ""];

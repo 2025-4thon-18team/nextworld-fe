@@ -1,9 +1,9 @@
 import { FC } from "react";
 import { cn } from "@/utils";
 import { Gnb } from "@/components/Gnb/Gnb";
-import { SeriesDetailHeroView } from "@/components/SeriesDetailHero/SeriesDetailHeroView";
+import { SeriesDetailHeroView } from "./components/SeriesDetailHeroView";
 import { ContentInfo } from "@/components/ContentInfo/ContentInfo";
-import { SeriesDetailContentView } from "@/components/SeriesDetailContent/SeriesDetailContentView";
+import { SeriesDetailContentView } from "./components/SeriesDetailContentView";
 
 interface Episode {
   id: string;
@@ -102,12 +102,12 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
   className,
 }) => {
   return (
-    <div className={cn("bg-white relative size-full", className)}>
+    <div className={cn("relative size-full bg-white", className)}>
       {/* GNB */}
-      <Gnb className="absolute bg-white border-b border-grayscale-g2 left-[-3px] top-px w-1440" />
+      <Gnb className="border-grayscale-g2 absolute top-px left-[-3px] w-1440 border-b bg-white" />
 
       {/* Hero Section */}
-      <div className="absolute left-82 top-101">
+      <div className="absolute top-101 left-82">
         <SeriesDetailHeroView
           imageUrl={imageUrl}
           universeName={universeName}
@@ -119,7 +119,7 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
       </div>
 
       {/* Content Info Sidebar */}
-      <div className="absolute left-118 top-600">
+      <div className="absolute top-600 left-118">
         <ContentInfo
           category={category}
           rating={rating}
@@ -134,7 +134,7 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
       </div>
 
       {/* Content Section */}
-      <div className="absolute left-[calc(33.333%+35px)] top-572">
+      <div className="absolute top-572 left-[calc(33.333%+35px)]">
         <SeriesDetailContentView
           activeTab={activeTab}
           totalEpisodes={totalEpisodes}
@@ -154,4 +154,3 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
     </div>
   );
 };
-
