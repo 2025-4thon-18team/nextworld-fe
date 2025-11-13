@@ -39,10 +39,10 @@ export function Router() {
           {/* Layout 없이 */}
           <Route element={<TestPage />} path="/test" />
           <Route
-            element={<Viewer />}
+            element={<Viewer type="EPISODE" />}
             path="/series/:seriesId/content/:contentId"
           />
-          <Route element={<Viewer />} path="/post/:postId" />
+          <Route element={<Viewer type="POST" />} path="/post/:postId" />
           <Route element={<Editor />} path="/editor" />
 
           {/* Layout이 필요한 페이지들 */}

@@ -9,13 +9,16 @@ type Props = {
   episodeTitle: string;
   tags: string[];
   authorName: string;
+  authorId?: string | number;
   rating: number;
   originalSeriesImageUrl: string;
   originalSeriesLabel: string;
   originalSeriesTitle: string;
-  onPrevious: () => void;
-  onNext: () => void;
-  onOriginalSeriesClick: () => void;
+  originalSeriesId?: string | number;
+  postType: "POST" | "EPISODE";
+  onPrevious?: () => void;
+  onNext?: () => void;
+  onOriginalSeriesClick?: () => void;
 };
 
 export const ViewerView: FC<Props> = ({
@@ -23,21 +26,26 @@ export const ViewerView: FC<Props> = ({
   episodeTitle,
   tags,
   authorName,
+  authorId,
   rating,
   originalSeriesImageUrl,
   originalSeriesLabel,
   originalSeriesTitle,
+  originalSeriesId,
+  postType,
   onPrevious,
   onNext,
   onOriginalSeriesClick,
 }) => {
+  const isEpisode = postType === "EPISODE";
+
   return (
     <div className="flex min-h-screen w-full flex-col items-center bg-white">
       <ViewerHeader
-        seriesTitle={seriesTitle}
+        seriesTitle={isEpisode ? seriesTitle : undefined}
         episodeTitle={episodeTitle}
         onPrevious={onPrevious}
-        onNext={onNext}
+        onNext={isEpisode ? onNext : undefined}
       />
 
       <div className="flex w-770 flex-col items-start gap-32 pt-0">
@@ -47,7 +55,11 @@ export const ViewerView: FC<Props> = ({
         {/* Viewer End Section */}
         <div className="gap-xl flex w-full flex-col items-start">
           <TagList tags={tags} />
-          <ViewerEnd authorName={authorName} rating={rating} />
+          <ViewerEnd
+            authorName={authorName}
+            authorId={authorId}
+            rating={rating}
+          />
         </div>
 
         {/* Original Series Banner */}
@@ -55,10 +67,10 @@ export const ViewerView: FC<Props> = ({
           imageUrl={originalSeriesImageUrl}
           label={originalSeriesLabel}
           title={originalSeriesTitle}
+          seriesId={originalSeriesId}
           onClick={onOriginalSeriesClick}
         />
       </div>
     </div>
   );
 };
-

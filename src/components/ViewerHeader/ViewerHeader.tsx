@@ -2,6 +2,7 @@ import { FC } from "react";
 import { IconChevron } from "@/assets/icons";
 import IconWithLabel from "@/components/IconWithLabel/IconWithLabel";
 import { cn } from "@/utils";
+import { useNavigation } from "@/hooks/useNavigation";
 
 interface ViewerHeaderProps {
   seriesTitle?: string;
@@ -14,8 +15,13 @@ interface ViewerHeaderProps {
 // IconChevronFlip - 뒤집힌 Chevron 아이콘
 const IconChevronFlip = ({ className }: { className?: string }) => {
   return (
-    <div className={cn("size-24 overflow-hidden shrink-0 flex items-center justify-center", className)}>
-      <IconChevron className="size-24 rotate-180 scale-y-[-100%]" />
+    <div
+      className={cn(
+        "flex size-24 shrink-0 items-center justify-center overflow-hidden",
+        className,
+      )}
+    >
+      <IconChevron className="size-24 -scale-y-100 rotate-180" />
     </div>
   );
 };
@@ -27,47 +33,63 @@ export const ViewerHeader: FC<ViewerHeaderProps> = ({
   onNext,
   className,
 }) => {
+  const { navigateBack } = useNavigation();
+
+  const handlePrevious = () => {
+    if (onPrevious) {
+      onPrevious();
+    } else {
+      navigateBack();
+    }
+  };
+
   return (
     <div
       className={cn(
-        "bg-white border-b-md border-grayscale-g2 border-l-0 border-r-0 border-t-0 border-solid h-100 w-1440",
+        "border-b-md border-grayscale-g2 h-100 w-1440 border-t-0 border-r-0 border-l-0 border-solid bg-white",
         className,
       )}
     >
-      <div className="h-100 relative w-1440">
-        <div className="absolute flex items-center justify-between left-[calc(10%+66px)] top-19 w-1035">
-          <div className="gap-xl flex items-center shrink-0">
+      <div className="relative h-100 w-1440">
+        <div className="absolute top-19 left-[calc(10%+66px)] flex w-1035 items-center justify-between">
+          <div className="gap-xl flex shrink-0 items-center">
+            {/* Previous Episode Button */}
             <button
               type="button"
-              onClick={onPrevious}
-              className="flex size-24 items-center justify-center overflow-hidden"
+              onClick={handlePrevious}
+              className="flex size-24 cursor-pointer items-center justify-center overflow-hidden"
             >
-              <IconChevron className="size-24 overflow-hidden shrink-0" />
+              <IconChevron className="size-24 shrink-0 overflow-hidden" />
             </button>
-            <div className="flex flex-col gap-xs items-start justify-between text-black h-56 shrink-0 w-161">
+            <div className="gap-xs flex h-56 w-161 shrink-0 flex-col items-start justify-between text-black">
               {seriesTitle && (
-                <p className="text-body-medium tracking-tight w-full">{seriesTitle}</p>
+                <p className="text-body-medium w-full tracking-tight">
+                  {seriesTitle}
+                </p>
               )}
-              <p className="text-headings-heading-2 tracking-tight w-full">
+              <p className="text-headings-heading-2 w-full tracking-tight">
                 {episodeTitle}
               </p>
             </div>
           </div>
-          <div className="gap-sm flex items-center shrink-0">
-            <IconWithLabel
-              icon={<IconChevron className="size-24 overflow-hidden shrink-0" />}
-              label="저번화"
-              onClick={onPrevious}
-            />
-            <IconWithLabel
-              icon={<IconChevronFlip />}
-              label="다음화"
-              onClick={onNext}
-            />
-          </div>
+          {onNext && (
+            <div className="gap-sm flex shrink-0 items-center">
+              <IconWithLabel
+                icon={
+                  <IconChevron className="size-24 shrink-0 overflow-hidden" />
+                }
+                label="저번화"
+                onClick={onPrevious}
+              />
+              <IconWithLabel
+                icon={<IconChevronFlip />}
+                label="다음화"
+                onClick={onNext}
+              />
+            </div>
+          )}
         </div>
       </div>
     </div>
   );
 };
-
