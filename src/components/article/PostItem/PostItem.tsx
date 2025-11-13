@@ -1,8 +1,9 @@
 import { FC } from "react";
 import { cn } from "@/utils";
-import { IconPoint, IconPicture } from "@/assets/icons";
+import { IconPicture } from "@/assets/icons";
 import { ArticleInfo } from "@/components/article/ArticleInfo/ArticleInfo";
 import { Tag } from "@/components/Tag/Tag";
+import { Point } from "@/components/Point/Point";
 
 interface PostItemProps {
   title: string;
@@ -13,8 +14,11 @@ interface PostItemProps {
   views: number;
   comments: number;
   date: string;
+  showIconPicture?: boolean;
+  showPoint?: boolean;
   className?: string;
 }
+
 export const PostItem: FC<PostItemProps> = ({
   title,
   points,
@@ -24,42 +28,52 @@ export const PostItem: FC<PostItemProps> = ({
   views,
   comments,
   date,
+  showIconPicture = true,
+  showPoint = true,
   className,
 }) => {
   return (
     <div
       className={cn(
-        "w-400 rounded-xs border-t-2 border-(--border-default) bg-(--background-subtle)",
+        "border-t-md border-grayscale-g1 h-230 min-h-230 w-401 rounded-xs border-r-0 border-b-0 border-l-0 border-solid bg-white",
         className,
       )}
     >
-      <div className="px-md py-lg flex flex-col items-start gap-20 overflow-hidden rounded-[inherit]">
-        {/* Title and Points */}
-        <div className="flex w-full items-center justify-between">
-          <div className="gap-xs flex items-center">
-            <IconPicture />
-            <h2 className="text-headings-heading-2 whitespace-nowrap text-black">
-              {title}
-            </h2>
-          </div>
-          <div className="flex items-center">
-            <span className="text-body-large-medium whitespace-nowrap text-black">
-              {points}
-            </span>
-            <div className="flex size-24 items-center justify-center gap-10">
-              <IconPoint />
+      <div className="min-h-inherit px-md py-lg relative box-border flex h-230 w-401 flex-col items-start justify-between overflow-hidden rounded-[inherit]">
+        {/* Title and Content Section */}
+        <div className="gap-md relative flex w-full shrink-0 flex-col items-start">
+          {/* Title and Points */}
+          <div className="relative flex w-full shrink-0 items-start justify-between">
+            <div className="relative flex shrink-0 items-center gap-4">
+              {showIconPicture && (
+                <IconPicture className="relative flex size-24 shrink-0 items-center justify-center gap-10" />
+              )}
+              <p className="text-headings-heading-2 tracking-tight text-nowrap whitespace-pre text-black">
+                {title}
+              </p>
             </div>
+            {showPoint && (
+              <div className="relative flex shrink-0 flex-col items-start gap-10">
+                <Point
+                  value={points}
+                  showPrefix={false}
+                  className="relative flex w-full shrink-0 items-end justify-end"
+                />
+              </div>
+            )}
           </div>
+
+          {/* Content */}
+          <p className="text-body-medium w-379 tracking-tight text-black">
+            {content}
+          </p>
         </div>
 
-        {/* Content */}
-        <p className="text-body-medium text-grayscale-black w-380">{content}</p>
-
         {/* Tags and ArticleInfo */}
-        <div className="gap-sm flex flex-col items-start">
-          <div className="gap-xs flex items-center">
+        <div className="gap-sm relative flex shrink-0 flex-col items-start">
+          <div className="gap-xs relative flex shrink-0 items-center">
             {tags.map((tag, index) => (
-              <Tag key={index} type="default">
+              <Tag key={index} type="muted">
                 {tag}
               </Tag>
             ))}
