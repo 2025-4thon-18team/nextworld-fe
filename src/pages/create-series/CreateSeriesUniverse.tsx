@@ -9,13 +9,11 @@ const CreateSeriesUniverse = () => {
     originalSeriesSearch,
     originalSeriesList,
     selectedOriginalSeriesId,
-    worldviewTextAreas,
     paidSeries,
     episodePrice,
     onStepChange,
     onOriginalSeriesSearchChange,
     onOriginalSeriesSelect,
-    onWorldviewTextAreasChange,
     onPaidSeriesChange,
     onEpisodePriceChange,
     onPrevious,
@@ -28,13 +26,11 @@ const CreateSeriesUniverse = () => {
       originalSeriesSearch={originalSeriesSearch}
       originalSeriesList={originalSeriesList}
       selectedOriginalSeriesId={selectedOriginalSeriesId}
-      worldviewTextAreas={worldviewTextAreas}
       paidSeries={paidSeries}
       episodePrice={episodePrice}
       onStepChange={onStepChange}
       onOriginalSeriesSearchChange={onOriginalSeriesSearchChange}
       onOriginalSeriesSelect={onOriginalSeriesSelect}
-      onWorldviewTextAreasChange={onWorldviewTextAreasChange}
       onPaidSeriesChange={onPaidSeriesChange}
       onEpisodePriceChange={onEpisodePriceChange}
       onPrevious={onPrevious}

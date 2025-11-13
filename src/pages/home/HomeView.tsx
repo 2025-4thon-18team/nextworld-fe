@@ -1,10 +1,8 @@
 import { FC } from "react";
 import { cn } from "@/utils";
-import { Gnb } from "@/components/Gnb/Gnb";
 import { HomeCategory } from "@/components/HomeCategory/HomeCategory";
 import { PostListHorizontal } from "@/components/PostListHorizontal/PostListHorizontal";
 import { SeriesListHorizontal } from "@/components/SeriesListHorizontal/SeriesListHorizontal";
-import { SeriesCard } from "@/components/SeriesCard/SeriesCard";
 
 type HomeCategoryTab = "홈" | "신규" | "관심";
 
@@ -41,7 +39,6 @@ type Props = {
   universeOfWeek: UniverseItem | null;
   popularSeries: SeriesItem[];
   popularPosts: PostItem[];
-  onUniverseClick?: (id: string) => void;
   onSeriesClick?: (id: string) => void;
   onPostClick?: (id: string) => void;
 };
@@ -53,91 +50,88 @@ export const HomeView: FC<Props> = ({
   universeOfWeek,
   popularSeries,
   popularPosts,
-  onUniverseClick,
   onSeriesClick,
   onPostClick,
 }) => {
   return (
-    <div className={cn("bg-white relative size-full", className)}>
-      {/* GNB */}
-      <Gnb className="absolute bg-white border-b-sm border-grayscale-g2 left-0 top-0 w-full" />
-
+    <div className={cn("flex size-full flex-col bg-white", className)}>
       {/* Home Category */}
-      <HomeCategory
-        activeTab={activeTab}
-        onTabChange={onTabChange}
-        className="absolute flex h-48 items-center left-[calc(8.333%+68px)] top-96"
-      />
+      <div className="flex justify-center px-[calc(8.333%+68px)] pt-96">
+        <HomeCategory
+          activeTab={activeTab as "홈" | "신규" | "관심"}
+          onTabChange={(tab) => onTabChange(tab as HomeCategoryTab)}
+          className="flex h-48 items-center"
+        />
+      </div>
 
       {/* Main Content */}
-      <div className="absolute flex gap-lg items-start left-[calc(8.333%+68px)] top-176">
+      <div className="flex flex-col gap-44 px-[calc(8.333%+68px)]">
         {/* Universe of the Week Section */}
-        <div className="flex flex-col gap-md items-start relative shrink-0 w-full">
-          <h2 className="text-headings-heading-2 text-black tracking-tight w-full">
+        <div className="gap-md flex flex-col items-start">
+          <h2 className="text-headings-heading-2 w-full tracking-tight text-black">
             금주의 유니버스
           </h2>
-          <div className="flex gap-lg items-start relative shrink-0 w-full">
+          <div className="gap-lg flex w-full items-start">
             {/* Featured Universe Card */}
             {universeOfWeek && (
-              <div className="flex flex-col gap-sm items-start relative shrink-0 w-310">
-                <div className="relative w-310 h-476 rounded-sm overflow-hidden">
+              <div className="gap-sm flex w-310 shrink-0 flex-col">
+                <div className="relative h-476 w-310 overflow-hidden rounded-sm">
                   <img
                     alt={universeOfWeek.title}
                     src={universeOfWeek.imageUrl}
-                    className="absolute inset-0 max-w-none object-cover object-center pointer-events-none rounded-sm size-full"
+                    className="pointer-events-none absolute inset-0 size-full max-w-none rounded-sm object-cover object-center"
                   />
                 </div>
               </div>
             )}
 
             {/* Post Lists */}
-            <div className="flex flex-col gap-lg items-start relative shrink-0 w-1660">
+            <div className="gap-lg flex flex-1 shrink-0 flex-col">
               <PostListHorizontal
                 items={popularPosts.slice(0, 4)}
                 onItemClick={onPostClick}
-                className="flex gap-lg items-center relative shrink-0 w-full"
+                className="flex w-full items-center"
               />
               <PostListHorizontal
                 items={popularPosts.slice(4, 8)}
                 onItemClick={onPostClick}
-                className="flex gap-lg items-center relative shrink-0 w-full"
+                className="flex w-full items-center"
               />
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Popular Series Section */}
-      <div className="absolute flex flex-col gap-md items-start left-[calc(8.333%+68px)] top-560">
-        <h2 className="text-headings-heading-2 text-black tracking-tight w-1298">
-          인기 작품
-        </h2>
-        <SeriesListHorizontal
-          items={popularSeries}
-          onItemClick={onSeriesClick}
-          className="flex gap-lg items-center relative shrink-0 w-1298"
-        />
-      </div>
+        {/* Popular Series Section */}
+        <div className="gap-md flex flex-col items-start">
+          <h2 className="text-headings-heading-2 w-full tracking-tight text-black">
+            인기 작품
+          </h2>
+          <SeriesListHorizontal
+            items={popularSeries}
+            onItemClick={onSeriesClick}
+            className="flex w-full items-center"
+          />
+        </div>
 
-      {/* Popular Posts Section */}
-      <div className="absolute flex flex-col gap-md items-start left-[calc(8.333%+68px)] top-1016">
-        <h2 className="text-headings-heading-2 text-black tracking-tight w-1660">
-          인기 포스트
-        </h2>
-        <div className="flex flex-col items-start relative shrink-0 w-full">
-          <PostListHorizontal
-            items={popularPosts.slice(0, 4)}
-            onItemClick={onPostClick}
-            className="flex gap-lg items-center relative shrink-0 w-full"
-          />
-          <PostListHorizontal
-            items={popularPosts.slice(4, 8)}
-            onItemClick={onPostClick}
-            className="flex gap-lg items-center relative shrink-0 w-full"
-          />
+        {/* Popular Posts Section */}
+        <div className="gap-md flex flex-col items-start">
+          <h2 className="text-headings-heading-2 w-full tracking-tight text-black">
+            인기 포스트
+          </h2>
+          <div className="flex w-full flex-col items-start">
+            <PostListHorizontal
+              items={popularPosts.slice(0, 4)}
+              onItemClick={onPostClick}
+              className="flex w-full items-center"
+            />
+            <PostListHorizontal
+              items={popularPosts.slice(4, 8)}
+              onItemClick={onPostClick}
+              className="flex w-full items-center"
+            />
+          </div>
         </div>
       </div>
     </div>
   );
 };
-

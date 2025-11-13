@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { TextAreaInputList } from "@/components/TextAreaInputList/TextAreaInputList";
 import { ToggleButton } from "@/components/ToggleButton/ToggleButton";
 import { InputLabel, TextInput } from "@/components/Input/Input";
 import { IconChevron } from "@/assets/icons";
@@ -15,13 +14,11 @@ type Props = {
   originalSeriesSearch: string;
   originalSeriesList: Array<{ id: string; imageUrl: string; title: string }>;
   selectedOriginalSeriesId?: string;
-  worldviewTextAreas: string[];
   paidSeries: boolean;
   episodePrice: string;
   onStepChange: (step: StepType) => void;
   onOriginalSeriesSearchChange: (value: string) => void;
   onOriginalSeriesSelect: (id: string) => void;
-  onWorldviewTextAreasChange: (textAreas: string[]) => void;
   onPaidSeriesChange: (checked: boolean) => void;
   onEpisodePriceChange: (value: string) => void;
   onPrevious: () => void;
@@ -33,13 +30,11 @@ export const CreateSeriesUniverseView: FC<Props> = ({
   originalSeriesSearch,
   originalSeriesList,
   selectedOriginalSeriesId,
-  worldviewTextAreas,
   paidSeries,
   episodePrice,
   onStepChange,
   onOriginalSeriesSearchChange,
   onOriginalSeriesSelect,
-  onWorldviewTextAreasChange,
   onPaidSeriesChange,
   onEpisodePriceChange,
   onPrevious,
@@ -121,19 +116,14 @@ export const CreateSeriesUniverseView: FC<Props> = ({
             </div>
           </div>
 
-          {/* Worldview Description */}
-          <TextAreaInputList
-            title="세계관 설명"
-            textAreas={worldviewTextAreas}
-            onTextAreasChange={onWorldviewTextAreasChange}
-            className="opacity-100"
-          />
-
           {/* Paid Series Toggle */}
           <div className="gap-xl flex w-full flex-col items-start">
             <div className="flex w-full items-center justify-between">
               <InputLabel>유료 연재</InputLabel>
-              <ToggleButton checked={paidSeries} onChange={onPaidSeriesChange} />
+              <ToggleButton
+                checked={paidSeries}
+                onChange={onPaidSeriesChange}
+              />
             </div>
 
             {/* Episode Price Input */}
@@ -166,4 +156,3 @@ export const CreateSeriesUniverseView: FC<Props> = ({
     </div>
   );
 };
-

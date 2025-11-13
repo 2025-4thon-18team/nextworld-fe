@@ -8,10 +8,10 @@ export function useCreateSeriesSecondary() {
   const [activeStep, setActiveStep] = useState<StepType>("2차 창작 설정");
   const [allowSecondaryCreation, setAllowSecondaryCreation] = useState(true);
   const [allowSecondaryRevenue, setAllowSecondaryRevenue] = useState(true);
-  const [relationshipTextAreas, setRelationshipTextAreas] = useState<
-    string[]
-  >(["", ""]);
-  const [contentTextAreas, setContentTextAreas] = useState<string[]>(["", ""]);
+  const [relationshipTextAreas, setRelationshipTextAreas] = useState<string[]>([
+    "",
+  ]);
+  const [contentTextAreas, setContentTextAreas] = useState<string[]>([""]);
   const [backgroundTextAreas, setBackgroundTextAreas] = useState<string[]>([
     "",
   ]);
@@ -90,4 +90,3 @@ export function useCreateSeriesSecondary() {
     onComplete,
   };
 }
-

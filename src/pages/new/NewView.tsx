@@ -1,6 +1,5 @@
 import { FC } from "react";
 import { cn } from "@/utils";
-import { Gnb } from "@/components/Gnb/Gnb";
 import { HomeCategory } from "@/components/HomeCategory/HomeCategory";
 import { PostListVertical } from "@/components/PostListVertical/PostListVertical";
 import { SeriesCard } from "@/components/SeriesCard/SeriesCard";
@@ -46,25 +45,24 @@ export const NewView: FC<Props> = ({
   onPostClick,
 }) => {
   return (
-    <div className={cn("bg-white relative size-full", className)}>
-      {/* GNB */}
-      <Gnb className="absolute bg-white border-b-sm border-grayscale-g2 left-0 top-0 w-full" />
-
+    <div className={cn("flex flex-col bg-white size-full", className)}>
       {/* Home Category */}
-      <HomeCategory
-        activeTab={activeTab}
-        onTabChange={onTabChange}
-        className="absolute flex h-48 items-center left-[calc(8.333%+68px)] top-96"
-      />
+      <div className="flex justify-center px-[calc(8.333%+68px)] pt-96">
+        <HomeCategory
+          activeTab={activeTab as "홈" | "신규" | "관심"}
+          onTabChange={(tab) => onTabChange(tab as HomeCategoryTab)}
+          className="flex h-48 items-center"
+        />
+      </div>
 
       {/* Main Content */}
-      <div className="absolute flex gap-37 items-start left-[calc(8.333%+68px)] top-176">
+      <div className="flex gap-37 items-start px-[calc(8.333%+68px)] pt-20">
         {/* Left Sidebar - New Series Grid */}
-        <div className="flex flex-col gap-md items-start relative shrink-0">
+        <div className="flex flex-col gap-md items-start shrink-0">
           <h2 className="text-headings-heading-2 text-black text-nowrap tracking-tight">
             신규 작품
           </h2>
-          <div className="content-center flex flex-wrap gap-0 items-center relative shrink-0 w-609">
+          <div className="flex flex-wrap gap-0 items-center shrink-0 w-609">
             {newSeries.map((series) => (
               <SeriesCard
                 key={series.id}
@@ -79,23 +77,23 @@ export const NewView: FC<Props> = ({
         </div>
 
         {/* Vertical Divider */}
-        <div className="flex items-center justify-center relative self-stretch shrink-0 w-1">
+        <div className="flex items-center justify-center self-stretch shrink-0 w-1">
           <div className="flex-none h-full rotate-90">
-            <div className="h-full relative w-full">
-              <div className="absolute bottom-0 left-0 right-0 top-[-2px] border-t border-grayscale-g2" />
+            <div className="h-full w-full">
+              <div className="bottom-0 left-0 right-0 top-[-2px] border-t border-grayscale-g2" />
             </div>
           </div>
         </div>
 
         {/* Right Content Area - New Posts */}
-        <div className="flex flex-col gap-md items-start relative shrink-0">
+        <div className="flex flex-col gap-md items-start shrink-0">
           <h2 className="text-headings-heading-2 text-black tracking-tight w-min-content min-w-full">
             신규 포스트
           </h2>
           <PostListVertical
             items={newPosts}
             onItemClick={onPostClick}
-            className="content-start flex flex-wrap gap-lg items-start relative shrink-0 w-403"
+            className="flex flex-wrap gap-lg items-start shrink-0 w-403"
           />
         </div>
       </div>

@@ -15,10 +15,6 @@ export function useCreateSeriesUniverse(params: { series?: SeriesPort }) {
   const [selectedOriginalSeriesId, setSelectedOriginalSeriesId] = useState<
     string | undefined
   >(undefined);
-  const [worldviewTextAreas, setWorldviewTextAreas] = useState<string[]>([
-    "",
-    "",
-  ]);
   const [paidSeries, setPaidSeries] = useState(false);
   const [episodePrice, setEpisodePrice] = useState("");
 
@@ -48,10 +44,6 @@ export function useCreateSeriesUniverse(params: { series?: SeriesPort }) {
     setSelectedOriginalSeriesId(id);
   }, []);
 
-  const onWorldviewTextAreasChange = useCallback((textAreas: string[]) => {
-    setWorldviewTextAreas(textAreas);
-  }, []);
-
   const onPaidSeriesChange = useCallback((checked: boolean) => {
     setPaidSeries(checked);
   }, []);
@@ -73,17 +65,14 @@ export function useCreateSeriesUniverse(params: { series?: SeriesPort }) {
     originalSeriesSearch,
     originalSeriesList,
     selectedOriginalSeriesId,
-    worldviewTextAreas,
     paidSeries,
     episodePrice,
     onStepChange,
     onOriginalSeriesSearchChange,
     onOriginalSeriesSelect,
-    onWorldviewTextAreasChange,
     onPaidSeriesChange,
     onEpisodePriceChange,
     onPrevious,
     onNext,
   };
 }
-

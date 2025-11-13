@@ -36,21 +36,22 @@ export function Router() {
       <ReactRouter>
         <Routes>
           {/* Layout 없이 */}
-          <Route element={<Home />} path="/" />
-          <Route element={<Interests />} path="/interests" />
-          <Route element={<New />} path="/new" />
           <Route element={<TestPage />} path="/test" />
-          <Route element={<Viewer />} path="/viewer" />
-          <Route element={<SeriesDetail />} path="/series/:seriesId" />
+          <Route element={<Viewer />} path="/series/:seriesId/viewer" />
+          <Route element={<Viewer />} path="/post/:postId/viewer" />
           <Route element={<Editor />} path="/editor" />
 
           {/* Layout이 필요한 페이지들 */}
           <Route element={<Layout />}>
+            <Route element={<Home />} path="/" />
+            <Route element={<Interests />} path="/interests" />
+            <Route element={<New />} path="/new" />
             <Route element={<MyPageMain />} path="/my-page/main" />
             <Route element={<MyLibrary />} path="/my-page/library" />
             <Route element={<Revenue />} path="/my-page/revenue" />
             <Route element={<PointHistory />} path="/my-page/point" />
             <Route element={<Favorites />} path="/my-page/favorites" />
+            <Route element={<SeriesDetail />} path="/series/:seriesId" />
             <Route
               element={<CreateSeriesBasic />}
               path="/create-series/basic"

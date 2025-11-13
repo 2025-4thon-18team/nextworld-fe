@@ -1,6 +1,6 @@
 import { FC } from "react";
 import { EditorHeader } from "@/components/EditorHeader/EditorHeader";
-import { TypeSidebar } from "@/components/TypeSidebar/TypeSidebar";
+import { EditorSidebar } from "@/components/EditorSidebar/EditorSidebar";
 
 type Props = {
   title: string;
@@ -72,14 +72,11 @@ export const EditorView: FC<Props> = ({
     return "post-with-settlement";
   };
 
-  const getSidebarVariant = () => {
+  const getSidebarVariant = (): "post-type" | "series-type" | "guideline" => {
     if (editorVariant === "secondary-series") {
-      return "series";
+      return "series-type";
     }
-    if (editorVariant === "secondary-post") {
-      return "post-secondary";
-    }
-    return "post";
+    return "post-type";
   };
 
   return (
@@ -91,14 +88,13 @@ export const EditorView: FC<Props> = ({
         onSettle={onSettle}
         onAddImage={onAddImage}
         editorOptionsVariant={getEditorOptionsVariant()}
-        className="w-1440"
       />
 
-      <div className="relative flex w-full items-start justify-center gap-10">
+      <div className="relative flex h-full w-full items-start justify-center gap-10">
         {/* Editor Area */}
-        <div className="relative flex h-788 w-890 shrink-0 flex-col overflow-hidden bg-white">
+        <div className="relative flex h-full w-890 shrink-0 flex-col overflow-hidden bg-white">
           {/* Editable Content */}
-          <div className="flex flex-col gap-10 px-59 pt-39">
+          <div className="flex h-fit flex-col gap-10 px-59 pt-39">
             <input
               type="text"
               value={title}
@@ -118,27 +114,30 @@ export const EditorView: FC<Props> = ({
 
         {/* Sidebar */}
         {sidebarOpen && (
-          <TypeSidebar
+          <EditorSidebar
+            variant={getSidebarVariant()}
             title="업로드 유형"
-            postSelected={postSelected}
-            onPostChange={onPostChange}
-            paidPost={paidPost}
-            onPaidPostChange={onPaidPostChange}
-            episodePrice={episodePrice}
-            onEpisodePriceChange={onEpisodePriceChange}
-            tags={tags}
-            allowDerivative={allowDerivative}
-            onAllowDerivativeChange={onAllowDerivativeChange}
+            onClose={onSidebarClose}
+            postTypeTab={postSelected ? "포스트" : "작품 연재"}
+            onPostTypeTabChange={(tab) => onPostChange?.(tab === "포스트")}
+            originalSelected={allowDerivative}
+            onOriginalChange={onAllowDerivativeChange}
             searchValue={searchValue}
-            onSearchChange={onSearchChange}
-            series={series}
-            selectedSeriesId={selectedSeriesId}
-            onSeriesSelect={onSeriesSelect}
+            onSearchChange={(e) => onSearchChange?.(e.target.value)}
+            series={series.map((item, index) => ({
+              imageUrl: item.imageUrl,
+              title: item.title,
+              selected: selectedSeriesId === (item.id || String(index)),
+            }))}
+            onSeriesClick={onSeriesSelect}
+            paidPostEnabled={paidPost}
+            onPaidPostChange={onPaidPostChange}
+            priceValue={episodePrice}
+            onPriceChange={onEpisodePriceChange}
+            tags={tags}
             onAddSeries={onAddSeries}
             categoryTab={categoryTab}
             onCategoryTabChange={onCategoryTabChange}
-            variant={getSidebarVariant()}
-            onClose={onSidebarClose}
           />
         )}
       </div>

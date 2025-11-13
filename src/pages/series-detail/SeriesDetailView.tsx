@@ -1,8 +1,7 @@
 import { FC } from "react";
 import { cn } from "@/utils";
-import { Gnb } from "@/components/Gnb/Gnb";
 import { SeriesDetailHeroView } from "./components/SeriesDetailHeroView";
-import { ContentInfo } from "@/components/ContentInfo/ContentInfo";
+import { SeriesInfo } from "./components/SeriesInfo";
 import { SeriesDetailContentView } from "./components/SeriesDetailContentView";
 
 interface Episode {
@@ -102,10 +101,7 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
   className,
 }) => {
   return (
-    <div className={cn("relative size-full bg-white", className)}>
-      {/* GNB */}
-      <Gnb className="border-grayscale-g2 absolute top-px left-[-3px] w-1440 border-b bg-white" />
-
+    <div className={cn("flex size-full flex-col bg-white", className)}>
       {/* Hero Section */}
       <div className="absolute top-101 left-82">
         <SeriesDetailHeroView
@@ -118,38 +114,41 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
         />
       </div>
 
-      {/* Content Info Sidebar */}
-      <div className="absolute top-600 left-118">
-        <ContentInfo
-          category={category}
-          rating={rating}
-          views={views}
-          isSerializing={isSerializing}
-          tags={tags}
-          likes={likes}
-          onLike={onLike}
-          onInterest={onInterest}
-          onShare={onShare}
-        />
-      </div>
+      {/* Main Content Area */}
+      <div className="flex items-start gap-20 px-118 pt-20">
+        {/* Content Info Sidebar */}
+        <div className="flex shrink-0">
+          <SeriesInfo
+            category={category}
+            rating={rating}
+            views={views}
+            isSerializing={isSerializing}
+            tags={tags}
+            likes={likes}
+            onLike={onLike}
+            onInterest={onInterest}
+            onShare={onShare}
+          />
+        </div>
 
-      {/* Content Section */}
-      <div className="absolute top-572 left-[calc(33.333%+35px)]">
-        <SeriesDetailContentView
-          activeTab={activeTab}
-          totalEpisodes={totalEpisodes}
-          episodes={episodes}
-          universeWorks={universeWorks}
-          popularPosts={popularPosts}
-          filterLabel={filterLabel}
-          filterSubLabel={filterSubLabel}
-          onTabChange={onTabChange}
-          onEpisodeClick={onEpisodeClick}
-          onUniverseWorkClick={onUniverseWorkClick}
-          onPostClick={onPostClick}
-          onFilterToggle={onFilterToggle}
-          className="w-833"
-        />
+        {/* Content Section */}
+        <div className="flex flex-1 shrink-0">
+          <SeriesDetailContentView
+            activeTab={activeTab}
+            totalEpisodes={totalEpisodes}
+            episodes={episodes}
+            universeWorks={universeWorks}
+            popularPosts={popularPosts}
+            filterLabel={filterLabel}
+            filterSubLabel={filterSubLabel}
+            onTabChange={onTabChange}
+            onEpisodeClick={onEpisodeClick}
+            onUniverseWorkClick={onUniverseWorkClick}
+            onPostClick={onPostClick}
+            onFilterToggle={onFilterToggle}
+            className="w-833"
+          />
+        </div>
       </div>
     </div>
   );
