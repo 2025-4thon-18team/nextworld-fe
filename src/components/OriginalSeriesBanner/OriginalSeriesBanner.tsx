@@ -1,11 +1,13 @@
 import { FC } from "react";
 import { cn } from "@/utils";
 import { IconChevron } from "@/assets/icons";
+import { useNavigation } from "@/hooks/useNavigation";
 
 interface OriginalSeriesBannerProps {
   imageUrl: string;
   label: string;
   title: string;
+  seriesId?: string | number;
   onClick?: () => void;
   className?: string;
 }
@@ -14,19 +16,30 @@ export const OriginalSeriesBanner: FC<OriginalSeriesBannerProps> = ({
   imageUrl,
   label,
   title,
+  seriesId,
   onClick,
   className,
 }) => {
+  const { navigateToSeries } = useNavigation();
+
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else if (seriesId) {
+      navigateToSeries(seriesId);
+    }
+  };
+
   return (
     <div
       className={cn(
-        "bg-[lightgrey] flex items-center justify-between overflow-clip p-10 rounded-md w-760",
+        "flex w-760 items-center justify-between overflow-clip rounded-md bg-[lightgrey] p-10",
         className,
       )}
     >
-      <div className="flex gap-10 items-center relative shrink-0">
+      <div className="relative flex shrink-0 items-center gap-10">
         {/* Image */}
-        <div className="relative h-75 rounded-sm shrink-0 w-50">
+        <div className="relative h-75 w-50 shrink-0 rounded-sm">
           <img
             alt={title}
             src={imageUrl}
@@ -35,7 +48,7 @@ export const OriginalSeriesBanner: FC<OriginalSeriesBannerProps> = ({
         </div>
 
         {/* Text Content */}
-        <div className="flex flex-col gap-2 items-start justify-center leading-normal relative shrink-0 text-black text-nowrap whitespace-pre">
+        <div className="relative flex shrink-0 flex-col items-start justify-center gap-2 leading-normal text-nowrap whitespace-pre text-black">
           <p className="text-caption-regular relative shrink-0 tracking-tight">
             {label}
           </p>
@@ -48,12 +61,11 @@ export const OriginalSeriesBanner: FC<OriginalSeriesBannerProps> = ({
       {/* Arrow Icon */}
       <button
         type="button"
-        onClick={onClick}
-        className="flex items-center justify-center relative shrink-0"
+        onClick={handleClick}
+        className="relative flex shrink-0 items-center justify-center"
       >
-        <IconChevron className="size-24 overflow-hidden rotate-180" />
+        <IconChevron className="size-24 rotate-180 overflow-hidden" />
       </button>
     </div>
   );
 };
-

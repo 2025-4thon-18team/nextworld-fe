@@ -24,10 +24,11 @@ export const SeriesCard: FC<SeriesCardProps> = ({
 }) => {
   const { navigateToSeries } = useNavigation();
   const handleSeriesClick = useCallback(() => {
-    if (seriesId) {
+    // onClick이 있으면 우선적으로 onClick 호출 (예: Interests 페이지에서 작품 선택)
+    if (onClick) {
+      onClick();
+    } else if (seriesId) {
       navigateToSeries(Number(seriesId));
-    } else {
-      onClick?.();
     }
   }, [navigateToSeries, seriesId, onClick]);
   return (
