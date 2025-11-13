@@ -1,8 +1,9 @@
 import { http, HttpResponse } from "msw";
+import { serverUrl } from "../utils";
 
 export const paymentHandlers = [
   // 포인트 충전
-  http.post("/api/payment/charge", async () => {
+  http.post(serverUrl("/api/payment/charge"), async () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -12,7 +13,7 @@ export const paymentHandlers = [
   }),
 
   // 포인트 사용
-  http.post("/api/payment/use", async () => {
+  http.post(serverUrl("/api/payment/use"), async () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -22,7 +23,7 @@ export const paymentHandlers = [
   }),
 
   // 결제 검증
-  http.post("/api/payment/verify", async () => {
+  http.post(serverUrl("/api/payment/verify"), async () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -32,7 +33,7 @@ export const paymentHandlers = [
   }),
 
   // 환불 요청
-  http.post("/api/payment/refund", async () => {
+  http.post(serverUrl("/api/payment/refund"), async () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -42,7 +43,7 @@ export const paymentHandlers = [
   }),
 
   // 충전 옵션 조회
-  http.get("/api/payment/options", () => {
+  http.get(serverUrl("/api/payment/options"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -60,7 +61,7 @@ export const paymentHandlers = [
   }),
 
   // 충전 내역 조회
-  http.get("/api/payment/history/charge", () => {
+  http.get(serverUrl("/api/payment/history/charge"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -89,7 +90,7 @@ export const paymentHandlers = [
   }),
 
   // 사용 내역 조회
-  http.get("/api/payment/history/use", () => {
+  http.get(serverUrl("/api/payment/history/use"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,

@@ -1,8 +1,9 @@
 import { http, HttpResponse } from "msw";
+import { serverUrl } from "../utils";
 
 export const revenueHandlers = [
   // 수익 분배
-  http.post("/api/revenue/distribute", async () => {
+  http.post(serverUrl("/api/revenue/distribute"), async () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -12,7 +13,7 @@ export const revenueHandlers = [
   }),
 
   // 수익 대시보드 조회
-  http.get("/api/revenue/dashboard", () => {
+  http.get(serverUrl("/api/revenue/dashboard"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -28,7 +29,7 @@ export const revenueHandlers = [
   }),
 
   // 판매 내역 조회
-  http.get("/api/revenue/sales", () => {
+  http.get(serverUrl("/api/revenue/sales"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -51,7 +52,7 @@ export const revenueHandlers = [
   }),
 
   // 수익 정산
-  http.post("/api/revenue/settle", () => {
+  http.post(serverUrl("/api/revenue/settle"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -65,7 +66,7 @@ export const revenueHandlers = [
   }),
 
   // 정산 내역 조회
-  http.get("/api/revenue/settle/history", () => {
+  http.get(serverUrl("/api/revenue/settle/history"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,

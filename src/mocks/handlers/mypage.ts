@@ -1,4 +1,5 @@
 import { http, HttpResponse } from "msw";
+import { serverUrl } from "../utils";
 
 // 가짜 작품 데이터 생성
 const createMockWork = (id: number, type: "original" | "derivative") => ({
@@ -16,7 +17,7 @@ const createMockWork = (id: number, type: "original" | "derivative") => ({
 
 export const mypageHandlers = [
   // 내 작품 리스트 조회
-  http.get("/api/mypage/works", ({ request }) => {
+  http.get(serverUrl("/api/mypage/works"), ({ request }) => {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get("page") || "1");
     const pageSize = parseInt(url.searchParams.get("pageSize") || "10");
@@ -40,7 +41,7 @@ export const mypageHandlers = [
   }),
 
   // 내 북마크 작품 리스트 조회
-  http.get("/api/mypage/bookmarks", ({ request }) => {
+  http.get(serverUrl("/api/mypage/bookmarks"), ({ request }) => {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get("page") || "1");
     const pageSize = parseInt(url.searchParams.get("pageSize") || "10");
@@ -64,7 +65,7 @@ export const mypageHandlers = [
   }),
 
   // 내 포인트
-  http.get("/api/mypage/points", () => {
+  http.get(serverUrl("/api/mypage/points"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -76,7 +77,7 @@ export const mypageHandlers = [
   }),
 
   // 포인트 결제 내역
-  http.get("/api/mypage/paylist", () => {
+  http.get(serverUrl("/api/mypage/paylist"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -103,7 +104,7 @@ export const mypageHandlers = [
   }),
 
   // 내 수익
-  http.get("/api/mypage/revenue", () => {
+  http.get(serverUrl("/api/mypage/revenue"), () => {
     return HttpResponse.json({
       data: {
         totalRevenue: 150000,

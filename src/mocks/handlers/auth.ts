@@ -1,4 +1,5 @@
 import { http, HttpResponse } from "msw";
+import { serverUrl } from "../utils";
 
 // 가짜 사용자 데이터
 const mockUser = {
@@ -11,7 +12,7 @@ const mockUser = {
 
 export const authHandlers = [
   // 회원가입
-  http.post("/api/auth/signup", async ({ request }) => {
+  http.post(serverUrl("/api/auth/signup"), async ({ request }) => {
     const body = await request.json();
     return HttpResponse.json(
       {
@@ -29,7 +30,7 @@ export const authHandlers = [
   }),
 
   // 로그인
-  http.post("/api/auth/login", async ({ request }) => {
+  http.post(serverUrl("/api/auth/login"), async ({ request }) => {
     const body = await request.json();
     const { email } = body as { email: string };
 
@@ -55,7 +56,7 @@ export const authHandlers = [
   }),
 
   // 로그아웃
-  http.post("/api/auth/logout", () => {
+  http.post(serverUrl("/api/auth/logout"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -65,7 +66,7 @@ export const authHandlers = [
   }),
 
   // 액세스 토큰 재발급
-  http.post("/api/auth/refresh", () => {
+  http.post(serverUrl("/api/auth/refresh"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -75,7 +76,7 @@ export const authHandlers = [
   }),
 
   // 내 계정 정보 조회
-  http.get("/api/auth/me", () => {
+  http.get(serverUrl("/api/auth/me"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,

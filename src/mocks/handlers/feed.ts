@@ -1,4 +1,5 @@
 import { http, HttpResponse } from "msw";
+import { serverUrl } from "../utils";
 
 // 가짜 작품 데이터 생성
 const createMockFeedWork = (id: number) => ({
@@ -18,9 +19,63 @@ const createMockFeedWork = (id: number) => ({
   category: `카테고리${(id % 4) + 1}`,
 });
 
+// 가짜 포스트 데이터 생성 함수
+const createMockPost = (id: number, workId?: number) => ({
+  id,
+  workId,
+  workTitle: workId ? `작품 제목 ${workId}` : undefined,
+  postType: workId ? ("EPISODE" as const) : ("POST" as const),
+  episodeNumber: workId ? id : undefined,
+  parentWorkId: workId ? undefined : Math.floor(Math.random() * 10) + 1,
+  parentWorkTitle: workId ? undefined : `원작 작품 ${Math.floor(Math.random() * 10) + 1}`,
+  authorName: `작가${(id % 10) + 1}`,
+  creationType: workId ? undefined : (Math.random() > 0.5 ? "ORIGINAL" : "DERIVATIVE") as "ORIGINAL" | "DERIVATIVE",
+  title: workId ? `회차 제목 ${id}` : `포스트 제목 ${id}`,
+  content: `포스트 내용 ${id}입니다. 이것은 멋진 이야기입니다...`,
+  hasImage: Math.random() > 0.5,
+  isPaid: Math.random() > 0.7,
+  price: Math.random() > 0.7 ? Math.floor(Math.random() * 500) + 100 : undefined,
+  tags: [`태그${id % 5}`, `장르${id % 3}`],
+  viewsCount: Math.floor(Math.random() * 1000),
+  commentsCount: Math.floor(Math.random() * 100),
+  rating: Number((Math.random() * 5).toFixed(2)),
+  status: "PUBLISHED" as const,
+  createdAt: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
+  updatedAt: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
+});
+
 export const feedHandlers = [
+  // 포스트 목록 조회 (workId 필터링 가능)
+  http.get(serverUrl("/api/posts"), ({ request }) => {
+    const url = new URL(request.url);
+    const workIdParam = url.searchParams.get("workId");
+    const workId = workIdParam ? parseInt(workIdParam) : undefined;
+
+    const allPosts = Array.from({ length: 100 }, (_, i) => {
+      // workId가 있으면 해당 작품의 회차만, 없으면 독립 포스트만
+      const postWorkId = workId || (i % 3 === 0 ? undefined : Math.floor(Math.random() * 10) + 1);
+      return createMockPost(i + 1, postWorkId);
+    });
+
+    const filteredPosts = workId
+      ? allPosts.filter((post) => post.workId === workId)
+      : allPosts.filter((post) => !post.workId);
+
+    return HttpResponse.json(filteredPosts);
+  }),
+
+  // 포스트 상세 조회
+  http.get(serverUrl("/api/posts/:id"), ({ params }) => {
+    const { id } = params;
+    const postId = parseInt(id as string);
+    const workId = postId % 3 === 0 ? undefined : Math.floor(Math.random() * 10) + 1;
+    const post = createMockPost(postId, workId);
+
+    return HttpResponse.json(post);
+  }),
+
   // 메인 피드 조회
-  http.get("/api/feed", ({ request }) => {
+  http.get(serverUrl("/api/feed"), ({ request }) => {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get("page") || "1");
     const pageSize = parseInt(url.searchParams.get("pageSize") || "20");
@@ -56,7 +111,7 @@ export const feedHandlers = [
   }),
 
   // 작품 검색
-  http.get("/api/feed/search", ({ request }) => {
+  http.get(serverUrl("/api/feed/search"), ({ request }) => {
     const url = new URL(request.url);
     const query = url.searchParams.get("query") || "";
     const page = parseInt(url.searchParams.get("page") || "1");
@@ -100,7 +155,7 @@ export const feedHandlers = [
   }),
 
   // 작가 피드 조회
-  http.get("/api/feed/:author_id", ({ request, params }) => {
+  http.get(serverUrl("/api/feed/:author_id"), ({ request, params }) => {
     const { author_id } = params;
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get("page") || "1");
@@ -136,7 +191,7 @@ export const feedHandlers = [
   }),
 
   // 주간 유니버스 조회 (ContentPort.getUniverseOfWeek)
-  http.get("/api/feed/universe-of-week", () => {
+  http.get(serverUrl("/api/feed/universe-of-week"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -151,7 +206,7 @@ export const feedHandlers = [
   }),
 
   // 인기 작품 조회 (ContentPort.getPopularSeries)
-  http.get("/api/feed/popular-series", () => {
+  http.get(serverUrl("/api/feed/popular-series"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -186,7 +241,7 @@ export const feedHandlers = [
   }),
 
   // 인기 포스트 조회 (ContentPort.getPopularPosts)
-  http.get("/api/feed/popular-posts", () => {
+  http.get(serverUrl("/api/feed/popular-posts"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -221,7 +276,7 @@ export const feedHandlers = [
   }),
 
   // 신규 작품 조회 (ContentPort.getNewSeries)
-  http.get("/api/feed/new-series", () => {
+  http.get(serverUrl("/api/feed/new-series"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -236,7 +291,7 @@ export const feedHandlers = [
   }),
 
   // 신규 포스트 조회 (ContentPort.getNewPosts)
-  http.get("/api/feed/new-posts", () => {
+  http.get(serverUrl("/api/feed/new-posts"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -257,7 +312,7 @@ export const feedHandlers = [
   }),
 
   // 관심 작품 조회 (ContentPort.getFavoriteSeries)
-  http.get("/api/feed/favorite-series", () => {
+  http.get(serverUrl("/api/feed/favorite-series"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -272,7 +327,7 @@ export const feedHandlers = [
   }),
 
   // 최신 업데이트 조회 (ContentPort.getLatestUpdates)
-  http.get("/api/feed/latest-updates", () => {
+  http.get(serverUrl("/api/feed/latest-updates"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,
@@ -290,7 +345,7 @@ export const feedHandlers = [
   }),
 
   // 신규 유니버스 작품 조회 (ContentPort.getNewUniverseSeries)
-  http.get("/api/feed/new-universe-series", () => {
+  http.get(serverUrl("/api/feed/new-universe-series"), () => {
     return HttpResponse.json({
       success: true,
       code: 200,

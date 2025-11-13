@@ -1,4 +1,5 @@
 import { http, HttpResponse } from "msw";
+import { serverUrl } from "../utils";
 
 // 가짜 사용자 데이터 생성
 const createMockUser = (id: number) => ({
@@ -77,7 +78,7 @@ const createMockReport = (id: number) => ({
 
 export const adminHandlers = [
   // 전체 유저 목록 조회
-  http.get("/api/admin/users", ({ request }) => {
+  http.get(serverUrl("/api/admin/users"), ({ request }) => {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get("page") || "1");
     const pageSize = parseInt(url.searchParams.get("pageSize") || "20");
@@ -112,7 +113,7 @@ export const adminHandlers = [
   }),
 
   // 결제/환불 요청 조회
-  http.get("/api/admin/payments", ({ request }) => {
+  http.get(serverUrl("/api/admin/payments"), ({ request }) => {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get("page") || "1");
     const pageSize = parseInt(url.searchParams.get("pageSize") || "20");
@@ -147,21 +148,24 @@ export const adminHandlers = [
   }),
 
   // 특정 결제건 환불 처리
-  http.patch("/api/admin/payments/:tx_id/refund", async ({ params }) => {
-    const { tx_id } = params;
+  http.patch(
+    serverUrl("/api/admin/payments/:tx_id/refund"),
+    async ({ params }) => {
+      const { tx_id } = params;
 
-    return HttpResponse.json({
-      data: {
-        transactionId: tx_id,
-        refundAmount: 50000,
-        status: "refunded",
-        refundedAt: new Date().toISOString(),
-      },
-    });
-  }),
+      return HttpResponse.json({
+        data: {
+          transactionId: tx_id,
+          refundAmount: 50000,
+          status: "refunded",
+          refundedAt: new Date().toISOString(),
+        },
+      });
+    },
+  ),
 
   // 신고 목록 조회
-  http.get("/api/admin/reports", ({ request }) => {
+  http.get(serverUrl("/api/admin/reports"), ({ request }) => {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get("page") || "1");
     const pageSize = parseInt(url.searchParams.get("pageSize") || "20");

@@ -9,20 +9,21 @@ import {
   feedHandlers,
   adminHandlers,
 } from "./handlers";
+import { serverUrl } from "./utils";
 
 export const handlers = [
   // 데모 핸들러 (테스트용)
-  http.get("/api/v1/demo/", () => {
+  http.get(serverUrl("/api/v1/demo/"), () => {
     return HttpResponse.json({
       message: "From mock server",
     });
   }),
-  http.get("/api/v1/demo/:id", ({ params }) => {
+  http.get(serverUrl("/api/v1/demo/:id"), ({ params }) => {
     return HttpResponse.json({
       id: params.id,
     });
   }),
-  http.get("/api/user", () => {
+  http.get(serverUrl("/api/user"), () => {
     return HttpResponse.json({
       name: "홍길동",
       age: 30,
