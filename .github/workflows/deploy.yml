@@ -38,13 +38,17 @@ jobs:
       - name: Build design tokens
         run: npm run build-token
 
+      - name: Create .env file from base64
+        if: secrets.ENV_FILE_BASE64 != ''
+        run: |
+          echo "${{ secrets.ENV_FILE_BASE64 }}" | base64 -d > .env
+          echo "✅ .env file created"
+          # .env 파일 내용 확인 (비밀번호 제외)
+          echo "📋 .env file preview (masked):"
+          cat .env | sed 's/=.*/=***/' || true
+
       - name: Build project
         env:
-          VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
-          VITE_APP_ENV: ${{ secrets.VITE_APP_ENV || 'production' }}
-          VITE_ENABLE_MOCK: ${{ secrets.VITE_ENABLE_MOCK || 'false' }}
-          VITE_ENABLE_LOCATOR: ${{ secrets.VITE_ENABLE_LOCATOR || 'false' }}
-          VITE_ENABLE_QUERY_DEVTOOLS: ${{ secrets.VITE_ENABLE_QUERY_DEVTOOLS || 'false' }}
           GITHUB_PAGES: "true"
         run: npm run build
 
