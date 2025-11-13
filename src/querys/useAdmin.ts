@@ -39,12 +39,12 @@ export const useGetPayments = () => {
   });
 };
 
-// Mutation: 환불 처리
-export const useRefundPayment = () => {
+// Mutation: 환불 처리 (관리자용)
+export const useRefundPaymentAdmin = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationKey: ["useRefundPayment"],
+    mutationKey: ["useRefundPaymentAdmin"],
     mutationFn: async (payId: number) => {
       const response = await adminApi.refundPayment(payId);
       return response.data; // string

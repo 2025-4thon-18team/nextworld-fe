@@ -86,9 +86,7 @@ export const scrapHandlers = [
   }),
 
   // POST 스크랩 삭제
-  http.delete(serverUrl("/api/scraps/posts/:postId"), ({ params }) => {
-    const { postId } = params;
-
+  http.delete(serverUrl("/api/scraps/posts/:postId"), () => {
     return HttpResponse.json("스크랩 취소 완료");
   }),
 ];

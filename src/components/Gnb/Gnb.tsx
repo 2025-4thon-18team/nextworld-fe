@@ -5,7 +5,6 @@ import { Search } from "@/components/Search/Search";
 import { ButtonSmall } from "@/components/ButtonSmall/ButtonSmall";
 import { ProfileImg } from "@/components/ProfileImg/ProfileImg";
 import { Link } from "react-router-dom";
-import { useNavigation } from "@/hooks/useNavigation";
 
 interface GnbProps {
   isAuthorized?: boolean;

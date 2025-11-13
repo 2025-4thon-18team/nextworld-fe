@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { cn } from "@/utils";
 import { ProfileImg } from "@/components/ProfileImg/ProfileImg";
 import { RadioButton } from "@/components/RadioButton/RadioButton";
 import { SeriesCard } from "@/components/SeriesCard/SeriesCard";

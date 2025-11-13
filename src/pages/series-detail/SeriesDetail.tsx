@@ -3,7 +3,6 @@ import { SeriesDetailView } from "./SeriesDetailView";
 import {
   useGetWorkById,
   useGetWorkEpisodes,
-  useGetDerivativePosts,
 } from "@/querys/useWorks";
 import { useGetAllPosts } from "@/querys/usePosts";
 import { useTab } from "@/hooks/useTab";
@@ -28,7 +27,6 @@ const SeriesDetail = () => {
   // React Query hooks 직접 사용
   const { data: workData } = useGetWorkById(seriesId);
   const { data: episodesData } = useGetWorkEpisodes(seriesId);
-  const { data: derivativePostsData } = useGetDerivativePosts(seriesId);
   const { data: allPostsData } = useGetAllPosts(seriesId || undefined);
 
   const seriesData = useMemo(() => {

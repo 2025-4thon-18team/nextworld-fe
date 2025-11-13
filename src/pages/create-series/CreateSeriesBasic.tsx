@@ -7,7 +7,7 @@ type StepType = "기본 설정" | "유니버스 설정" | "2차 창작 설정";
 const CreateSeriesBasic = () => {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState<StepType>("기본 설정");
-  const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>();
+  const [coverImageUrl] = useState<string | undefined>();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [serialDays, setSerialDays] = useState<string[]>([]);
@@ -62,6 +62,7 @@ const CreateSeriesBasic = () => {
       onDescriptionChange={onDescriptionChange}
       onSerialDayToggle={onSerialDayToggle}
       onGenreToggle={onGenreToggle}
+      onTagsChange={setTags}
       onNext={onNext}
     />
   );

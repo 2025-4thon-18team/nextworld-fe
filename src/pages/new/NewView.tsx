@@ -66,7 +66,6 @@ export const NewView: FC<Props> = ({
                 title={series.title}
                 tags={series.tags}
                 seriesId={series.id}
-                contentId={series.id}
                 selected={false}
                 className="gap-sm p-sm flex w-203 shrink-0 flex-col items-start rounded-md"
               />

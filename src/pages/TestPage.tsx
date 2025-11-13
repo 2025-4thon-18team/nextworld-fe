@@ -237,8 +237,10 @@ function TestPage() {
   const handleTestProfile = () => {
     console.log("=== Profile Test ===");
     updateProfile({
-      nickname: "새로운닉네임",
-      // bio: "안녕하세요!",
+      name: "새로운이름",
+      bio: "안녕하세요!",
+      contactEmail: "test@example.com",
+      twitter: "@test",
     });
     setCount(count + 1);
   };

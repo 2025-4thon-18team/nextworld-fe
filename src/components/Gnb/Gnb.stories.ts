@@ -8,12 +8,6 @@ const meta = {
     layout: "centered",
   },
   tags: ["autodocs"],
-  argTypes: {
-    activeMenu: {
-      control: "select",
-      options: ["홈", "작품", "포스트"],
-    },
-  },
 } satisfies Meta<typeof Gnb>;
 
 export default meta;
@@ -21,27 +15,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    activeMenu: "홈",
-    userImages: ["https://placehold.co/50", "https://placehold.co/50"],
+    isAuthorized: false,
   },
 };
 
-export const ActiveWork: Story = {
+export const Authorized: Story = {
   args: {
-    activeMenu: "작품",
-    userImages: ["https://placehold.co/50", "https://placehold.co/50"],
-  },
-};
-
-export const ActivePost: Story = {
-  args: {
-    activeMenu: "포스트",
-    userImages: ["https://placehold.co/50", "https://placehold.co/50"],
-  },
-};
-
-export const NoUserImages: Story = {
-  args: {
-    activeMenu: "홈",
+    isAuthorized: true,
+    profileImageUrl: "https://placehold.co/50",
   },
 };

@@ -4,8 +4,6 @@ import {
   IconPost,
   IconSeries,
   IconWarning,
-  IconDocument,
-  IconPosnts,
 } from "@/assets/icons";
 import IconWithLabel from "@/components/IconWithLabel/IconWithLabel";
 

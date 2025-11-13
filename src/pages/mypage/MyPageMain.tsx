@@ -1,10 +1,8 @@
 import { useMemo, useCallback } from "react";
 import { MyPageMainView } from "./MyPageMainView";
-import { useGetMyPoints } from "@/querys/useMypage";
 import { useGetMe } from "@/querys/useAuth";
 import { useGetAllWorks } from "@/querys/useWorks";
 import { useTab } from "@/hooks/useTab";
-import { usePoints } from "@/hooks/usePoints";
 import { useSimpleWorkTransform } from "@/hooks/useWorkTransform";
 import { useNavigation } from "@/hooks/useNavigation";
 

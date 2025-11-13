@@ -25,8 +25,8 @@ export const HomeLayoutView: FC<HomeLayoutViewProps> = ({
     <div className={cn("flex size-full flex-col bg-white", className)}>
       {/* Home Category */}
       <HomeCategory
-        activeTab={activeTab}
-        onTabChange={onTabChange}
+        activeTab={activeTab as "홈" | "신규" | "관심" | "내 작품" | "원작" | "포스트" | "작품 연재"}
+        onTabChange={onTabChange as (tab: "홈" | "신규" | "관심" | "내 작품" | "원작" | "포스트" | "작품 연재") => void}
         className={cn("flex h-48 items-center", categoryClassName)}
       />
 

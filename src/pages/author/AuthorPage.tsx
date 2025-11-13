@@ -13,7 +13,7 @@ const AuthorPage = () => {
   const seriesList = useMemo(() => {
     if (!worksData) return [];
     return worksData.slice(0, 6).map((work) => ({
-      id: work.id,
+      id: String(work.id),
       imageUrl: work.coverImageUrl,
       title: work.title,
       tags: work.tags,

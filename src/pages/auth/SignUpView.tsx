@@ -30,7 +30,6 @@ export const SignUpView: FC<Props> = ({
   onPasswordChange,
   onPasswordConfirmChange,
   onSubmit,
-  onLoginClick,
 }) => {
   return (
     <div className="flex min-h-screen w-full flex-col items-center gap-60 bg-white">

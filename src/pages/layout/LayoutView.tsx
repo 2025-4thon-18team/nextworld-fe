@@ -7,10 +7,10 @@ type Props = {
   onMenuClick: (menu: "홈" | "작품" | "포스트") => void;
 };
 
-export const LayoutView: FC<Props> = ({ activeMenu, onMenuClick }) => {
+export const LayoutView: FC<Props> = () => {
   return (
     <div className="flex min-h-screen w-full flex-col bg-white">
-      <Gnb activeMenu={activeMenu} onMenuClick={onMenuClick} />
+      <Gnb />
       <main className="mx-auto w-full max-w-1280 overflow-x-hidden">
         <Outlet />
       </main>

@@ -13,7 +13,6 @@ interface PaymentItemProps {
 }
 
 export const PaymentItem: FC<PaymentItemProps> = ({
-  type,
   title,
   subtitle,
   points,

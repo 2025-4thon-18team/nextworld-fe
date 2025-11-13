@@ -1,9 +1,7 @@
 import { useMemo } from "react";
 import { PointHistoryView } from "./PointHistoryView";
-import { useGetMyPoints } from "@/querys/useMypage";
 import { useGetChargeHistory, useGetUsageHistory } from "@/querys/usePayment";
 import { useTab } from "@/hooks/useTab";
-import { usePoints } from "@/hooks/usePoints";
 
 type PointTab = "포인트 충전" | "충전 내역" | "사용 내역";
 

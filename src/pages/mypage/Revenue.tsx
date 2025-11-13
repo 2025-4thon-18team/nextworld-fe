@@ -1,9 +1,7 @@
 import { useMemo } from "react";
 import { RevenueView } from "./RevenueView";
-import { useGetMyPoints } from "@/querys/useMypage";
 import { useGetRevenueDashboard, useGetSales } from "@/querys/useRevenue";
 import { useTab } from "@/hooks/useTab";
-import { usePoints } from "@/hooks/usePoints";
 
 type RevenueTab = "대시보드" | "판매내역";
 

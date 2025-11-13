@@ -133,7 +133,6 @@ export const SeriesDetailContentView: FC<SeriesDetailContentViewProps> = ({
                   title={work.title}
                   tags={work.tags}
                   seriesId={work.id}
-                  contentId={work.id}
                   className="w-203 shrink-0"
                 />
               ))}

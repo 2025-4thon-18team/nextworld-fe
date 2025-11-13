@@ -13,12 +13,12 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [postSelected, setPostSelected] = useState(true);
-  const [tags, setTags] = useState<string[]>([]);
+  const [tags] = useState<string[]>([]);
   const [allowDerivative, setAllowDerivative] = useState(false);
   const [paidPost, setPaidPost] = useState(false);
   const [episodePrice, setEpisodePrice] = useState("");
   const [searchValue, setSearchValue] = useState("");
-  const [series, setSeries] = useState<
+  const [series] = useState<
     Array<{ imageUrl: string; title: string; id?: string }>
   >([
     {

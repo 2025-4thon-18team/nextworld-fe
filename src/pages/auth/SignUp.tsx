@@ -34,13 +34,12 @@ const SignUp = () => {
 
   const onSubmit = useCallback(async () => {
     await signupMutation.mutateAsync({
-      name,
       nickname,
       email,
       password,
     });
     navigateToLogin();
-  }, [signupMutation, navigateToLogin, name, nickname, email, password]);
+  }, [signupMutation, navigateToLogin, nickname, email, password]);
 
   const onLoginClick = useCallback(() => {
     navigateToLogin();

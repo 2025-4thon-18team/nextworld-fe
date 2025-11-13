@@ -37,7 +37,7 @@ export const ButtonGroup: Story = {
     children: "회차",
     selected: false,
   },
-  render: (args) => {
+  render: () => {
     return (
       <div className="flex gap-2">
         <RadioButton selected={true}>회차</RadioButton>
