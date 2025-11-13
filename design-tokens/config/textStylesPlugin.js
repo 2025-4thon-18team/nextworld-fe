@@ -33,7 +33,9 @@ export default plugin(function ({ addComponents }) {
         }
 
         if (prop === "fontSize" && !isNaN(parseFloat(val))) {
-          normalized = `${val}px`;
+          // fontSize를 rem으로 변환 (기본 divider: 16)
+          const remValue = parseFloat(val) / 16;
+          normalized = `${remValue}rem`;
         }
 
         if (prop === "textCase") {

@@ -1,0 +1,272 @@
+---
+alwaysApply: true
+---
+
+# 디자인 토큰 스타일 규칙 (Design Tokens Style Rules)
+
+## 원칙
+
+1. **CSS Variables 우선**: 큰 spacing, 그리드 값은 CSS variable 우선 사용
+2. **디자인 토큰 우선**: Arbitrary value보다 디자인 토큰 사용
+3. **숫자값 최후**: 디자인 토큰이 없을 때만 픽셀 직접 사용
+4. **색상 디자인 토큰 우선**: 하드코딩 색상 금지
+
+## 1. Spacing (간격)
+
+### 우선순위
+
+1. **CSS Variables** (큰 spacing/그리드 값)
+   - `var(--spacing-xs)` (4px)
+   - `var(--spacing-sm)` (8px)
+   - `var(--spacing-md)` (12px)
+   - `var(--spacing-lg)` (16px)
+   - `var(--spacing-xl)` (24px)
+   - `var(--grid-desktop-margin)` (120px)
+   - `var(--grid-desktop-gutter)` (24px)
+   - `var(--grid-tablet-margin)` (40px)
+   - `var(--grid-tablet-gutter)` (16px)
+   - `var(--grid-laptop-margin)` (60px)
+   - `var(--grid-laptop-gutter)` (20px)
+   - `var(--grid-mobile-4-columns-margin)` (20px)
+   - `var(--grid-mobile-4-columns-gutter)` (8px)
+
+2. **디자인 토큰** (Tailwind 클래스)
+   - `gap-xs`, `gap-sm`, `gap-md`, `gap-lg`, `gap-xl`
+   - `px-xs`, `px-sm`, `px-md`, `px-lg`, `px-xl`
+   - `py-xs`, `py-sm`, `py-md`, `py-lg`, `py-xl`
+   - `pt-xs`, `pt-sm`, `pt-md`, `pt-lg`, `pt-xl`
+   - `pb-xs`, `pb-sm`, `pb-md`, `pb-lg`, `pb-xl`
+   - `pl-xs`, `pl-sm`, `pl-md`, `pl-lg`, `pl-xl`
+   - `pr-xs`, `pr-sm`, `pr-md`, `pr-lg`, `pr-xl`
+
+3. **Tailwind 기본 spacing** (표준 값)
+   - `gap-2`, `gap-4`, `gap-8`, `gap-12`, `gap-16`
+   - `px-2`, `px-4`, `px-8`, `px-12`, `px-16`
+   - `py-2`, `py-4`, `py-8`, `py-12`, `py-16`
+
+4. **픽셀 직접 사용** (최후의 수단)
+   - 디자인 토큰/CSS variable이 없을 때만 허용
+   - 예: `gap-38`, `px-80`, `pt-48` (임시, 토큰 추가 필요)
+
+### 금지사항
+
+- ❌ Arbitrary 값: `gap-[38px]`, `px-[80px]`, `gap-[var(--spacing-lg)]`
+- ❌ 하드코딩: `gap-[47px]`, `px-[162px]`
+
+### 예시
+
+```tsx
+// ✅ Good: CSS Variable 사용 (큰 spacing)
+<div className="gap-(--grid-desktop-gutter) px-(--grid-desktop-margin)">
+
+// ✅ Good: 디자인 토큰 사용
+<div className="gap-lg px-md">
+
+// ✅ Good: Tailwind 기본 값
+<div className="gap-4 px-8">
+
+// ⚠️ Acceptable: 픽셀 직접 사용 (토큰 없을 때만)
+<div className="gap-38 px-80">
+
+// ❌ Bad: Arbitrary 값
+<div className="gap-[38px] px-[80px]">
+```
+
+## 2. Colors (색상)
+
+### 우선순위
+
+1. **CSS Variables** (색상)
+   - `var(--color-grayscale-g1)` ~ `var(--color-grayscale-g8)`
+   - `var(--color-grayscale-white)`, `var(--color-grayscale-black)`
+   - `var(--foreground-default)`, `var(--foreground-muted)`, `var(--foreground-subtle)`
+   - `var(--text-default)`, `var(--text-muted)`, `var(--text-subtle)`, `var(--text-black)`
+   - `var(--background-default)`, `var(--background-muted)`, `var(--background-subtle)`
+   - `var(--border-accent)`, `var(--border-default)`, `var(--border-subtle)`
+   - `var(--border-gray1)`, `var(--border-black)`
+   - `var(--color-primary-main)`, `var(--color-primary-100)` ~ `var(--color-primary-900)`
+   - `var(--color-secondary-100)` ~ `var(--color-secondary-900)`
+
+2. **디자인 토큰** (Tailwind 클래스)
+   - `bg-grayscale-g1` ~ `bg-grayscale-g8`
+   - `bg-grayscale-white`, `bg-grayscale-black`
+   - `bg-foreground-default`, `bg-foreground-muted`, `bg-foreground-subtle`
+   - `text-default`, `text-muted`, `text-subtle`, `text-black`
+   - `bg-background-default`, `bg-background-muted`, `bg-background-subtle`
+   - `border-accent`, `border-default`, `border-subtle`
+   - `border-gray1`, `border-black`
+   - `bg-primary-main`, `bg-primary-100` ~ `bg-primary-900`
+   - `bg-secondary-100` ~ `bg-secondary-900`
+
+3. **픽셀 직접 사용** (최후의 수단)
+   - 디자인 토큰이 없을 때만 임시로 허용 (토큰 추가 필요)
+
+### 금지사항
+
+- ❌ Arbitrary 값: `bg-[#d9d9d9]`, `text-[#642c8d]`, `bg-[rgb(228,228,228)]`
+- ❌ 하드코딩 색상: `bg-[#d9d9d9]`, `text-[#a6a6a6]`
+
+### 예시
+
+```tsx
+// ✅ Good: CSS Variable 사용
+<div className="bg-[rgb(var(--color-grayscale-g2))] text-[rgb(var(--text-black))]">
+
+// ✅ Good: 디자인 토큰 사용
+<div className="bg-grayscale-g2 text-black">
+
+// ⚠️ Acceptable: 픽셀 직접 사용 (토큰 없을 때만, 임시)
+<div className="bg-[#d9d9d9]">
+
+// ❌ Bad: Arbitrary 값
+<div className="bg-[#d9d9d9] text-[#642c8d]">
+```
+
+## 3. Typography (텍스트)
+
+### 우선순위
+
+1. **디자인 토큰** (Tailwind 클래스)
+   - `text-headings-heading-1` ~ `text-headings-heading-5`
+   - `text-body-large-regular`, `text-body-large-medium`, `text-body-large-mono`
+   - `text-body-regular`, `text-body-medium`
+   - `text-body-small-regular`, `text-body-small-medium`
+   - `text-footnote-regular`, `text-footnote-medium`, `text-footnote-mono`
+   - `text-caption-regular`, `text-caption-medium`
+   - `text-small-regular`, `text-small-medium`, `text-small-mono`
+
+2. **개별 속성** (필요시)
+   - `text-[var(--typography-font-sizes-md)]`
+   - `font-[var(--typography-font-weight-medium)]`
+   - `leading-[var(--typography-line-height-normal)]`
+   - `tracking-[var(--typography-letter-spacing-default)]`
+
+3. **픽셀 직접 사용** (최후의 수단)
+   - 디자인 토큰이 없을 때만 임시로 허용
+
+### 금지사항
+
+- ❌ Arbitrary 값: `text-[14px]`, `text-[16px]`, `text-[18px]`
+- ❌ 하드코딩: `text-sm`, `text-base` (디자인 토큰 사용)
+
+### 예시
+
+```tsx
+// ✅ Good: 디자인 토큰 사용
+<p className="text-headings-heading-2 text-black tracking-tight">
+<p className="text-fontSizes-md font-fontWeight-medium">
+
+// ✅ Good: CSS Variable 사용 (개별 속성)
+<p className="text-(--typography-font-sizes-md) font-(--typogaraphy-font-weight-medium)">
+
+// ⚠️ Acceptable: 픽셀 직접 사용 (토큰 없을 때만)
+<p className="text-14">
+
+// ❌ Bad: Arbitrary 값
+<p className="text-[14px]">
+```
+
+## 4. Sizing (크기)
+
+### 우선순위
+
+1. **CSS Variables** (큰 그리드/레이아웃 값)
+   - `var(--grid-desktop-max-width)` (1920px)
+   - `var(--grid-desktop-min-width)` (1440px)
+   - `var(--grid-tablet-max-width)` (1024px)
+   - `var(--grid-tablet-min-width)` (720px)
+   - `var(--grid-laptop-max-width)` (1440px)
+   - `var(--grid-laptop-min-width)` (1024px)
+   - `var(--dimension-button-height)` (40px)
+   - `var(--dimension-input-height)` (44px)
+   - `var(--dimension-icon-sm)` (16px)
+   - `var(--dimension-icon-md)` (20px)
+   - `var(--dimension-icon-lg)` (24px)
+
+2. **디자인 토큰** (Tailwind 클래스)
+   - `w-full`, `h-full`, `min-h-screen`
+   - `w-1/2`, `w-1/3`, `w-1/4` (비율)
+   - `h-auto`, `h-screen`
+
+3. **Tailwind 기본** (표준 값)
+   - `w-1/2`, `h-auto`
+
+4. **픽셀 직접 사용** (컴포넌트별 고정 크기만)
+   - 예: `w-368`, `h-204`, `w-162`, `h-253` (컴포넌트 고정 크기)
+
+### 금지사항
+
+- ❌ Arbitrary 값: `w-[368px]`, `h-[204px]`
+
+### 예시
+
+```tsx
+// ✅ Good: CSS Variable 사용 (큰 레이아웃 값)
+<div className="max-w-(--grid-desktop-max-width)">
+
+// ✅ Good: 디자인 토큰 사용
+<div className="w-full h-full">
+
+// ✅ Good: 픽셀 직접 사용 (컴포넌트 고정 크기)
+<div className="w-368 h-204">
+
+// ❌ Bad: Arbitrary 값
+<div className="w-[368px] h-[204px]">
+```
+
+## 5. Border
+
+### 우선순위
+
+1. **CSS Variables**
+   - `var(--border-width-sm)` (1px)
+   - `var(--border-width-md)` (2px)
+   - `var(--border-radius-sm)` (4px)
+   - `var(--border-radius-md)` (8px)
+   - `var(--border-radius-lg)` (12px)
+   - `var(--border-radius-full)` (9999px)
+
+2. **디자인 토큰** (Tailwind 클래스)
+   - `border-sm`, `border-md`
+   - `rounded-sm`, `rounded-md`, `rounded-lg`, `rounded-full`
+   - `border-t`, `border-b`, `border-l`, `border-r`
+
+3. **Tailwind 기본**
+   - `border`, `border-t`, `border-b`
+
+### 예시
+
+```tsx
+// ✅ Good: CSS Variable 사용
+<div className="border-(--border-width-sm) rounded-(--border-radius-md)">
+
+// ✅ Good: 디자인 토큰 사용
+<div className="border-sm rounded-md">
+
+// ❌ Bad: Arbitrary 값
+<div className="border rounded-[8px]">
+```
+
+## 6. 적용 체크리스트
+
+코드 작성 시 다음 순서로 확인:
+
+- [ ] **큰 spacing/그리드 값**: CSS Variable 확인 (`var(--grid-desktop-margin)`, `var(--spacing-xl)`)
+- [ ] **색상**: CSS Variable 또는 디자인 토큰 확인 (`bg-grayscale-g2`, `var(--color-grayscale-g2)`)
+- [ ] **텍스트**: 디자인 토큰 확인 (`text-headings-heading-2`, `text-body-medium`)
+- [ ] **작은 spacing**: 디자인 토큰 확인 (`gap-xs`, `gap-sm`, `gap-md`, `gap-lg`, `gap-xl`)
+- [ ] **Arbitrary 값 제거**: `gap-[38px]`, `bg-[#d9d9d9]` 제거
+- [ ] **하드코딩 색상 제거**: `bg-[#642c8d]`, `text-[#a6a6a6]` 제거
+- [ ] **디자인 토큰이 있으면 픽셀 직접 사용 금지**
+
+## 7. 금지사항 요약
+
+- ❌ **Arbitrary 값 사용 금지**: `gap-[38px]`, `bg-[#d9d9d9]`, `text-[14px]`, `w-[368px]`
+- ❌ **하드코딩 색상 금지**: `bg-[#642c8d]`, `text-[#a6a6a6]`
+- ❌ **디자인 토큰이 있는데 픽셀 직접 사용 금지**
+- ❌ **CSS Variable이 있는데 Arbitrary 값 사용 금지**
+
+## 8. 예외 사항
+
+- 컴포넌트별 고정 크기: `w-368`, `h-204` (디자인 토큰으로 대체 불가능한 경우)
+- 임시 값: 디자인 토큰이 없을 때만 픽셀 직접 사용 (토큰 추가 필요 표시)

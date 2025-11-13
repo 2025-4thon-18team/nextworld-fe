@@ -22,5 +22,46 @@
   },
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "folder-path-color.folders": [
+    { "path": "frontend", "symbol": "SR", "tooltip": "Source files" },
+    { "path": "packages/common", "symbol": "T", "tooltip": "Common" },
+    {
+      "path": "**/components/*",
+      "color": "blue",
+      "symbol": "⚛",
+      "tooltip": "React Components"
+    },
+    {
+      "path": "src/**/test",
+      "color": "red",
+      "symbol": "🧪",
+      "tooltip": "Test Files"
+    }
+  ],
+  "editor_background_by_path.backgrounds": [
+    // {
+    //   "pattern": ".*",
+    //   "url": "/absolute/path/to/image-for-all-editors.png",
+    //   "background-color": "yellow",
+    //   "opacity": "0.1",
+    //   "z-index": "1"
+    // }
+  ],
+  "tabsColor.activeTab": {
+    "backgroundColor": "yellow",
+    "fontColor": "black"
+  },
+  "tabsColor.byDirectory": {
+    "\/components\/": {
+      "backgroundColor": "#00efff",
+      "fontColor": "#ffffff"
+    }
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*.tsx": "$(capture).stories.tsx, $(capture).test.tsx, $(capture).stories.ts, $(capture).test.ts, $(capture)View.tsx",
+    "*.ts": "$(capture).stories.ts, $(capture).test.ts"
   }
 }

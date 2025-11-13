@@ -1,42 +1,40 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from "eslint-plugin-storybook";
+
 import pluginReact from "eslint-plugin-react";
 import pluginReactHooks from "eslint-plugin-react-hooks";
 import tseslint from "typescript-eslint";
 import globals from "globals";
 import js from "@eslint/js";
 
-export default tseslint.config(
-  {
-    ignores: ["dist", "node_modules", "eslint.config.ts"],
+export default tseslint.config({
+  ignores: ["dist", "node_modules", "eslint.config.ts"],
+}, js.configs.recommended, ...tseslint.configs.recommended, {
+  files: ["**/*.{ts,tsx}"],
+  plugins: {
+    react: pluginReact,
+    "react-hooks": pluginReactHooks,
   },
-  js.configs.recommended,
-  ...tseslint.configs.recommended,
-  {
-    files: ["**/*.{ts,tsx}"],
-    plugins: {
-      react: pluginReact,
-      "react-hooks": pluginReactHooks,
+  languageOptions: {
+    globals: {
+      ...globals.browser,
+      ...globals.es2020,
     },
-    languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.es2020,
-      },
-      parserOptions: {
-        ecmaFeatures: {
-          jsx: true,
-        },
-      },
-    },
-    rules: {
-      ...pluginReact.configs.recommended.rules,
-      ...pluginReactHooks.configs.recommended.rules,
-      "react/react-in-jsx-scope": "off",
-      "react-hooks/exhaustive-deps": "off",
-    },
-    settings: {
-      react: {
-        version: "detect",
+    parserOptions: {
+      ecmaFeatures: {
+        jsx: true,
       },
     },
   },
-);
+  rules: {
+    ...pluginReact.configs.recommended.rules,
+    ...pluginReactHooks.configs.recommended.rules,
+    "react/react-in-jsx-scope": "off",
+    "react-hooks/exhaustive-deps": "off",
+  },
+  settings: {
+    react: {
+      version: "detect",
+    },
+  },
+}, storybook.configs["flat/recommended"]);
