@@ -77,148 +77,35 @@ const createMockReport = (id: number) => ({
 });
 
 export const adminHandlers = [
-  // 전체 유저 목록 조회
-  http.get(serverUrl("/api/admin/users"), ({ request }) => {
-    const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get("page") || "1");
-    const pageSize = parseInt(url.searchParams.get("pageSize") || "20");
-    const status = url.searchParams.get("status");
-    const search = url.searchParams.get("search");
-
-    let users = Array.from({ length: 100 }, (_, i) => createMockUser(i + 1));
-
-    // 필터링
-    if (status) {
-      users = users.filter((user) => user.status === status);
-    }
-
-    if (search) {
-      users = users.filter(
-        (user) => user.nickname.includes(search) || user.email.includes(search),
-      );
-    }
-
-    const startIdx = (page - 1) * pageSize;
-    const endIdx = startIdx + pageSize;
-    const pageUsers = users.slice(startIdx, endIdx);
+  // 환불 요청 목록 조회
+  http.get(serverUrl("/api/admin/payments"), () => {
+    // 환불 요청 상태인 결제만 필터링
+    const refundRequests = Array.from({ length: 10 }, (_, i) => ({
+      payId: i + 1,
+      amount: ((i % 10) + 1) * 10000,
+      type: "REFUND" as const,
+      status: "REFUND_REQUESTED" as const,
+      impUid: `imp_refund_${i + 1}`,
+      createdAt: new Date(Date.now() - i * 3600000).toISOString(),
+    }));
 
     return HttpResponse.json({
-      data: {
-        users: pageUsers,
-        totalCount: users.length,
-        page,
-        pageSize,
-      },
+      success: true,
+      code: 200,
+      message: "환불 요청 목록 조회 완료",
+      data: refundRequests,
     });
   }),
 
-  // 결제/환불 요청 조회
-  http.get(serverUrl("/api/admin/payments"), ({ request }) => {
-    const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get("page") || "1");
-    const pageSize = parseInt(url.searchParams.get("pageSize") || "20");
-    const type = url.searchParams.get("type");
-    const status = url.searchParams.get("status");
-
-    let payments = Array.from({ length: 200 }, (_, i) =>
-      createMockPayment(i + 1),
-    );
-
-    // 필터링
-    if (type) {
-      payments = payments.filter((payment) => payment.type === type);
-    }
-
-    if (status) {
-      payments = payments.filter((payment) => payment.status === status);
-    }
-
-    const startIdx = (page - 1) * pageSize;
-    const endIdx = startIdx + pageSize;
-    const pagePayments = payments.slice(startIdx, endIdx);
+  // 환불 승인
+  http.patch(serverUrl("/api/admin/payments/:payId/refund"), ({ params }) => {
+    const { payId } = params;
 
     return HttpResponse.json({
-      data: {
-        payments: pagePayments,
-        totalCount: payments.length,
-        page,
-        pageSize,
-      },
+      success: true,
+      code: 200,
+      message: "환불이 성공적으로 처리되었습니다.",
+      data: null,
     });
   }),
-
-  // 특정 결제건 환불 처리
-  http.patch(
-    serverUrl("/api/admin/payments/:tx_id/refund"),
-    async ({ params }) => {
-      const { tx_id } = params;
-
-      return HttpResponse.json({
-        data: {
-          transactionId: tx_id,
-          refundAmount: 50000,
-          status: "refunded",
-          refundedAt: new Date().toISOString(),
-        },
-      });
-    },
-  ),
-
-  // 신고 목록 조회
-  http.get(serverUrl("/api/admin/reports"), ({ request }) => {
-    const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get("page") || "1");
-    const pageSize = parseInt(url.searchParams.get("pageSize") || "20");
-    const status = url.searchParams.get("status");
-    const category = url.searchParams.get("category");
-
-    let reports = Array.from({ length: 150 }, (_, i) =>
-      createMockReport(i + 1),
-    );
-
-    // 필터링
-    if (status) {
-      reports = reports.filter((report) => report.status === status);
-    }
-
-    if (category) {
-      reports = reports.filter((report) => report.category === category);
-    }
-
-    const startIdx = (page - 1) * pageSize;
-    const endIdx = startIdx + pageSize;
-    const pageReports = reports.slice(startIdx, endIdx);
-
-    return HttpResponse.json({
-      data: {
-        reports: pageReports,
-        totalCount: reports.length,
-        page,
-        pageSize,
-      },
-    });
-  }),
-
-  // 신고 처리 상태 업데이트
-  http.patch(
-    "/api/admin/reports/:report_id/resolve",
-    async ({ request, params }) => {
-      const { report_id } = params;
-      const body = await request.json();
-      const { status, resolution } = body as {
-        status: string;
-        resolution?: string;
-      };
-
-      return HttpResponse.json({
-        data: {
-          reportId: report_id,
-          status,
-          resolution,
-          resolvedAt: new Date().toISOString(),
-          resolvedBy: "admin-1",
-        },
-      });
-    },
-  ),
 ];

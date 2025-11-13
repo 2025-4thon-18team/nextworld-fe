@@ -85,9 +85,9 @@ export const authHandlers = [
         userId: 1,
         email: mockUser.email,
         nickname: mockUser.nickname,
-        name: "테스트유저",
-        profileImageUrl: mockUser.profileImage,
         pointsBalance: 2000,
+        totalEarned: 50000,
+        guideline: "작가 가이드라인입니다.",
       },
     });
   }),
