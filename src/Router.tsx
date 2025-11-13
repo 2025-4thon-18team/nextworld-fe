@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter as ReactRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, HashRouter, Routes, Route } from "react-router-dom";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Layout } from "./pages/layout/Layout";
 import { MyPageLayout } from "./pages/mypage/MyPageLayout";
@@ -32,9 +32,15 @@ const queryClient = new QueryClient({
 });
 
 export function Router() {
+  // GitHub Pages 배포 시 HashRouter 사용, 로컬 개발 시 BrowserRouter 사용
+  const isGitHubPages =
+    import.meta.env.VITE_GITHUB_PAGES === "true" ||
+    window.location.hostname.includes("github.io");
+  const RouterComponent = isGitHubPages ? HashRouter : BrowserRouter;
+
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactRouter>
+      <RouterComponent>
         <Routes>
           {/* Layout 없이 */}
           <Route element={<TestPage />} path="/test" />
@@ -77,7 +83,7 @@ export function Router() {
             <Route element={<Favorites />} path="/my-page/favorites" />
           </Route>
         </Routes>
-      </ReactRouter>
+      </RouterComponent>
       {import.meta.env.VITE_APP_ENV === "development" &&
         import.meta.env.VITE_ENABLE_QUERY_DEVTOOLS === "true" && (
           <ReactQueryDevtools initialIsOpen={false} />
