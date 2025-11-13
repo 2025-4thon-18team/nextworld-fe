@@ -10,3 +10,5 @@ export * from "./usePosts";
 export * from "./useAdmin";
 export * from "./useLike";
 export * from "./useScrap";
+export * from "./useFeed";
+export * from "./useComments";
