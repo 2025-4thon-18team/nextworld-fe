@@ -1,7 +1,7 @@
 import { FC } from "react";
 import { TextAreaInputList } from "@/components/TextAreaInputList/TextAreaInputList";
 import { ToggleButton } from "@/components/ToggleButton/ToggleButton";
-import { InputLabel, TagInput } from "@/components/Input/Input";
+import { InputLabel, TagsInput } from "@/components/Input/Input";
 import { IconChevron } from "@/assets/icons";
 import Button from "@/components/Button/Button";
 import { cn } from "@/utils";
@@ -130,7 +130,7 @@ export const CreateSeriesSecondaryView: FC<Props> = ({
           </div>
 
           {/* Guidelines */}
-          <div className="gap-xl flex w-full flex-col items-start pl-16 pr-0 py-0">
+          <div className="gap-xl flex w-full flex-col items-start py-0 pr-0 pl-16">
             <div className="gap-sm flex w-full flex-col items-start">
               <div className="gap-xs flex flex-col items-start">
                 <InputLabel>2차 창작 가이드라인</InputLabel>
@@ -170,7 +170,10 @@ export const CreateSeriesSecondaryView: FC<Props> = ({
             {/* Prohibited Words */}
             <div className="gap-lg flex w-full flex-col items-start">
               <InputLabel>금지어</InputLabel>
-              <TagInput tags={prohibitedWords} />
+              <TagsInput
+                tags={prohibitedWords}
+                onTagsChange={onProhibitedWordsChange}
+              />
             </div>
           </div>
 
@@ -181,7 +184,7 @@ export const CreateSeriesSecondaryView: FC<Props> = ({
                 type="checkbox"
                 checked={agreement1}
                 onChange={(e) => onAgreement1Change(e.target.checked)}
-                className="size-20 shrink-0 rounded-xs border-sm border-black"
+                className="border-sm size-20 shrink-0 rounded-xs border-black"
               />
               <p className="text-body-medium text-black">
                 저작권 관련 정책을 모두 이해하고 동의합니다. [더보기]
@@ -192,7 +195,7 @@ export const CreateSeriesSecondaryView: FC<Props> = ({
                 type="checkbox"
                 checked={agreement2}
                 onChange={(e) => onAgreement2Change(e.target.checked)}
-                className="size-20 shrink-0 rounded-xs border-sm border-black"
+                className="border-sm size-20 shrink-0 rounded-xs border-black"
               />
               <p className="text-body-medium text-black">
                 제작물의 저작권자는 본인임을 확인합니다. [더보기]
@@ -214,4 +217,3 @@ export const CreateSeriesSecondaryView: FC<Props> = ({
     </div>
   );
 };
-
