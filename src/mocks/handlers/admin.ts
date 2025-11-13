@@ -6,7 +6,7 @@ const createMockUser = (id: number) => ({
   userId: `user-${id}`,
   email: `user${id}@example.com`,
   nickname: `사용자${id}`,
-  profileImage: `https://via.placeholder.com/50?text=User${id}`,
+  profileImage: `https://placehold.co/50?text=User${id}`,
   role: id === 1 ? ("admin" as const) : ("user" as const),
   status: id % 10 === 0 ? ("suspended" as const) : ("active" as const),
   createdAt: new Date(Date.now() - Math.random() * 100000000000).toISOString(),

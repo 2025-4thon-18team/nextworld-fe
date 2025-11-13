@@ -1,12 +1,14 @@
 import { FC } from "react";
 import { cn } from "@/utils";
 import { Tag } from "@/components/Tag/Tag";
+import { useNavigation } from "@/hooks";
 
 interface SeriesCardProps {
   imageUrl: string;
   title: string;
   tags: string[];
   selected?: boolean;
+  seriesId: string;
   onClick?: () => void;
   className?: string;
 }

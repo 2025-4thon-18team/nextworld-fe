@@ -9,12 +9,12 @@ const createMockFeedWork = (id: number) => ({
   type: id % 3 === 0 ? "derivative" : ("original" as "original" | "derivative"),
   authorId: `author-${(id % 10) + 1}`,
   authorName: `작가${(id % 10) + 1}`,
-  authorProfileImage: `https://via.placeholder.com/50?text=Author${(id % 10) + 1}`,
+  authorProfileImage: `https://placehold.co/50?text=Author${(id % 10) + 1}`,
   likesCount: Math.floor(Math.random() * 1000),
   commentsCount: Math.floor(Math.random() * 100),
   bookmarksCount: Math.floor(Math.random() * 500),
   createdAt: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
-  thumbnailUrl: `https://via.placeholder.com/300x200?text=Work${id}`,
+  thumbnailUrl: `https://placehold.co/300x200?text=Work${id}`,
   tags: [`태그${id % 5}`, `장르${id % 3}`],
   category: `카테고리${(id % 4) + 1}`,
 });
@@ -27,14 +27,21 @@ const createMockPost = (id: number, workId?: number) => ({
   postType: workId ? ("EPISODE" as const) : ("POST" as const),
   episodeNumber: workId ? id : undefined,
   parentWorkId: workId ? undefined : Math.floor(Math.random() * 10) + 1,
-  parentWorkTitle: workId ? undefined : `원작 작품 ${Math.floor(Math.random() * 10) + 1}`,
+  parentWorkTitle: workId
+    ? undefined
+    : `원작 작품 ${Math.floor(Math.random() * 10) + 1}`,
   authorName: `작가${(id % 10) + 1}`,
-  creationType: workId ? undefined : (Math.random() > 0.5 ? "ORIGINAL" : "DERIVATIVE") as "ORIGINAL" | "DERIVATIVE",
+  creationType: workId
+    ? undefined
+    : ((Math.random() > 0.5 ? "ORIGINAL" : "DERIVATIVE") as
+        | "ORIGINAL"
+        | "DERIVATIVE"),
   title: workId ? `회차 제목 ${id}` : `포스트 제목 ${id}`,
   content: `포스트 내용 ${id}입니다. 이것은 멋진 이야기입니다...`,
   hasImage: Math.random() > 0.5,
   isPaid: Math.random() > 0.7,
-  price: Math.random() > 0.7 ? Math.floor(Math.random() * 500) + 100 : undefined,
+  price:
+    Math.random() > 0.7 ? Math.floor(Math.random() * 500) + 100 : undefined,
   tags: [`태그${id % 5}`, `장르${id % 3}`],
   viewsCount: Math.floor(Math.random() * 1000),
   commentsCount: Math.floor(Math.random() * 100),
@@ -53,7 +60,9 @@ export const feedHandlers = [
 
     const allPosts = Array.from({ length: 100 }, (_, i) => {
       // workId가 있으면 해당 작품의 회차만, 없으면 독립 포스트만
-      const postWorkId = workId || (i % 3 === 0 ? undefined : Math.floor(Math.random() * 10) + 1);
+      const postWorkId =
+        workId ||
+        (i % 3 === 0 ? undefined : Math.floor(Math.random() * 10) + 1);
       return createMockPost(i + 1, postWorkId);
     });
 
@@ -68,7 +77,8 @@ export const feedHandlers = [
   http.get(serverUrl("/api/posts/:id"), ({ params }) => {
     const { id } = params;
     const postId = parseInt(id as string);
-    const workId = postId % 3 === 0 ? undefined : Math.floor(Math.random() * 10) + 1;
+    const workId =
+      postId % 3 === 0 ? undefined : Math.floor(Math.random() * 10) + 1;
     const post = createMockPost(postId, workId);
 
     return HttpResponse.json(post);
@@ -176,7 +186,7 @@ export const feedHandlers = [
         author: {
           userId: author_id,
           nickname: "작가이름",
-          profileImage: `https://via.placeholder.com/150?text=${author_id}`,
+          profileImage: `https://placehold.co/150?text=${author_id}`,
           bio: "작가 소개입니다.",
           followersCount: Math.floor(Math.random() * 10000),
           worksCount: authorWorks.length,
@@ -198,7 +208,7 @@ export const feedHandlers = [
       message: "주간 유니버스 조회 성공",
       data: {
         id: "1",
-        imageUrl: "https://via.placeholder.com/310x476",
+        imageUrl: "https://placehold.co/310x476",
         title: "[작품 제목]",
         tags: ["현대로맨스", "판타지"],
       },
@@ -214,25 +224,25 @@ export const feedHandlers = [
       data: [
         {
           id: "1",
-          imageUrl: "https://via.placeholder.com/203x305",
+          imageUrl: "https://placehold.co/203x305",
           title: "[작품 제목]",
           tags: ["현대로맨스"],
         },
         {
           id: "2",
-          imageUrl: "https://via.placeholder.com/203x305",
+          imageUrl: "https://placehold.co/203x305",
           title: "[작품 제목]",
           tags: ["현대로맨스"],
         },
         {
           id: "3",
-          imageUrl: "https://via.placeholder.com/203x305",
+          imageUrl: "https://placehold.co/203x305",
           title: "[작품 제목]",
           tags: ["현대로맨스"],
         },
         {
           id: "4",
-          imageUrl: "https://via.placeholder.com/203x305",
+          imageUrl: "https://placehold.co/203x305",
           title: "[작품 제목]",
           tags: ["현대로맨스"],
         },
@@ -283,7 +293,7 @@ export const feedHandlers = [
       message: "신규 작품 조회 성공",
       data: Array.from({ length: 12 }, (_, i) => ({
         id: String(i + 1),
-        imageUrl: "https://via.placeholder.com/203x305",
+        imageUrl: "https://placehold.co/203x305",
         title: "[작품 제목]",
         tags: ["현대로맨스"],
       })),
@@ -319,7 +329,7 @@ export const feedHandlers = [
       message: "관심 작품 조회 성공",
       data: Array.from({ length: 5 }, (_, i) => ({
         id: String(i + 1),
-        imageUrl: "https://via.placeholder.com/203x305",
+        imageUrl: "https://placehold.co/203x305",
         title: "[작품 제목]",
         tags: ["현대로맨스", "판타지"],
       })),
@@ -352,7 +362,7 @@ export const feedHandlers = [
       message: "신규 유니버스 작품 조회 성공",
       data: Array.from({ length: 6 }, (_, i) => ({
         id: String(i + 1),
-        imageUrl: "https://via.placeholder.com/203x305",
+        imageUrl: "https://placehold.co/203x305",
         title: "[작품 제목]",
         tags: ["현대로맨스"],
       })),

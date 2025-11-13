@@ -28,7 +28,7 @@ export const Small: Story = {
 
 export const SmallWithImage: Story = {
   args: {
-    imageUrl: "https://via.placeholder.com/36x36",
+    imageUrl: "https://placehold.co/36x36",
     size: "sm",
   },
 };
@@ -42,7 +42,7 @@ export const Large: Story = {
 
 export const LargeWithImage: Story = {
   args: {
-    imageUrl: "https://via.placeholder.com/120x120",
+    imageUrl: "https://placehold.co/120x120",
     size: "lg",
   },
 };

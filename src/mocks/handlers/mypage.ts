@@ -12,7 +12,7 @@ const createMockWork = (id: number, type: "original" | "derivative") => ({
   likesCount: Math.floor(Math.random() * 1000),
   commentsCount: Math.floor(Math.random() * 100),
   createdAt: new Date(Date.now() - Math.random() * 10000000000).toISOString(),
-  thumbnailUrl: `https://via.placeholder.com/300x200?text=Work${id}`,
+  thumbnailUrl: `https://placehold.co/300x200?text=Work${id}`,
 });
 
 export const mypageHandlers = [

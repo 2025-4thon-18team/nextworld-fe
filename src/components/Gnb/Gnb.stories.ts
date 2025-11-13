@@ -22,30 +22,21 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     activeMenu: "홈",
-    userImages: [
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-    ],
+    userImages: ["https://placehold.co/50", "https://placehold.co/50"],
   },
 };
 
 export const ActiveWork: Story = {
   args: {
     activeMenu: "작품",
-    userImages: [
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-    ],
+    userImages: ["https://placehold.co/50", "https://placehold.co/50"],
   },
 };
 
 export const ActivePost: Story = {
   args: {
     activeMenu: "포스트",
-    userImages: [
-      "https://via.placeholder.com/50",
-      "https://via.placeholder.com/50",
-    ],
+    userImages: ["https://placehold.co/50", "https://placehold.co/50"],
   },
 };
 
@@ -54,4 +45,3 @@ export const NoUserImages: Story = {
     activeMenu: "홈",
   },
 };
-

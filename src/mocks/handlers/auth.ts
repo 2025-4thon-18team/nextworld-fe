@@ -6,7 +6,7 @@ const mockUser = {
   userId: "user-1",
   email: "test@example.com",
   nickname: "테스트유저",
-  profileImage: "https://via.placeholder.com/150",
+  profileImage: "https://placehold.co/150",
   createdAt: new Date().toISOString(),
 };
 

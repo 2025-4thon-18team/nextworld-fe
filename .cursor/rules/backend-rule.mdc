@@ -1,3 +1,327 @@
 ---
 alwaysApply: true
 ---
+
+# NextWorld ERD
+
+```mermaid
+erDiagram
+	direction TB
+	User {
+		bigint user_id PK ""
+		string email UK "NOT NULL"
+		string password  "NOT NULL"
+		string nickname  "NOT NULL"
+		string name  ""
+		text profile_image_url  ""
+		bigint points_balance  "NOT NULL, DEFAULT 0"
+		datetime created_at  "NOT NULL"
+		datetime updated_at  ""
+	}
+
+	Like {
+		bigint id PK ""
+		bigint user_id FK "NOT NULL"
+		bigint work_id FK "NOT NULL"
+		datetime created_at  "NOT NULL"
+	}
+
+	Rating {
+		bigint id PK ""
+		bigint user_id FK "NOT NULL"
+		bigint post_id FK "NOT NULL"
+		decimal score  "NOT NULL, DECIMAL(3,2), 0.00~5.00"
+		datetime created_at  "NOT NULL"
+		datetime updated_at  ""
+	}
+
+	Pay {
+		bigint pay_id PK ""
+		bigint user_id FK "NOT NULL (결제자/payer)"
+		bigint amount  "NOT NULL"
+		enum type  "NOT NULL, CHARGE|USE|REFUND"
+		enum status  "NOT NULL, PENDING|COMPLETED|FAILED|REFUND_REQUESTED|REFUNDED"
+		string imp_uid  "NULL"
+		datetime created_at  "NOT NULL"
+	}
+
+	RevenueShare {
+		bigint id PK ""
+		bigint pay_id FK "NOT NULL"
+		bigint post_id FK "NOT NULL"
+		bigint original_author_id FK "NULL (원작 작가)"
+		bigint derivative_author_id FK "NULL (2차 창작 작가)"
+		bigint platform_user_id FK "NULL (플랫폼)"
+		bigint original_author_amount  "NULL"
+		bigint derivative_author_amount  "NULL"
+		bigint platform_amount  "NULL"
+		datetime created_at  "NOT NULL"
+	}
+
+	RevenueSettlementHistory {
+		bigint id PK ""
+		bigint user_id FK "NOT NULL"
+		bigint settled_amount  "NOT NULL"
+		bigint previous_balance  "NOT NULL"
+		bigint new_balance  "NOT NULL"
+		datetime settled_at  "NOT NULL"
+	}
+
+	WorkGuideline {
+		bigint work_id PK,FK "NOT NULL"
+		text guideline_relation  ""
+		text guideline_content  ""
+		text guideline_background  ""
+		string word  ""
+		datetime created_at  "NOT NULL"
+		datetime updated_at  ""
+	}
+
+	WorkStatistics {
+		bigint work_id PK,FK "NOT NULL"
+		bigint total_likes_count  "NOT NULL, DEFAULT 0"
+		bigint total_views_count  "NOT NULL, DEFAULT 0"
+		decimal total_rating  "DECIMAL(3,2)"
+		datetime last_calculated_at  ""
+		datetime updated_at  ""
+	}
+
+	WorkTag {
+		bigint id PK ""
+		bigint work_id FK "NOT NULL"
+		bigint tag_id FK "NOT NULL"
+		datetime created_at  "NOT NULL"
+	}
+
+	Scrap {
+		bigint id PK ""
+		bigint user_id FK "NOT NULL"
+		bigint post_id FK "NOT NULL"
+		datetime created_at  "NOT NULL"
+	}
+
+	Draft {
+		bigint id PK ""
+		bigint user_id FK "NOT NULL"
+		bigint post_id FK "NULL"
+		bigint work_id FK "NULL"
+		string title  ""
+		text content  ""
+		enum draft_type  "NOT NULL"
+		datetime created_at  "NOT NULL"
+		datetime updated_at  ""
+	}
+
+	PostTag {
+		bigint id PK ""
+		bigint post_id FK "NOT NULL"
+		bigint tag_id FK "NOT NULL"
+		datetime created_at  "NOT NULL"
+	}
+
+	PostStatistics {
+		bigint post_id PK,FK "NOT NULL"
+		bigint views_count  "NOT NULL, DEFAULT 0"
+		bigint comments_count  "NOT NULL, DEFAULT 0"
+		decimal rating  "DECIMAL(3,2)"
+		datetime last_calculated_at  ""
+		datetime updated_at  ""
+	}
+
+	Tag {
+		bigint id PK ""
+		string name UK "NOT NULL"
+		datetime created_at  "NOT NULL"
+	}
+
+	Post {
+		bigint id PK ""
+		bigint work_id FK "NULL | 작품 회차인 경우 사용"
+		bigint parent_work_id FK "NULL | 2차 창작 포스트인 경우 사용"
+		bigint author_id FK "NOT NULL"
+		string title  ""
+		text content  "NOT NULL"
+		boolean has_image  "NOT NULL, DEFAULT FALSE"
+		enum post_type  "NOT NULL, POST|EPISODE"
+		enum creation_type  "NULL, ORIGINAL|DERIVATIVE"
+		integer episode_number  "NULL | 회차인 경우 사용"
+		boolean is_paid  "NOT NULL, DEFAULT FALSE"
+		bigint price  "NULL | 유료인 경우 사용"
+		enum status  "NOT NULL, DRAFT|PUBLISHED|ARCHIVED"
+		text ai_check  ""
+		datetime created_at  "NOT NULL"
+		datetime updated_at  ""
+	}
+
+	Comment {
+		bigint id PK ""
+		bigint user_id FK "NOT NULL"
+		bigint post_id FK "NOT NULL"
+		bigint parent_comment_id FK "NULL | 대댓글인 경우 사용"
+		text content  "NOT NULL"
+		datetime created_at  "NOT NULL"
+		datetime updated_at  ""
+	}
+
+	Work {
+		bigint id PK ""
+		enum work_type  "NOT NULL, ORIGINAL|DERIVATIVE"
+		bigint parent_work_id FK "NULL | DERIVATIVE인 경우 2차 창작 작품"
+		bigint author_id FK "NOT NULL"
+		string title  ""
+		text description  ""
+		text cover_image_url  ""
+		string category  ""
+		text serialization_schedule  "연재 일정"
+		boolean allow_derivative  "NOT NULL, DEFAULT FALSE"
+		datetime created_at  "NOT NULL"
+		datetime updated_at  ""
+	}
+
+	User||--o{Work:"작성"
+	User||--o{Post:"작성"
+	User||--o{Like:"좋아요"
+	User||--o{Rating:"평점"
+	User||--o{Comment:"댓글"
+	User||--o{Pay:"결제 (payer)"
+	User||--o{RevenueShare:"수익분배"
+	User||--o{RevenueSettlementHistory:"정산"
+	Work||--o{Post:"episodes (work_id)"
+	Work||--o{Post:"parent_work_id (원작 참조)"
+	Work||--o{Like:"좋아요"
+	Work||--o|WorkGuideline:"가이드라인"
+	Work||--o|WorkStatistics:"통계"
+	Work||--o{WorkTag:"태그"
+	Post||--o{Rating:"평점"
+	Post||--o{Comment:"댓글"
+	Post||--o{Scrap:"스크랩"
+	Post||--o{Draft:"임시저장"
+	Post||--o{RevenueShare:"수익분배"
+	Post||--o{PostTag:"태그"
+	Post||--o|PostStatistics:"통계"
+	Pay||--o{RevenueShare:"수익분배"
+	Tag}o--o{WorkTag:"다대다"
+	Tag}o--o{PostTag:"다대다"
+
+
+```
+
+## 주요 변경사항
+
+### 1. User 테이블
+
+- ✅ `name` 필드 추가
+- ✅ `profile_image_url` 필드 추가
+
+### 2. Work 테이블 (정규화)
+
+- ❌ `universe_name` 제거
+- ❌ `universe_description` 제거
+- ❌ `serialization_type` 제거
+- ❌ `is_serializing` 제거
+- ❌ `allow_derivative_profit` 제거
+- ✅ `parent_work_id` 추가 (DERIVATIVE인 경우 원작 작품 참조)
+- ❌ `tags` 제거 → `WorkTag` 테이블로 정규화
+- ❌ `guideline_relation`, `guideline_content`, `guideline_background` 제거 → `WorkGuideline` 테이블로 분리
+- ❌ `banned_words` 제거 → `WorkGuideline.word` 필드로 통합
+- ❌ 통계 필드 제거 → `WorkStatistics` 테이블로 분리
+
+### 3. Post 테이블 (정규화)
+
+- ❌ `thumbnail_url` 제거
+- ✅ `has_image` 필드 추가 (boolean, NOT NULL, DEFAULT FALSE)
+- ⚠️ `work_id` 또는 `parent_work_id` 중 하나는 반드시 지정되어야 함 (비즈니스 로직으로 처리)
+- ❌ `tags` 제거 → `PostTag` 테이블로 정규화
+- ❌ 통계 필드 제거 → `PostStatistics` 테이블로 분리
+- ❌ `likes_count` 제거 (Post는 Like 불가, Rating만 가능)
+
+### 4. Like 테이블 변경
+
+- ❌ `post_id` 제거 (Post는 Like 불가)
+- ✅ `work_id`만 유지 (Work에만 Like 가능)
+- ✅ `UNIQUE(user_id, work_id)` 제약조건 추가
+
+### 5. Rating 테이블
+
+- ✅ Post에만 Rating 가능 (기존 유지)
+- ❌ Work에 대한 Rating 제거
+
+### 6. 새로운 도메인 추가
+
+- ✅ `Tag` 테이블 추가
+- ✅ `WorkTag` 테이블 추가 (Work-Tag 다대다 관계)
+- ✅ `PostTag` 테이블 추가 (Post-Tag 다대다 관계)
+- ✅ `WorkGuideline` 테이블 추가 (가이드라인 정보 + 금지어 통합)
+- ✅ `WorkStatistics` 테이블 추가 (Work 통계)
+- ✅ `PostStatistics` 테이블 추가 (Post 통계)
+- ✅ `Rating` 테이블 추가 (Post에 대한 평점)
+- ✅ `Comment` 테이블 추가 (대댓글 지원)
+
+### 7. User 테이블 변경
+
+- ❌ `total_earned` 제거 (RevenueSettlementHistory에서 집계 가능)
+
+### 8. Pay 테이블 변경
+
+- ✅ `user_id` 필드명을 의미적으로 `payer`로 명확화 (결제자)
+- ✅ 결제 타입: CHARGE(충전), USE(사용), REFUND(환불)
+- ✅ 결제 상태: PENDING, COMPLETED, FAILED, REFUND_REQUESTED, REFUNDED
+
+### 9. RevenueShare 테이블 변경
+
+- ✅ 하나의 RevenueShare 레코드에 모든 수익 분배 정보 저장
+  - `original_author_amount`: 원작 작가 분배 금액
+  - `derivative_author_amount`: 2차 창작 작가 분배 금액
+  - `platform_amount`: 플랫폼 분배 금액
+
+## 관계 설명
+
+1. **User ↔ Work**: 한 사용자는 여러 작품을 작성할 수 있음
+2. **User ↔ Post**: 한 사용자는 여러 포스트를 작성할 수 있음
+3. **Work ↔ Work**:
+   - `parent_work_id`: 2차 창작물(DERIVATIVE)이 원작 작품(ORIGINAL)을 참조
+   - DERIVATIVE인 경우 parent_work_id 필수, ORIGINAL인 경우 NULL
+4. **Work ↔ Post**:
+   - `work_id`: 작품의 회차 (episodes)
+   - `parent_work_id`: 원작 참조 포스트 (Post에서 Work 참조)
+5. **Work ↔ WorkGuideline**: 1:1 관계 (작품당 하나의 가이드라인, 금지어 포함)
+6. **Work ↔ WorkStatistics**: 1:1 관계 (작품 통계)
+7. **Work ↔ WorkTag ↔ Tag**: 다대다 관계 (작품당 여러 태그)
+8. **Post ↔ PostTag ↔ Tag**: 다대다 관계 (포스트당 여러 태그)
+9. **Post ↔ PostStatistics**: 1:1 관계 (포스트 통계)
+10. **Post ↔ Comment**: 대댓글 지원 (parent_comment_id)
+11. **Post ↔ Rating**: 한 포스트에 여러 사용자가 평점을 줄 수 있음 (Post만 가능)
+12. **Work ↔ Like**: 한 작품에 여러 사용자가 좋아요를 줄 수 있음 (Work만 가능)
+13. **User ↔ Pay**: 한 사용자는 여러 결제 내역을 가질 수 있음 (결제자/payer)
+14. **Pay ↔ RevenueShare**: 하나의 결제는 하나의 수익 분배를 가짐
+15. **User ↔ RevenueShare**: 사용자는 원작자/2차창작자/플랫폼으로 수익 분배를 받을 수 있음
+
+## 정규화 전략
+
+### 정규화된 부분
+
+- ✅ **태그**: `WorkTag`, `PostTag` 중간 테이블로 다대다 관계 정규화
+- ✅ **가이드라인/금지어**: `WorkGuideline` 테이블로 통합 (1:1, word 필드로 금지어 포함)
+- ✅ **통계**: `WorkStatistics`, `PostStatistics` 테이블로 분리 (1:1)
+
+### 설계 결정 사항
+
+#### 1. 태그를 다대다 관계로 정규화한 이유
+
+- **태그 재사용**: 같은 태그를 여러 Work/Post에서 사용 가능
+- **태그 통계**: 특정 태그가 사용된 작품/포스트 수 집계 용이
+- **태그 관리**: 태그 이름 변경 시 한 곳에서만 수정
+- **검색 최적화**: 태그로 필터링 시 인덱스 활용 가능
+
+#### 2. PostTag와 WorkTag를 분리한 이유
+
+- **도메인 분리**: Work 태그와 Post 태그는 의미가 다를 수 있음
+- **확장성**: 향후 Work/Post별 태그 정책을 다르게 설정 가능
+- **성능**: 각각의 인덱스로 조회 성능 최적화
+
+#### 3. User의 total_earned 제거 이유
+
+- **데이터 중복**: `RevenueSettlementHistory`에서 집계 가능
+- **일관성**: 정산 이력이 실제 수익의 근거가 됨
+- **유연성**: 집계 방식 변경 시 쿼리만 수정하면 됨
+- **대안**: 필요시 View나 쿼리로 실시간 계산 가능

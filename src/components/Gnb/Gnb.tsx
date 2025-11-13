@@ -4,6 +4,8 @@ import { LogoGNB } from "@/assets/logo";
 import { Search } from "@/components/Search/Search";
 import { ButtonSmall } from "@/components/ButtonSmall/ButtonSmall";
 import { ProfileImg } from "@/components/ProfileImg/ProfileImg";
+import { Link } from "react-router-dom";
+import { useNavigation } from "@/hooks/useNavigation";
 
 interface GnbProps {
   isAuthorized?: boolean;
@@ -19,7 +21,6 @@ export const Gnb: FC<GnbProps> = ({
   isAuthorized = false,
   searchValue = "",
   onSearchChange,
-  onLoginClick,
   onWriteClick,
   profileImageUrl,
   className,
@@ -33,10 +34,11 @@ export const Gnb: FC<GnbProps> = ({
     >
       <div className="py-sm relative box-border flex w-full max-w-1440 items-center justify-between pr-42 pl-60">
         {/* Logo */}
-        <div className="gap-sm relative flex shrink-0 items-center">
-          <LogoGNB className="relative shrink-0" />
-        </div>
-
+        <Link to="/">
+          <div className="gap-sm relative flex shrink-0 items-center">
+            <LogoGNB className="relative shrink-0" />
+          </div>
+        </Link>
         {/* Right Section */}
         <div className="gap-lg relative flex shrink-0 items-center justify-end">
           {/* Search */}
@@ -57,9 +59,9 @@ export const Gnb: FC<GnbProps> = ({
               )}
             </>
           ) : (
-            <ButtonSmall variant="subtle" onClick={onLoginClick}>
-              로그인
-            </ButtonSmall>
+            <Link to="/login">
+              <ButtonSmall variant="subtle">로그인</ButtonSmall>
+            </Link>
           )}
         </div>
       </div>

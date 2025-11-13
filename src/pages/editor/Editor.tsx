@@ -22,12 +22,12 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
     Array<{ imageUrl: string; title: string; id?: string }>
   >([
     {
-      imageUrl: "https://via.placeholder.com/150x225",
+      imageUrl: "https://placehold.co/150x225",
       title: "[작품 제목]",
       id: "0",
     },
     {
-      imageUrl: "https://via.placeholder.com/150x225",
+      imageUrl: "https://placehold.co/150x225",
       title: "[작품 제목]",
       id: "1",
     },

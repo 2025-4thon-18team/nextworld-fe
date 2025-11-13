@@ -11,7 +11,7 @@ const createMockWork = (id: number, workType: "ORIGINAL" | "DERIVATIVE") => ({
   workType,
   title: `${workType === "ORIGINAL" ? "원작" : "2차창작"} 작품 제목 ${id}`,
   description: `작품 설명 ${id}입니다. 이것은 멋진 이야기입니다...`,
-  coverImageUrl: `https://via.placeholder.com/300x400?text=Work${id}`,
+  coverImageUrl: `https://placehold.co/300x400?text=Work${id}`,
   tags: [`태그${id % 5}`, `장르${id % 3}`],
   category: `카테고리${(id % 4) + 1}`,
   serializationSchedule: "월|화|수",
