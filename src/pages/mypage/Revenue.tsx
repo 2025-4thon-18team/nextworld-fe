@@ -11,11 +11,8 @@ const Revenue = () => {
   const { activeTab, onTabChange } = useTab<RevenueTab>("대시보드");
   
   // React Query hooks 직접 사용
-  const { data: pointsData } = useGetMyPoints();
   const { data: dashboardData } = useGetRevenueDashboard();
   const { data: salesData } = useGetSales();
-
-  const { points } = usePoints(pointsData?.balance);
 
   const formattedRevenueData = useMemo(() => {
     if (!dashboardData) return null;
@@ -41,7 +38,6 @@ const Revenue = () => {
 
   return (
     <RevenueView
-      points={points}
       activeTab={activeTab}
       revenueData={formattedRevenueData}
       salesHistory={salesHistory}

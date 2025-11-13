@@ -15,11 +15,9 @@ const MyPageMain = () => {
   const { navigateToProfileEdit, navigateToLogin } = useNavigation();
   
   // React Query hooks 직접 사용
-  const { data: pointsData } = useGetMyPoints();
   const { data: profileData } = useGetMe();
   const { data: worksData } = useGetAllWorks("ORIGINAL");
 
-  const { points } = usePoints(pointsData?.balance);
   const seriesList = useSimpleWorkTransform(worksData);
 
   const profile = useMemo(() => {
@@ -44,7 +42,6 @@ const MyPageMain = () => {
 
   return (
     <MyPageMainView
-      points={points}
       profile={profile}
       seriesList={seriesList}
       activeTab={activeTab}

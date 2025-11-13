@@ -11,11 +11,8 @@ const PointHistory = () => {
   const { activeTab, onTabChange } = useTab<PointTab>("충전 내역");
   
   // React Query hooks 직접 사용
-  const { data: pointsData } = useGetMyPoints();
   const { data: chargeHistoryData } = useGetChargeHistory();
   const { data: usageHistoryData } = useGetUsageHistory();
-
-  const { points } = usePoints(pointsData?.balance);
 
   const chargeHistory = useMemo(() => {
     if (!chargeHistoryData) return [];
@@ -41,7 +38,6 @@ const PointHistory = () => {
 
   return (
     <PointHistoryView
-      points={points}
       activeTab={activeTab}
       chargeHistory={chargeHistory}
       usageHistory={usageHistory}
