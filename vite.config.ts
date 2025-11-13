@@ -54,6 +54,20 @@ export default defineConfig({
     minify: true,
     cssCodeSplit: true,
     cssMinify: true,
+    rollupOptions: {
+      onwarn(warning, warn) {
+        // CSS 변수 형식 관련 경고 무시
+        if (warning.code === "CSS_SYNTAX_ERROR") {
+          return;
+        }
+        warn(warning);
+      },
+    },
+  },
+  esbuild: {
+    logOverride: {
+      "css-syntax-error": "silent",
+    },
   },
   test: {
     projects: [
