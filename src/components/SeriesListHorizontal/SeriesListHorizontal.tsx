@@ -1,5 +1,7 @@
-import { FC } from "react";
-import { SeriesListHorizontalView } from "./SeriesListHorizontalView";
+import { FC, useCallback } from "react";
+import { cn } from "@/utils";
+import { SeriesCard } from "@/components/SeriesCard/SeriesCard";
+import { useNavigation } from "@/hooks";
 
 type SeriesItem = {
   id: string;
@@ -11,20 +13,31 @@ type SeriesItem = {
 type Props = {
   className?: string;
   items: SeriesItem[];
-  onItemClick?: (id: string) => void;
 };
 
-export const SeriesListHorizontal: FC<Props> = ({
-  className,
-  items,
-  onItemClick,
-}) => {
+export const SeriesListHorizontal: FC<Props> = ({ className, items }) => {
+  const { navigateToSeries } = useNavigation();
+
+  const handleSeriesClick = useCallback(
+    (id: string) => {
+      navigateToSeries(id);
+    },
+    [navigateToSeries],
+  );
+
   return (
-    <SeriesListHorizontalView
-      className={className}
-      items={items}
-      onItemClick={onItemClick}
-    />
+    <div className={cn("gap-sm flex items-center", className)}>
+      {items.map((item) => (
+        <SeriesCard
+          key={item.id}
+          imageUrl={item.imageUrl}
+          title={item.title}
+          tags={item.tags}
+          seriesId={item.id}
+          onClick={() => handleSeriesClick(item.id)}
+          className="shrink-0"
+        />
+      ))}
+    </div>
   );
 };
-
