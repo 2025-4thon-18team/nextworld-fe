@@ -3,6 +3,8 @@ import { cn } from "@/utils";
 import { CategoryTabs } from "@/components/CategoryTabs/CategoryTabs";
 import { PostListHorizontal } from "@/components/PostListHorizontal/PostListHorizontal";
 import { SeriesListHorizontal } from "@/components/SeriesListHorizontal/SeriesListHorizontal";
+import PresetImage from "@/assets/presets/preset-2.png";
+import { SeriesCard } from "@/components/SeriesCard/SeriesCard";
 
 type CategoryTabsTab = "홈" | "신규" | "관심";
 
@@ -70,17 +72,33 @@ export const HomeView: FC<Props> = ({
           <div className="gap-lg flex w-full items-start">
             {/* Featured Universe Card */}
             {universeOfWeek && (
-              <div className="gap-sm flex w-310 shrink-0 flex-col">
-                <div className="relative h-476 w-310 overflow-hidden rounded-sm">
-                  <img
-                    alt={universeOfWeek.title}
-                    src={universeOfWeek.imageUrl}
+              <div className="gap-sm relative flex w-310 shrink-0 flex-col overflow-hidden">
+                <div className="relative h-476 w-310 overflow-hidden rounded-sm blur-sm">
+                  <picture
                     className="pointer-events-none absolute inset-0 size-full max-w-none rounded-sm object-cover object-center"
+                    draggable={false}
+                    aria-label={universeOfWeek.title}
+                  >
+                    <source srcSet={universeOfWeek.imageUrl} type="image/png" />
+                    <img
+                      src={PresetImage}
+                      className="size-full rounded-sm object-cover object-center"
+                      draggable={false}
+                      alt={universeOfWeek.title}
+                    />
+                  </picture>
+                </div>
+                <div className="bg-background-subtle absolute inset-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm">
+                  <SeriesCard
+                    seriesId={universeOfWeek.id}
+                    imageUrl={universeOfWeek.imageUrl}
+                    title={universeOfWeek.title}
+                    tags={universeOfWeek.tags}
+                    className="size-full rounded-sm object-cover object-center"
                   />
                 </div>
               </div>
             )}
-
             {/* Post Lists */}
             <div className="gap-lg flex flex-1 shrink-0 flex-col">
               <PostListHorizontal
