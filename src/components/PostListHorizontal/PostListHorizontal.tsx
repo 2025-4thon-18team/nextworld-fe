@@ -50,6 +50,9 @@ export const PostListHorizontal: FC<Props> = ({ className, items }) => {
           date={item.date}
           onClick={() => handlePostClick(item.id)}
           className="border-background-subtle h-230 min-h-230 w-403 shrink-0 rounded-xs border-t-2 bg-white select-none"
+          isPaid={item.isPaid}
+          price={item.price}
+          postData={item.postData}
         />
       ))}
     </div>
