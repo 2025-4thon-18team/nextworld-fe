@@ -26,7 +26,7 @@ interface PostTypeProps {
   originalSelected?: boolean;
   onOriginalChange?: (selected: boolean) => void;
   searchValue?: string;
-  onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onSearchChange?: (value: string) => void;
   series?: Array<{ imageUrl: string; title: string; selected?: boolean }>;
   onSeriesClick?: (index: number) => void;
   paidPostEnabled?: boolean;
@@ -120,10 +120,10 @@ export const EditorSidebar: FC<
               />
             </div>
 
-            {/* 검색 */}
+            {/* 🔥 수정된 검색창 (최소 수정) */}
             <Search
               value={searchValue}
-              onChange={onSearchChange}
+              onChange={(e) => onSearchChange?.(e.target.value)}
               className="w-full"
             />
 
@@ -177,7 +177,6 @@ export const EditorSidebar: FC<
       case "series-type":
         return (
           <div className="flex flex-col gap-md items-start relative shrink-0 w-full">
-            {/* 작품 카드들 */}
             <div className="flex flex-wrap gap-md items-start justify-between relative shrink-0 w-full">
               {series.map((item, index) => (
                 <SeriesCardSmall
@@ -196,7 +195,6 @@ export const EditorSidebar: FC<
       case "guideline":
         return (
           <div className="flex flex-col gap-md items-start relative shrink-0 w-full">
-            {/* 금지어 */}
             <div className="bg-white flex flex-col gap-10 items-start px-sm py-4 rounded-sm shrink-0 w-full">
               <div className="flex items-center justify-center gap-3 px-4 py-0">
                 <p className="text-body-medium tracking-tight text-nowrap whitespace-pre text-black">
@@ -206,7 +204,6 @@ export const EditorSidebar: FC<
             </div>
             <TagList tags={forbiddenWords} />
 
-            {/* 섹션들 */}
             {sections.map((section, index) => (
               <div
                 key={index}
@@ -241,7 +238,6 @@ export const EditorSidebar: FC<
     >
       {/* Header Section */}
       <div className="bg-white flex flex-col gap-md items-start pb-0 pt-lg px-32 relative shrink-0 w-full">
-        {/* Header */}
         <div className="flex items-center justify-between relative shrink-0 w-full">
           <p className="text-body-medium tracking-tight text-nowrap whitespace-pre text-black">
             {title}
@@ -255,7 +251,6 @@ export const EditorSidebar: FC<
           </button>
         </div>
 
-        {/* HomeCategory for post-type and series-type */}
         {(variant === "post-type" || variant === "series-type") && (
           <HomeCategory
             activeTab={postTypeTab}
@@ -267,7 +262,6 @@ export const EditorSidebar: FC<
           />
         )}
 
-        {/* HomeCategory for guideline */}
         {variant === "guideline" && (
           <HomeCategory
             activeTab={categoryTab}
@@ -280,11 +274,10 @@ export const EditorSidebar: FC<
         )}
       </div>
 
-      {/* Content Section */}
+      {/* Content */}
       <div className="basis-0 flex flex-col gap-md grow items-start min-h-px min-w-px px-32 py-0 relative shrink-0 w-full">
         {renderContent()}
       </div>
     </div>
   );
 };
-

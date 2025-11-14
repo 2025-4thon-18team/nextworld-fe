@@ -1,2 +1,27 @@
 @import "tailwindcss";
 @config '../tailwind.config.ts';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ⭐ 전체 스크롤바 완전 숨기기 (Chrome, Safari, Edge) */
+*::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* ⭐ Firefox */
+* {
+  scrollbar-width: none !important;
+}
+
+/* ⭐ window 스크롤바 숨기기 + 세로 스크롤만 여전히 가능 */
+html, body {
+  height: 100%;
+  overflow-y: scroll;   /* 스크롤은 가능 */
+  overflow-x: hidden;   /* 가로 스크롤 완전 차단 */
+}
+
+/* 혹시 브라우저 기본 margin 제거 */
+body {
+  margin: 0;
+}
