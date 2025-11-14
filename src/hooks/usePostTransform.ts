@@ -11,6 +11,10 @@ export type PostItem = {
   views: number;
   comments: number;
   date: string;
+  // 결제 관련
+  isPaid?: boolean;
+  price?: number | null;
+  postData?: PostResponseDto;
 };
 
 export type ContentItemData = {
@@ -21,6 +25,10 @@ export type ContentItemData = {
   views: number;
   comments: number;
   date: string;
+  // 결제 관련
+  isPaid?: boolean;
+  price?: number | null;
+  postData?: PostResponseDto;
 };
 
 export type EpisodeItem = {
@@ -61,6 +69,9 @@ export function usePostTransform(
       views: post.viewsCount,
       comments: post.commentsCount,
       date: post.createdAt,
+      isPaid: post.isPaid,
+      price: post.price,
+      postData: post,
     }));
   }, [posts, maxLength, contentPreviewLength]);
 
@@ -85,6 +96,9 @@ export function useContentItemTransform(
       views: post.viewsCount,
       comments: post.commentsCount,
       date: post.createdAt,
+      isPaid: post.isPaid,
+      price: post.price,
+      postData: post,
     }));
   }, [posts, maxLength]);
 
@@ -105,6 +119,9 @@ export function useEpisodeTransform(posts: PostResponseDto[] | undefined) {
       views: post.viewsCount,
       comments: post.commentsCount,
       date: post.createdAt,
+      isPaid: post.isPaid,
+      price: post.price,
+      postData: post,
     }));
   }, [posts]);
 
