@@ -16,12 +16,16 @@ type EditorOptionsVariant =
 interface EditorOptionsProps {
   variant?: EditorOptionsVariant;
   seriesTitle?: string;
+  onPostClick?: () => void;
+  onGuidelineClick?: () => void;
   className?: string;
 }
 
 export const EditorOptions: FC<EditorOptionsProps> = ({
   variant = "post",
   seriesTitle = "[작품 제목]",
+  onPostClick,
+  onGuidelineClick,
   className,
 }) => {
   if (variant === "series") {
@@ -34,6 +38,7 @@ export const EditorOptions: FC<EditorOptionsProps> = ({
         <IconWithLabel
           icon={<IconWarning className="size-24 shrink-0 overflow-hidden" />}
           label="가이드라인"
+          onClick={onGuidelineClick}
         />
       </div>
     );
@@ -49,6 +54,7 @@ export const EditorOptions: FC<EditorOptionsProps> = ({
         <IconWithLabel
           icon={<IconWarning className="size-24 shrink-0 overflow-hidden" />}
           label="가이드라인"
+          onClick={onGuidelineClick}
         />
       </div>
     );
@@ -60,10 +66,12 @@ export const EditorOptions: FC<EditorOptionsProps> = ({
         <IconWithLabel
           icon={<IconPost className="size-24 shrink-0 overflow-hidden" />}
           label="포스트"
+          onClick={onPostClick}
         />
         <IconWithLabel
           icon={<IconWarning className="size-24 shrink-0 overflow-hidden" />}
           label="가이드라인"
+          onClick={onGuidelineClick}
         />
       </div>
     );
@@ -74,6 +82,7 @@ export const EditorOptions: FC<EditorOptionsProps> = ({
       <IconWithLabel
         icon={<IconPost className="size-24 shrink-0 overflow-hidden" />}
         label="포스트"
+        onClick={onPostClick}
       />
     </div>
   );

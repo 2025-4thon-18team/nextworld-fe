@@ -4,16 +4,20 @@ import { cn } from "@/utils";
 interface ToggleButtonProps {
   checked?: boolean;
   onChange?: (checked: boolean) => void;
+  disabled?: boolean;
   className?: string;
 }
 
 export const ToggleButton: FC<ToggleButtonProps> = ({
   checked = false,
   onChange,
+  disabled = false,
   className,
 }) => {
   const handleClick = () => {
-    onChange?.(!checked);
+    if (!disabled) {
+      onChange?.(!checked);
+    }
   };
 
   return (
@@ -22,11 +26,13 @@ export const ToggleButton: FC<ToggleButtonProps> = ({
       role="switch"
       aria-checked={checked}
       onClick={handleClick}
+      disabled={disabled}
       className={cn(
         "relative h-34 w-68 rounded-md border-sm transition-colors duration-200",
         checked
           ? "border-grayscale-g2 bg-foreground-default"
           : "border-grayscale-g2 bg-foreground-subtle",
+        disabled && "opacity-50 cursor-not-allowed",
         className,
       )}
     >

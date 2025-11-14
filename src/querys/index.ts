@@ -1,5 +1,6 @@
 export * from "./client";
-export * from "./types";
+import type * as types from "./types.d.ts";
+export type { types };
 export * from "./useAuth";
 export * from "./useUsers";
 export * from "./useMypage";
@@ -7,6 +8,7 @@ export * from "./usePayment";
 export * from "./useRevenue";
 export * from "./useWorks";
 export * from "./usePosts";
+export * from "./useRatings";
 export * from "./useAdmin";
 export * from "./useLike";
 export * from "./useScrap";

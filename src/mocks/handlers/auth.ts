@@ -85,9 +85,9 @@ export const authHandlers = [
         userId: 1,
         email: mockUser.email,
         nickname: mockUser.nickname,
+        name: "홍길동",
+        profileImageUrl: "https://placehold.co/150?text=User",
         pointsBalance: 2000,
-        totalEarned: 50000,
-        guideline: "작가 가이드라인입니다.",
       },
     });
   }),

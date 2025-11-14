@@ -10,6 +10,7 @@ interface GnbProps {
   isAuthorized?: boolean;
   searchValue?: string;
   onSearchChange?: (value: string) => void;
+  onProfileClick?: () => void;
   onLoginClick?: () => void;
   onWriteClick?: () => void;
   profileImageUrl?: string;
@@ -21,6 +22,7 @@ export const Gnb: FC<GnbProps> = ({
   searchValue = "",
   onSearchChange,
   onWriteClick,
+  onProfileClick,
   profileImageUrl,
   className,
 }) => {
@@ -53,9 +55,12 @@ export const Gnb: FC<GnbProps> = ({
               <ButtonSmall variant="subtle" onClick={onWriteClick}>
                 연재하기
               </ButtonSmall>
-              {profileImageUrl && (
-                <ProfileImg imageUrl={profileImageUrl} size="sm" />
-              )}
+
+              <ProfileImg
+                imageUrl={profileImageUrl}
+                size="sm"
+                onClick={onProfileClick}
+              />
             </>
           ) : (
             <Link to="/login">

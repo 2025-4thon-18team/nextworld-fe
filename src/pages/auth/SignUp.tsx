@@ -33,13 +33,45 @@ const SignUp = () => {
   }, []);
 
   const onSubmit = useCallback(async () => {
-    await signupMutation.mutateAsync({
-      nickname,
-      email,
-      password,
-    });
-    navigateToLogin();
-  }, [signupMutation, navigateToLogin, nickname, email, password]);
+    // 값 검증
+    if (
+      !name.trim() ||
+      !nickname.trim() ||
+      !email.trim() ||
+      !password.trim() ||
+      !passwordConfirm.trim()
+    ) {
+      toast("모든 필드를 입력해주세요.");
+      return;
+    }
+
+    if (password !== passwordConfirm) {
+      toast("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    try {
+      await signupMutation.mutateAsync({
+        name: name.trim(),
+        nickname: nickname.trim(),
+        email: email.trim(),
+        password: password,
+        passwordConfirm: passwordConfirm,
+      });
+      navigateToLogin();
+    } catch (error) {
+      console.error("회원가입 실패:", error);
+      toast("회원가입에 실패했습니다.");
+    }
+  }, [
+    signupMutation,
+    navigateToLogin,
+    name,
+    nickname,
+    email,
+    password,
+    passwordConfirm,
+  ]);
 
   const onLoginClick = useCallback(() => {
     navigateToLogin();

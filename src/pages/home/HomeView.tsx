@@ -1,11 +1,13 @@
 // ⭐ HomeView.tsx — 스크린샷 레이아웃 반영
 import { FC } from "react";
 import { cn } from "@/utils";
-import { HomeCategory } from "@/components/HomeCategory/HomeCategory";
+import { CategoryTabs } from "@/components/CategoryTabs/CategoryTabs";
 import { PostListHorizontal } from "@/components/PostListHorizontal/PostListHorizontal";
 import { SeriesListHorizontal } from "@/components/SeriesListHorizontal/SeriesListHorizontal";
+import PresetImage from "@/assets/presets/preset-2.png";
+import { SeriesCard } from "@/components/SeriesCard/SeriesCard";
 
-type HomeCategoryTab = "홈" | "신규" | "관심";
+type CategoryTabsTab = "홈" | "신규" | "관심";
 
 type UniverseItem = {
   id: string;
@@ -35,8 +37,8 @@ type SeriesItem = {
 
 type Props = {
   className?: string;
-  activeTab: HomeCategoryTab;
-  onTabChange: (tab: HomeCategoryTab) => void;
+  activeTab: CategoryTabsTab;
+  onTabChange: (tab: CategoryTabsTab) => void;
   universeOfWeek: UniverseItem | null;
   popularSeries: SeriesItem[];
   popularPosts: PostItem[];
@@ -54,22 +56,20 @@ export const HomeView: FC<Props> = ({
     <div className={cn("flex flex-col bg-white", className)}>
       {/* Home Category */}
       <div className="flex justify-center">
-        <HomeCategory
+        <CategoryTabs
           activeTab={activeTab as "홈" | "신규" | "관심"}
-          onTabChange={(tab) => onTabChange(tab as HomeCategoryTab)}
+          onTabChange={(tab) => onTabChange(tab as CategoryTabsTab)}
           className="flex h-20 items-center"
         />
       </div>
 
       {/* ⭐ 메인 컨텐츠 전체 패딩 */}
-      <div className="flex flex-col gap-20 px-20 mt-10">
-
+      <div className="mt-10 flex flex-col gap-20 px-20">
         {/* ⭐ 금주의 유니버스 */}
         <div className="flex flex-col gap-4">
           <h2 className="text-xl font-semibold text-black">금주의 유니버스</h2>
 
-          <div className="flex gap-6 w-full items-stretch">
-
+          <div className="flex w-full items-stretch gap-6">
             {/* 왼쪽 대표 카드 */}
             {universeOfWeek && (
               <div className={cn("flex h-453 items-center", className)}>
@@ -101,11 +101,11 @@ export const HomeView: FC<Props> = ({
                     />
                   </div>
                 </div>
-              </div>  // ⭐ 여기 닫힘 추가
+              </div> // ⭐ 여기 닫힘 추가
             )}
 
             {/* 오른쪽 포스트 리스트 2x2 */}
-            <div className="flex flex-col gap-4 flex-1">
+            <div className="flex flex-1 flex-col gap-4">
               <PostListHorizontal
                 items={popularPosts.slice(0, 4)}
                 className="grid grid-cols-2 gap-4 overflow-visible"

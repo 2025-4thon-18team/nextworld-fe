@@ -117,4 +117,52 @@ export const paymentHandlers = [
       ],
     });
   }),
+
+  // 구매한 포스트 리스트 조회 (BaseResponse 없이 직접 반환)
+  http.get(serverUrl("/api/payment/purchases/posts"), () => {
+    const purchases = Array.from({ length: 10 }, (_, i) => ({
+      postId: i + 1,
+      workId: Math.floor(i / 3) + 1,
+      title: `구매한 포스트 ${i + 1}`,
+      amount: (i + 1) * 100,
+      purchasedAt: new Date(Date.now() - i * 86400000).toISOString(),
+      coverImageUrl: `https://placehold.co/300x400?text=Post${i + 1}`,
+      workType: i % 2 === 0 ? "ORIGINAL" : "DERIVATIVE",
+      parentWorkId: i % 2 === 0 ? null : Math.floor(i / 2),
+    }));
+
+    return HttpResponse.json(purchases);
+  }),
+
+  // 구매한 작품 리스트 조회 (BaseResponse 없이 직접 반환)
+  http.get(serverUrl("/api/payment/purchases/works"), () => {
+    const purchases = Array.from({ length: 10 }, (_, i) => ({
+      postId: i + 1,
+      workId: i + 1,
+      title: `구매한 작품 ${i + 1}`,
+      amount: (i + 1) * 500,
+      purchasedAt: new Date(Date.now() - i * 86400000).toISOString(),
+      coverImageUrl: `https://placehold.co/300x400?text=Work${i + 1}`,
+      workType: i % 2 === 0 ? "ORIGINAL" : "DERIVATIVE",
+      parentWorkId: i % 2 === 0 ? null : Math.floor(i / 2),
+    }));
+
+    return HttpResponse.json(purchases);
+  }),
+
+  // 구매한 모든 작품 리스트 조회 (BaseResponse 없이 직접 반환)
+  http.get(serverUrl("/api/payment/purchases/all"), () => {
+    const purchases = Array.from({ length: 20 }, (_, i) => ({
+      postId: i + 1,
+      workId: Math.floor(i / 2) + 1,
+      title: `구매한 작품 ${i + 1}`,
+      amount: (i + 1) * 100,
+      purchasedAt: new Date(Date.now() - i * 86400000).toISOString(),
+      coverImageUrl: `https://placehold.co/300x400?text=Purchase${i + 1}`,
+      workType: i % 2 === 0 ? "ORIGINAL" : "DERIVATIVE",
+      parentWorkId: i % 2 === 0 ? null : Math.floor(i / 2),
+    }));
+
+    return HttpResponse.json(purchases);
+  }),
 ];

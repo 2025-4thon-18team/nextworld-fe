@@ -1,27 +1,27 @@
 import { useMemo, useCallback } from "react";
 import { MyPageMainView } from "./MyPageMainView";
-import { useGetMe } from "@/querys/useAuth";   // ⭐ 추가된 라인
-import { useGetAllWorks } from "@/querys/useWorks";
+import { useGetMe, useLogout } from "@/querys/useAuth";
 import { useTab } from "@/hooks/useTab";
 import { useSimpleWorkTransform } from "@/hooks/useWorkTransform";
+import { usePostTransform } from "@/hooks/usePostTransform";
 import { useNavigation } from "@/hooks/useNavigation";
+import { toast } from "sonner";
+import { useGetMyWorks, useGetMyPosts } from "@/querys/useMypage";
 
 type TabType = "작품" | "포스트";
 
 const MyPageMain = () => {
   const { activeTab, onTabChange } = useTab<TabType>("작품");
-  const { navigateToLogin } = useNavigation();
-  const { navigateToProfileEdit } = useNavigation();
+  const { navigateToProfileEdit, navigateToLogin } = useNavigation();
 
-  const { data: profileData } = useGetMe();      // ⭐ 이제 정상 동작
-  const { data: worksData } = useGetAllWorks("ORIGINAL");
+  // React Query hooks 직접 사용
+  const { data: profileData } = useGetMe();
+  const { data: worksData } = useGetMyWorks();
+  const { data: postsData } = useGetMyPosts();
+  const { mutate: logout } = useLogout();
 
-  const seriesList = useSimpleWorkTransform(worksData);
-
-  const postList = [
-    { id: 1, title: "포스트 제목 1", date: "2024-11-14", views: 123 },
-    { id: 2, title: "포스트 제목 2", date: "2024-11-10", views: 56 },
-  ];
+  const worksList = useSimpleWorkTransform(worksData);
+  const postsList = usePostTransform(postsData);
 
   const profile = useMemo(() => {
     if (!profileData) return null;
@@ -39,14 +39,21 @@ const MyPageMain = () => {
   }, [navigateToProfileEdit]);
 
   const onLogout = useCallback(() => {
-    navigateToLogin();
-  }, [navigateToLogin]);
+    logout(undefined, {
+      onSuccess: () => {
+        navigateToLogin();
+      },
+      onError: () => {
+        toast("로그아웃에 실패했습니다.");
+      },
+    });
+  }, [logout, navigateToLogin]);
 
   return (
     <MyPageMainView
       profile={profile}
-      seriesList={seriesList}
-      postList={postList}
+      worksList={worksList}
+      postsList={postsList}
       activeTab={activeTab}
       onTabChange={onTabChange}
       onProfileEdit={onProfileEdit}

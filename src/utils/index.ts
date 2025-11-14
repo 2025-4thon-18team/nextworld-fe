@@ -10,7 +10,7 @@ const customTwMerge = extendTailwindMerge({
         "fontSizes-md",
         "fontSizes-lg",
         "fontSizes-xl",
-        "fontSizes-2xl"
+        "fontSizes-2xl",
       ],
       "border-w": [{ border: ["sm", "md"] }],
       "border-w-x": [{ "border-x": ["sm", "md"] }],
@@ -44,26 +44,43 @@ const customTwMerge = extendTailwindMerge({
       mt: [{ mt: ["xs", "sm", "md", "lg", "xl"] }],
       mr: [{ mr: ["xs", "sm", "md", "lg", "xl"] }],
       mb: [{ mb: ["xs", "sm", "md", "lg", "xl"] }],
-      ml: [{ ml: ["xs", "sm", "md", "lg", "xl"] }]
-    }
-  }
+      ml: [{ ml: ["xs", "sm", "md", "lg", "xl"] }],
+    },
+  },
 });
 
 export function cn(...inputs: ClassValue[]) {
   return customTwMerge(clsx(inputs));
 }
 
-interface Comment {
-  commentId: number;
-  authorId: number;
-  authorUsername: string;
+// API에서 받아오는 CommentResponse 타입 (types.d.ts와 동일)
+interface CommentFromAPI {
+  id: number;
+  postId: number;
   parentCommentId: number | null;
+  authorId: number;
+  authorName: string;
+  authorImageUrl: string;
   content: string;
   createdAt: string;
-  profileImageUrl?: string;
-  replies?: Comment[];
+  updatedAt: string;
 }
 
+// 트리 구조로 변환된 Comment 타입
+export interface Comment {
+  id: number;
+  postId: number;
+  parentCommentId: number | null;
+  authorId: number;
+  authorName: string;
+  authorImageUrl: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  replies?: Comment[]; // 트리 변환 후에만 생김
+}
+
+// 기존 타입 호환성을 위한 레거시 타입 (사용하지 않음)
 export interface CommentResponse {
   commentId: number;
   authorId: number;
@@ -76,19 +93,26 @@ export interface CommentResponse {
   replies?: CommentResponse[];
 }
 
-export function buildCommentTree(comments: CommentResponse[]) {
+export function buildCommentTree(comments: CommentFromAPI[]): Comment[] {
   const map: Record<number, Comment> = {};
   const roots: Comment[] = [];
 
+  // 모든 댓글을 맵에 추가
   comments.forEach((comment) => {
-    map[comment.commentId] = { ...comment, replies: [] };
+    map[comment.id] = {
+      ...comment,
+      replies: [],
+    };
   });
 
+  // 부모-자식 관계 설정
   comments.forEach((comment) => {
-    if (comment.parentCommentId !== null) {
-      map[comment.parentCommentId]?.replies?.push(map[comment.commentId]);
+    if (comment.parentCommentId !== null && map[comment.parentCommentId]) {
+      // 대댓글인 경우 부모 댓글의 replies에 추가
+      map[comment.parentCommentId].replies?.push(map[comment.id]);
     } else {
-      roots.push(map[comment.commentId]);
+      // 최상위 댓글인 경우 roots에 추가
+      roots.push(map[comment.id]);
     }
   });
 

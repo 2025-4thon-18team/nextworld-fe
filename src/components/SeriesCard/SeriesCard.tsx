@@ -2,7 +2,7 @@ import { FC, useCallback } from "react";
 import { cn } from "@/utils";
 import { Tag } from "@/components/Tag/Tag";
 import { useNavigation } from "@/hooks";
-
+import PresetImage from "@/assets/presets/preset-3.png";
 interface SeriesCardProps {
   imageUrl: string;
   title: string;
@@ -42,19 +42,25 @@ export const SeriesCard: FC<SeriesCardProps> = ({
     >
       {/* Image */}
       <div className="relative aspect-150/225 w-full shrink-0 overflow-hidden rounded-sm">
-        <img
-          alt={title}
-          src={imageUrl}
+        <picture
           className="pointer-events-none absolute inset-0 size-full rounded-sm object-cover object-center select-none"
           draggable={false}
-        />
+          aria-label={title}
+        >
+          <source srcSet={imageUrl} type="image/png" />
+          <img
+            src={PresetImage}
+            className="size-full rounded-sm object-cover object-center"
+            draggable={false}
+          />
+        </picture>
       </div>
 
       {/* Title */}
       <p
         className={cn(
           "text-headings-heading-3 w-min-content min-w-full tracking-tight",
-          selected ? "text-grayscale-white" : "text-black",
+          selected ? "text-text-default" : "text-text-black",
         )}
       >
         {title}

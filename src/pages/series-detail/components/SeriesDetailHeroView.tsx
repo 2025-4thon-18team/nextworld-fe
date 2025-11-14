@@ -41,7 +41,7 @@ export const SeriesDetailHeroView: FC<SeriesDetailHeroViewProps> = ({
           </div>
         </div>
         {/* Clear image */}
-        <div className="absolute top-1/2 left-1/2 h-300 w-200 -translate-x-1/2 -translate-y-1/2 rounded-xs">
+        <div className="absolute top-1/2 left-1/2 h-300 w-200 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-md">
           <img
             alt={seriesName}
             className="pointer-events-none absolute inset-0 size-full max-w-none rounded-xs object-cover object-center"

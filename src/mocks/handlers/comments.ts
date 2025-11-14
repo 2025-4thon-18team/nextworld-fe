@@ -2,17 +2,20 @@ import { http, HttpResponse } from "msw";
 import { serverUrl } from "../utils";
 
 // 가짜 댓글 데이터 저장소
-const mockComments: Record<string, Array<{
-  id: number;
-  postId: number;
-  parentCommentId: number | null;
-  authorId: number;
-  authorName: string;
-  authorImageUrl: string;
-  content: string;
-  createdAt: string;
-  updatedAt: string;
-}>> = {};
+const mockComments: Record<
+  string,
+  Array<{
+    id: number;
+    postId: number;
+    parentCommentId: number | null;
+    authorId: number;
+    authorName: string;
+    authorImageUrl: string;
+    content: string;
+    createdAt: string;
+    updatedAt: string;
+  }>
+> = {};
 
 // 댓글 ID 카운터
 let commentIdCounter = 1;
@@ -62,7 +65,8 @@ export const commentsHandlers = [
 
     // 생성순으로 정렬
     const sortedComments = [...comments].sort(
-      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     );
 
     return HttpResponse.json({
@@ -147,4 +151,3 @@ export const commentsHandlers = [
     });
   }),
 ];
-

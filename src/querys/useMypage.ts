@@ -3,8 +3,8 @@ import { client } from "./client";
 import type {
   PointsResponse,
   PayItemResponse,
-  PostResponseDto,
   WorkResponseDto,
+  PostResponseDto,
 } from "./types";
 
 // ============================================
@@ -63,7 +63,7 @@ export const useGetPaylist = () => {
   });
 };
 
-// Query: 내 작품 리스트 조회
+// Query: 내 작품 리스트
 export const useGetMyWorks = () => {
   return useQuery({
     queryKey: ["useGetMyWorks", ...mypageKeys.works()],
@@ -74,7 +74,7 @@ export const useGetMyWorks = () => {
   });
 };
 
-// Query: 내 포스트 리스트 조회
+// Query: 내 포스트 리스트
 export const useGetMyPosts = () => {
   return useQuery({
     queryKey: ["useGetMyPosts", ...mypageKeys.posts()],

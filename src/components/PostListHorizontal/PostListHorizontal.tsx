@@ -49,7 +49,10 @@ export const PostListHorizontal: FC<Props> = ({ className, items }) => {
           comments={item.comments}
           date={item.date}
           onClick={() => handlePostClick(item.id)}
-          className="hover:shadow-md transition rounded-md" // ⭐ hover-shadow 추가
+          className="rounded-md transition hover:shadow-md" // ⭐ hover-shadow 추가
+          isPaid={item.isPaid}
+          price={item.price}
+          postData={item.postData}
         />
       ))}
     </div>

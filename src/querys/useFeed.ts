@@ -7,10 +7,9 @@ import type { ListResponse } from "./types";
 // ============================================
 
 export const feedApi = {
-  // 최근 피드 조회 (인증 불필요)
+  // 피드 조회
   getRecentFeed: () => client.get<ListResponse>("/api/feed/recent"),
-
-  // 작품/포스트 통합 검색 (인증 불필요)
+  // 작품/포스트 통합 검색 (keyword 쿼리 파라미터 필수)
   search: (keyword: string) =>
     client.get<ListResponse>("/api/search", {
       params: { keyword },
@@ -23,24 +22,12 @@ export const feedApi = {
 
 export const feedKeys = {
   all: ["feed"] as const,
-  recent: () => [...feedKeys.all, "recent"] as const,
   search: (keyword: string) => [...feedKeys.all, "search", keyword] as const,
 };
 
 // ============================================
 // React Query Hooks
 // ============================================
-
-// Query: 최근 피드 조회
-export const useGetRecentFeed = () => {
-  return useQuery({
-    queryKey: ["useGetRecentFeed", ...feedKeys.recent()],
-    queryFn: async () => {
-      const response = await feedApi.getRecentFeed();
-      return response.data;
-    },
-  });
-};
 
 // Query: 작품/포스트 통합 검색
 export const useSearch = (keyword: string) => {
@@ -50,7 +37,17 @@ export const useSearch = (keyword: string) => {
       const response = await feedApi.search(keyword);
       return response.data;
     },
-    enabled: !!keyword && keyword.trim().length > 0,
+    enabled: !!keyword && keyword.trim().length > 0, // 검색어가 있을 때만 호출
   });
 };
 
+// Query: 피드 조회
+export const useGetRecentFeed = () => {
+  return useQuery({
+    queryKey: ["useGetRecentFeed"],
+    queryFn: async () => {
+      const response = await feedApi.getRecentFeed();
+      return response.data;
+    },
+  });
+};

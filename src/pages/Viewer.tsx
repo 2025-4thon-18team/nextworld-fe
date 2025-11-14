@@ -1,30 +1,198 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
+import { useParams } from "react-router-dom";
 import { ViewerView } from "./ViewerView";
+import { useGetComments, useCreateComment } from "@/querys/useComments";
+import { useGetPostById } from "@/querys/usePosts";
+import { useGetWorkEpisodes } from "@/querys/useWorks";
+import {
+  useGetRatingSummary,
+  useGetMyRating,
+  useRatePost,
+} from "@/querys/useRatings";
+import { useNavigation } from "@/hooks/useNavigation";
+import type { CreateCommentRequest } from "@/querys/types";
+import { toast } from "sonner";
 
 const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
+  const { postId, contentId } = useParams<{
+    postId?: string;
+    contentId?: string;
+  }>();
+  const { navigateToSeries, navigateToSeriesContent, navigateToHome } =
+    useNavigation();
+
+  // 포스트 ID (EPISODE는 contentId, POST는 postId)
+  const currentPostId = type === "POST" ? postId : contentId;
+  const postIdNum = currentPostId ? Number(currentPostId) : 0;
+
+  // 포스트 데이터 조회
+  const { data: postData } = useGetPostById(postIdNum);
+
+  // 실제 포스트 타입 확인 (postData에서 가져온 postType 사용)
+  const actualPostType = postData?.postType || type;
+
+  // EPISODE일 때 회차 목록 조회 (다음화/이전화를 위해)
+  const { data: episodesData } = useGetWorkEpisodes(postData?.workId ?? 0);
+
+  // 현재 회차의 다음/이전 회차 찾기
+  const { prevEpisodeId, nextEpisodeId } = useMemo(() => {
+    if (!episodesData || !postIdNum || actualPostType !== "EPISODE") {
+      return { prevEpisodeId: null, nextEpisodeId: null };
+    }
+
+    const currentIndex = episodesData.findIndex((ep) => ep.id === postIdNum);
+    if (currentIndex === -1) {
+      return { prevEpisodeId: null, nextEpisodeId: null };
+    }
+
+    const prevEpisode =
+      currentIndex > 0 ? episodesData[currentIndex - 1] : null;
+    const nextEpisode =
+      currentIndex < episodesData.length - 1
+        ? episodesData[currentIndex + 1]
+        : null;
+
+    return {
+      prevEpisodeId: prevEpisode?.id ?? null,
+      nextEpisodeId: nextEpisode?.id ?? null,
+    };
+  }, [episodesData, postIdNum, actualPostType]);
+
+  // 댓글 조회 및 생성 (ViewerView에 props 추가 후 사용)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { data: comments } = useGetComments(postIdNum);
+  const { mutate: createComment } = useCreateComment();
+
+  // 별점 조회 및 등록/수정
+  const { data: ratingSummary } = useGetRatingSummary(postIdNum);
+  const { data: myRating } = useGetMyRating(postIdNum);
+  const { mutate: ratePost } = useRatePost();
+
+  // 평균 별점 (별점 요약이 있으면 사용, 없으면 postData의 rating 사용)
+  const averageRating = ratingSummary?.averageScore ?? postData?.rating ?? 0;
+  // 내 별점
+  const myRatingScore = myRating?.myScore ?? null;
+
+  const onPrevious = useCallback(() => {
+    if (prevEpisodeId) {
+      navigateToSeriesContent(
+        String(postData?.workId ?? 0),
+        String(prevEpisodeId),
+      );
+    }
+  }, [prevEpisodeId, navigateToSeriesContent]);
+
   const onNext = useCallback(() => {
-    // TODO: 다음 화로 이동
-  }, []);
+    if (nextEpisodeId) {
+      navigateToSeriesContent(
+        String(postData?.workId ?? 0),
+        String(nextEpisodeId),
+      );
+    }
+  }, [nextEpisodeId, navigateToSeriesContent]);
 
   const onOriginalSeriesClick = useCallback(() => {
-    // TODO: 원작 작품으로 이동
-  }, []);
+    // 작품 상세 페이지로 이동
+    if (postData?.workId) {
+      navigateToSeries(postData.workId);
+    } else if (postData?.parentWorkId) {
+      // 원작 작품이 있는 경우 원작 작품 상세 페이지로 이동
+      navigateToSeries(postData.parentWorkId);
+    }
+  }, [postData, navigateToSeries]);
+
+  const onBack = useCallback(() => {
+    // 작품 상세 페이지로 이동
+    if (postData?.workId) {
+      navigateToSeries(postData.workId);
+    } else {
+      // 작품 ID가 없으면 홈으로 이동
+      navigateToHome();
+    }
+  }, [postData, navigateToSeries, navigateToHome]);
+
+  // 댓글 작성 (ViewerEnd 컴포넌트에서 사용 가능하도록, ViewerView에 props 추가 후 사용)
+  // TODO: ViewerView에 props 추가 후 사용
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _handleCommentSubmit = useCallback(
+    (content: string) => {
+      if (!postIdNum) return;
+
+      const commentData: CreateCommentRequest = {
+        content,
+        parentCommentId: null,
+      };
+
+      createComment(
+        { postId: postIdNum, data: commentData },
+        {
+          onSuccess: () => {
+            // 댓글 목록이 자동으로 갱신됨
+          },
+          onError: () => {
+            toast("댓글 작성에 실패했습니다.");
+          },
+        },
+      );
+    },
+    [postIdNum, createComment],
+  );
+
+  // 별점 등록/수정 핸들러
+  const handleRatingSubmit = useCallback(
+    (rating: number) => {
+      if (!postIdNum) return;
+
+      ratePost(
+        {
+          postId: postIdNum,
+          data: { score: rating },
+        },
+        {
+          onSuccess: () => {
+            toast("별점이 등록되었습니다.");
+          },
+          onError: () => {
+            toast("별점 등록에 실패했습니다.");
+          },
+        },
+      );
+    },
+    [postIdNum, ratePost],
+  );
+
+  // EPISODE일 때만 작품명과 다음화/이전화 표시
+  const isEpisode = actualPostType === "EPISODE";
 
   return (
     <ViewerView
-      seriesTitle="[작품명]"
-      episodeTitle="제목제목제목제목"
-      tags={["현대로맨스", "현대로맨스", "현대로맨스"]}
-      authorName="작가명"
-      authorId="1"
-      rating={4.5}
-      originalSeriesImageUrl="https://placehold.co/50x75"
-      originalSeriesLabel="이 유니버스의 '원작' 보기"
-      originalSeriesTitle="은해상단 막내아들"
-      originalSeriesId="1"
-      postType={type}
-      onNext={onNext}
-      onOriginalSeriesClick={onOriginalSeriesClick}
+      seriesTitle={isEpisode ? (postData?.workTitle ?? "") : ""}
+      episodeTitle={postData?.title || ""}
+      content={postData?.content || ""}
+      tags={postData?.tags || []}
+      authorName={postData?.authorName || ""}
+      authorId={postData?.authorName ? undefined : undefined}
+      rating={averageRating}
+      myRating={myRatingScore}
+      postId={postIdNum}
+      onRatingSubmit={handleRatingSubmit}
+      originalSeriesImageUrl={
+        postData?.parentWorkTitle ? "https://placehold.co/50x75" : ""
+      }
+      originalSeriesLabel={
+        postData?.parentWorkTitle ? "이 유니버스의 '원작' 보기" : ""
+      }
+      originalSeriesTitle={postData?.parentWorkTitle ?? ""}
+      originalSeriesId={
+        postData?.parentWorkId ? String(postData.parentWorkId) : undefined
+      }
+      postType={actualPostType}
+      onBack={onBack}
+      onPrevious={isEpisode && prevEpisodeId ? onPrevious : undefined}
+      onNext={isEpisode && nextEpisodeId ? onNext : undefined}
+      onOriginalSeriesClick={
+        postData?.parentWorkId ? onOriginalSeriesClick : undefined
+      }
     />
   );
 };

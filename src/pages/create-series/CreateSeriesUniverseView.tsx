@@ -92,7 +92,7 @@ export const CreateSeriesUniverseView: FC<Props> = ({
         </p>
 
         {/* Universe Settings */}
-        <div className="gap-xl flex w-810 flex-col items-start">
+        <div className="gap-xl flex w-full flex-col items-start">
           {/* Original Series Selection */}
           <div className="gap-lg flex w-full flex-col items-start">
             <div className="gap-sm flex w-full flex-col items-start">
@@ -135,7 +135,7 @@ export const CreateSeriesUniverseView: FC<Props> = ({
                   value={episodePrice}
                   onChange={(e) => onEpisodePriceChange(e.target.value)}
                 />
-                <p className="text-body-small-medium text-muted">
+                <p className="text-body-small-medium text-text-muted">
                   원작이 있을 경우, 정산 비율은 4:3:3으로 고정 됩니다
                 </p>
               </div>
