@@ -7,15 +7,18 @@ import { OriginalSeriesBanner } from "@/components/OriginalSeriesBanner/Original
 type Props = {
   seriesTitle: string;
   episodeTitle: string;
+  content: string;
   tags: string[];
   authorName: string;
   authorId?: string | number;
   rating: number;
+  postId?: number;
   originalSeriesImageUrl: string;
   originalSeriesLabel: string;
   originalSeriesTitle: string;
   originalSeriesId?: string | number;
   postType: "POST" | "EPISODE";
+  onBack?: () => void;
   onPrevious?: () => void;
   onNext?: () => void;
   onOriginalSeriesClick?: () => void;
@@ -24,15 +27,18 @@ type Props = {
 export const ViewerView: FC<Props> = ({
   seriesTitle,
   episodeTitle,
+  content,
   tags,
   authorName,
   authorId,
   rating,
+  postId,
   originalSeriesImageUrl,
   originalSeriesLabel,
   originalSeriesTitle,
   originalSeriesId,
   postType,
+  onBack,
   onPrevious,
   onNext,
   onOriginalSeriesClick,
@@ -44,13 +50,20 @@ export const ViewerView: FC<Props> = ({
       <ViewerHeader
         seriesTitle={isEpisode ? seriesTitle : undefined}
         episodeTitle={episodeTitle}
+        onBack={onBack}
         onPrevious={onPrevious}
         onNext={isEpisode ? onNext : undefined}
       />
 
       <div className="flex w-770 flex-col items-start gap-32 pt-0">
         {/* Content Area */}
-        <div className="h-492 w-760 bg-neutral-300" />
+        <div className="gap-lg flex w-full flex-col">
+          <h1 className="text-headings-heading-1 text-black">{episodeTitle}</h1>
+          <div
+            className="text-body-regular whitespace-pre-wrap text-black"
+            dangerouslySetInnerHTML={{ __html: content }}
+          />
+        </div>
 
         {/* Viewer End Section */}
         <div className="gap-xl flex w-full flex-col items-start">
@@ -59,6 +72,7 @@ export const ViewerView: FC<Props> = ({
             authorName={authorName}
             authorId={authorId}
             rating={rating}
+            postId={postId}
           />
         </div>
 

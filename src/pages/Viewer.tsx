@@ -12,7 +12,8 @@ const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
     postId?: string;
     contentId?: string;
   }>();
-  const { navigateToSeries, navigateToSeriesContent } = useNavigation();
+  const { navigateToSeries, navigateToSeriesContent, navigateToHome } =
+    useNavigation();
 
   // 포스트 ID (EPISODE는 contentId, POST는 postId)
   const currentPostId = type === "POST" ? postId : contentId;
@@ -84,6 +85,16 @@ const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
     }
   }, [postData, navigateToSeries]);
 
+  const onBack = useCallback(() => {
+    // 작품 상세 페이지로 이동
+    if (postData?.workId) {
+      navigateToSeries(postData.workId);
+    } else {
+      // 작품 ID가 없으면 홈으로 이동
+      navigateToHome();
+    }
+  }, [postData, navigateToSeries, navigateToHome]);
+
   // 댓글 작성 (ViewerEnd 컴포넌트에서 사용 가능하도록, ViewerView에 props 추가 후 사용)
   // TODO: ViewerView에 props 추가 후 사용
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -118,10 +129,12 @@ const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
     <ViewerView
       seriesTitle={isEpisode ? (postData?.workTitle ?? "") : ""}
       episodeTitle={postData?.title || ""}
+      content={postData?.content || ""}
       tags={postData?.tags || []}
       authorName={postData?.authorName || ""}
       authorId={postData?.authorName ? undefined : undefined}
       rating={postData?.rating ?? 0}
+      postId={postIdNum}
       originalSeriesImageUrl={
         postData?.parentWorkTitle ? "https://placehold.co/50x75" : ""
       }
@@ -133,12 +146,12 @@ const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
         postData?.parentWorkId ? String(postData.parentWorkId) : undefined
       }
       postType={actualPostType}
+      onBack={onBack}
       onPrevious={isEpisode && prevEpisodeId ? onPrevious : undefined}
       onNext={isEpisode && nextEpisodeId ? onNext : undefined}
       onOriginalSeriesClick={
         postData?.parentWorkId ? onOriginalSeriesClick : undefined
       }
-      // TODO: ViewerView에 comments, onCommentSubmit props 추가 필요
     />
   );
 };
