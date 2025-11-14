@@ -21,6 +21,7 @@ import Viewer from "./pages/Viewer";
 import SeriesDetail from "./pages/series-detail/SeriesDetail";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
+import ProfileEdit from "./pages/mypage/ProfileEdit";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -81,6 +82,8 @@ export function Router() {
             <Route element={<Revenue />} path="/my-page/revenue" />
             <Route element={<PointHistory />} path="/my-page/point" />
             <Route element={<Favorites />} path="/my-page/favorites" />
+            
+            <Route element={<ProfileEdit />} path="/my-page/profile/edit" />
           </Route>
         </Routes>
       </RouterComponent>

@@ -10,27 +10,16 @@ type TabType = "작품" | "포스트";
 
 const MyPageMain = () => {
   const { activeTab, onTabChange } = useTab<TabType>("작품");
-  const { navigateToProfileEdit, navigateToLogin } = useNavigation();
+  const { navigateToLogin } = useNavigation();
 
   const { data: profileData } = useGetMe();
   const { data: worksData } = useGetAllWorks("ORIGINAL");
 
   const seriesList = useSimpleWorkTransform(worksData);
 
-  // 🔥 포스트 탭 표시용 더미 데이터 (API 없으므로)
   const postList = [
-    {
-      id: 1,
-      title: "포스트 제목 1",
-      date: "2024-11-14",
-      views: 123,
-    },
-    {
-      id: 2,
-      title: "포스트 제목 2",
-      date: "2024-11-10",
-      views: 56,
-    },
+    { id: 1, title: "포스트 제목 1", date: "2024-11-14", views: 123 },
+    { id: 2, title: "포스트 제목 2", date: "2024-11-10", views: 56 },
   ];
 
   const profile = useMemo(() => {
@@ -43,9 +32,10 @@ const MyPageMain = () => {
     };
   }, [profileData]);
 
+  // ⭐ 수정: 최소 변경으로 ProfileEdit 페이지 실행
   const onProfileEdit = useCallback(() => {
-    navigateToProfileEdit();
-  }, [navigateToProfileEdit]);
+    window.location.href = "/my-page/profile/edit";
+  }, []);
 
   const onLogout = useCallback(() => {
     navigateToLogin();
@@ -55,10 +45,10 @@ const MyPageMain = () => {
     <MyPageMainView
       profile={profile}
       seriesList={seriesList}
-      postList={postList}        // 🔥 추가됨
+      postList={postList}
       activeTab={activeTab}
       onTabChange={onTabChange}
-      onProfileEdit={onProfileEdit}
+      onProfileEdit={onProfileEdit}   // ⭐ 수정된 핸들러 전달
       onLogout={onLogout}
     />
   );
