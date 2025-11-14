@@ -11,30 +11,43 @@ type TabType = "작품" | "포스트";
 const MyPageMain = () => {
   const { activeTab, onTabChange } = useTab<TabType>("작품");
   const { navigateToProfileEdit, navigateToLogin } = useNavigation();
-  
-  // React Query hooks 직접 사용
+
   const { data: profileData } = useGetMe();
   const { data: worksData } = useGetAllWorks("ORIGINAL");
 
   const seriesList = useSimpleWorkTransform(worksData);
 
+  // 🔥 포스트 탭 표시용 더미 데이터 (API 없으므로)
+  const postList = [
+    {
+      id: 1,
+      title: "포스트 제목 1",
+      date: "2024-11-14",
+      views: 123,
+    },
+    {
+      id: 2,
+      title: "포스트 제목 2",
+      date: "2024-11-10",
+      views: 56,
+    },
+  ];
+
   const profile = useMemo(() => {
     if (!profileData) return null;
     return {
       name: profileData.name,
-      bio: [], // TODO: bio 필드가 API에 없음
-      contact: "", // TODO: contact 필드가 API에 없음
+      bio: [],
+      contact: "",
       profileImageUrl: profileData.profileImageUrl,
     };
   }, [profileData]);
 
   const onProfileEdit = useCallback(() => {
-    // TODO: 프로필 수정 페이지로 이동
     navigateToProfileEdit();
   }, [navigateToProfileEdit]);
 
   const onLogout = useCallback(() => {
-    // TODO: 로그아웃 로직
     navigateToLogin();
   }, [navigateToLogin]);
 
@@ -42,6 +55,7 @@ const MyPageMain = () => {
     <MyPageMainView
       profile={profile}
       seriesList={seriesList}
+      postList={postList}        // 🔥 추가됨
       activeTab={activeTab}
       onTabChange={onTabChange}
       onProfileEdit={onProfileEdit}
