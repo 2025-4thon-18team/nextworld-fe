@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { client } from "./client";
 import type {
@@ -73,6 +74,134 @@ export const paymentKeys = {
 // React Query Hooks
 // ============================================
 
+// 아임포트 타입 정의
+interface IMPWindow {
+  IMP?: {
+    init: (code: string) => void;
+    request_pay: (
+      params: {
+        pg?: string;
+        pay_method: string;
+        merchant_uid: string;
+        name: string;
+        amount: number;
+        buyer_email?: string;
+        buyer_name?: string;
+        buyer_tel?: string;
+      },
+      callback: (rsp: {
+        success: boolean;
+        imp_uid: string;
+        error_msg?: string;
+      }) => void,
+    ) => void;
+  };
+}
+
+// 포인트 충전을 위한 아임포트 훅
+export const useIamportPayment = () => {
+  const { mutate: verifyPayment } = useVerifyPayment();
+  const { mutate: chargePoints, isPending: isCharging } = useChargePoints();
+
+  const requestPayment = useCallback(
+    (
+      params: {
+        chargePoint: number;
+        price: number;
+        paymentMethod: string;
+      },
+      callbacks: {
+        onSuccess?: () => void;
+        onError?: (error: string) => void;
+      },
+    ) => {
+      if (typeof window === "undefined") {
+        callbacks.onError?.("결제를 시작할 수 없습니다.");
+        return;
+      }
+
+      const impWindow = window as unknown as IMPWindow;
+      if (!impWindow.IMP) {
+        callbacks.onError?.("결제 시스템을 초기화할 수 없습니다.");
+        return;
+      }
+
+      const IMP = impWindow.IMP;
+      IMP.init("imp11835484"); // 아임포트 가맹점 식별코드
+
+      // 결제 수단에 따라 pg 설정
+      const pgMap: Record<string, string> = {
+        네이버페이: "naverpay",
+        카카오페이: "kakaopay",
+        "카드 결제": "html5_inicis",
+        "계좌 이체": "html5_inicis",
+      };
+
+      const merchantUid = `charge_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+      IMP.request_pay(
+        {
+          pg: pgMap[params.paymentMethod] || "html5_inicis",
+          pay_method: "card",
+          merchant_uid: merchantUid,
+          name: `${params.chargePoint}P 충전`,
+          amount: params.price,
+        },
+        (rsp) => {
+          if (rsp.success) {
+            // 1. charge API 호출 (Pay 엔티티 생성)
+            chargePoints(
+              {
+                impUid: rsp.imp_uid,
+                amount: params.price,
+              },
+              {
+                onSuccess: () => {
+                  // 2. charge 성공 후 verify API 호출 (imp_uid 검증 및 포인트 충전)
+                  verifyPayment(
+                    { impUid: rsp.imp_uid },
+                    {
+                      onSuccess: () => {
+                        callbacks.onSuccess?.();
+                      },
+                      onError: (error: unknown) => {
+                        const errorMessage =
+                          (
+                            error as {
+                              response?: { data?: { message?: string } };
+                            }
+                          )?.response?.data?.message ||
+                          "결제 검증에 실패했습니다.";
+                        callbacks.onError?.(errorMessage);
+                      },
+                    },
+                  );
+                },
+                onError: (error: unknown) => {
+                  const errorMessage =
+                    (
+                      error as {
+                        response?: { data?: { message?: string } };
+                      }
+                    )?.response?.data?.message || "포인트 충전에 실패했습니다.";
+                  callbacks.onError?.(errorMessage);
+                },
+              },
+            );
+          } else {
+            callbacks.onError?.(rsp.error_msg || "결제에 실패했습니다.");
+          }
+        },
+      );
+    },
+    [verifyPayment, chargePoints],
+  );
+
+  return {
+    requestPayment,
+    isCharging,
+  };
+};
 // Mutation: 결제 검증
 export const useVerifyPayment = () => {
   return useMutation({

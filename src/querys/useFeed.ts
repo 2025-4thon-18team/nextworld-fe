@@ -7,6 +7,8 @@ import type { ListResponse } from "./types";
 // ============================================
 
 export const feedApi = {
+  // 피드 조회
+  getRecentFeed: () => client.get<ListResponse>("/api/feed/recent"),
   // 작품/포스트 통합 검색 (keyword 쿼리 파라미터 필수)
   search: (keyword: string) =>
     client.get<ListResponse>("/api/search", {
@@ -39,3 +41,13 @@ export const useSearch = (keyword: string) => {
   });
 };
 
+// Query: 피드 조회
+export const useGetRecentFeed = () => {
+  return useQuery({
+    queryKey: ["useGetRecentFeed"],
+    queryFn: async () => {
+      const response = await feedApi.getRecentFeed();
+      return response.data;
+    },
+  });
+};
