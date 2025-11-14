@@ -5,13 +5,9 @@ import {
   useCreatePost,
   useSaveDraft,
   useGetAllDrafts,
-  useGetDraftById,
   useUpdatePost,
-  useDeletePost,
 } from "@/querys/usePosts";
 import { useUploadWorkImage } from "@/querys/useWorks";
-import { useCreateWork } from "@/querys/useWorks";
-import { useSettleRevenue } from "@/querys/useRevenue";
 import { useGetAllWorks } from "@/querys/useWorks";
 import { useSearch } from "@/querys/useFeed";
 import { toast } from "sonner";
@@ -29,7 +25,6 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
   const [content, setContent] = useState("");
   const [postSelected, setPostSelected] = useState(true);
   const [tags, setTags] = useState<string[]>([]);
-  const [allowDerivative, setAllowDerivative] = useState(false);
   const [paidPost, setPaidPost] = useState(false);
   const [episodePrice, setEpisodePrice] = useState("");
   const [searchValue, setSearchValue] = useState("");
@@ -47,12 +42,8 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
   const { mutate: createPost } = useCreatePost();
   const { mutate: saveDraft } = useSaveDraft();
   const { data: allDrafts } = useGetAllDrafts();
-  const { data: draftData } = useGetDraftById(selectedDraftId || 0);
   const { mutate: updatePost } = useUpdatePost();
-  const { mutate: deletePost } = useDeletePost();
-  const { mutate: uploadImage, isPending: isUploading } = useUploadWorkImage();
-  const { mutate: createWork } = useCreateWork();
-  const { mutate: settleRevenue } = useSettleRevenue();
+  const { mutate: uploadImage } = useUploadWorkImage();
   // TODO: /api/mypage/works 엔드포인트가 없어서 전체 작품 목록 조회 사용
   const { data: myWorks } = useGetAllWorks();
   const { data: searchResults } = useSearch(searchValue);
@@ -89,10 +80,6 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
 
   const onPostChange = useCallback((selected: boolean) => {
     setPostSelected(selected);
-  }, []);
-
-  const onAllowDerivativeChange = useCallback((checked: boolean) => {
-    setAllowDerivative(checked);
   }, []);
 
   const onPaidPostChange = useCallback((checked: boolean) => {
@@ -237,20 +224,6 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
     navigateBack,
   ]);
 
-  // 정산하기 (별도 기능, 현재는 사용하지 않음)
-  const onSettle = useCallback(() => {
-    settleRevenue(undefined, {
-      onSuccess: (data) => {
-        toast.success(
-          `정산이 완료되었습니다. 정산 금액: ${data.totalSettledAmount}원`,
-        );
-      },
-      onError: () => {
-        toast.error("정산에 실패했습니다.");
-      },
-    });
-  }, [settleRevenue]);
-
   const onAddImage = useCallback(() => {
     // 파일 입력 요소 생성
     const input = document.createElement("input");
@@ -261,10 +234,21 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
       if (file) {
         uploadImage(file, {
           onSuccess: (imageUrl) => {
-            // 이미지 URL을 콘텐츠에 삽입
-            const imageMarkdown = `![이미지](${imageUrl})\n`;
-            setContent((prev) => prev + imageMarkdown);
-            toast.success("이미지가 업로드되었습니다.");
+            // 이미지 URL을 contentEditable에 <img> 태그로 삽입
+            const insertImage = (
+              window as Window & {
+                __insertImageAtCursor?: (imageUrl: string) => void;
+              }
+            ).__insertImageAtCursor;
+            if (insertImage && typeof insertImage === "function") {
+              insertImage(imageUrl);
+              toast.success("이미지가 업로드되었습니다.");
+            } else {
+              // Fallback: HTML 문자열로 추가
+              const imageHtml = `<img src="${imageUrl}" style="max-width: 100%; height: auto; display: block; margin: 16px 0;" draggable="true" data-drag-id="img-${Date.now()}" />`;
+              setContent((prev) => (prev ? prev + imageHtml : imageHtml));
+              toast.success("이미지가 업로드되었습니다.");
+            }
           },
           onError: () => {
             toast.error("이미지 업로드에 실패했습니다.");
@@ -289,16 +273,12 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
     setSidebarOpen(true);
   }, []);
 
-  // 포스트 탭일 경우 원작 설정을 무조건 해야 함
-  const shouldRequireOriginal = postSelected && variant === "secondary-post";
-
   return (
     <EditorView
       title={title}
       content={content}
       postSelected={postSelected}
       tags={tags}
-      allowDerivative={shouldRequireOriginal ? true : allowDerivative}
       paidPost={paidPost}
       episodePrice={episodePrice}
       searchValue={searchValue}
@@ -311,9 +291,6 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
       onTitleChange={onTitleChange}
       onContentChange={onContentChange}
       onPostChange={onPostChange}
-      onAllowDerivativeChange={
-        shouldRequireOriginal ? undefined : onAllowDerivativeChange
-      }
       onPaidPostChange={onPaidPostChange}
       onEpisodePriceChange={onEpisodePriceChange}
       onSearchChange={onSearchChange}
