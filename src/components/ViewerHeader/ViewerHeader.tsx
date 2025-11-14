@@ -50,8 +50,8 @@ export const ViewerHeader: FC<ViewerHeaderProps> = ({
         className,
       )}
     >
-      <div className="relative h-100 w-1440">
-        <div className="absolute top-19 left-[calc(10%+66px)] flex w-1035 items-center justify-between">
+      <div className="relative flex h-100 w-full max-w-1440 items-center justify-center">
+        <div className="flex w-1035 items-center justify-between">
           <div className="gap-xl flex shrink-0 items-center">
             {/* Previous Episode Button */}
             <button
@@ -61,7 +61,7 @@ export const ViewerHeader: FC<ViewerHeaderProps> = ({
             >
               <IconChevron className="size-24 shrink-0 overflow-hidden" />
             </button>
-            <div className="gap-xs flex h-56 w-161 shrink-0 flex-col items-start justify-between text-black">
+            <div className="gap-xs flex h-full w-161 shrink-0 flex-col items-start justify-between text-black">
               {seriesTitle && (
                 <p className="text-body-medium w-full tracking-tight">
                   {seriesTitle}
@@ -72,22 +72,24 @@ export const ViewerHeader: FC<ViewerHeaderProps> = ({
               </p>
             </div>
           </div>
-          {onNext && (
-            <div className="gap-sm flex shrink-0 items-center">
+          <div className="gap-sm flex shrink-0 items-center">
+            {onPrevious && (
               <IconWithLabel
                 icon={
                   <IconChevron className="size-24 shrink-0 overflow-hidden" />
                 }
-                label="저번화"
+                label="이전화"
                 onClick={onPrevious}
               />
+            )}
+            {onNext && (
               <IconWithLabel
                 icon={<IconChevronFlip />}
                 label="다음화"
                 onClick={onNext}
               />
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -62,14 +62,16 @@ export const ViewerView: FC<Props> = ({
           />
         </div>
 
-        {/* Original Series Banner */}
-        <OriginalSeriesBanner
-          imageUrl={originalSeriesImageUrl}
-          label={originalSeriesLabel}
-          title={originalSeriesTitle}
-          seriesId={originalSeriesId}
-          onClick={onOriginalSeriesClick}
-        />
+        {/* Original Series Banner - EPISODE이고 원작 작품이 있을 때만 표시 */}
+        {isEpisode && originalSeriesTitle && (
+          <OriginalSeriesBanner
+            imageUrl={originalSeriesImageUrl}
+            label={originalSeriesLabel}
+            title={originalSeriesTitle}
+            seriesId={originalSeriesId}
+            onClick={onOriginalSeriesClick}
+          />
+        )}
       </div>
     </div>
   );

@@ -54,7 +54,7 @@ export const ViewerEnd: FC<ViewerEndProps> = ({
       <div className="bg-grayscale-g2 relative h-52 w-1 shrink-0" />
 
       {/* Rating */}
-      {rating !== undefined && (
+      {rating != null && (
         <>
           <div className="flex min-w-0 flex-1 shrink-0 items-center justify-center gap-10">
             <IconWithLabel
