@@ -19,10 +19,7 @@ const CreateSeriesSecondary = () => {
   const [backgroundTextAreas, setBackgroundTextAreas] = useState<string[]>([
     "",
   ]);
-  const [prohibitedWords, setProhibitedWords] = useState<string[]>([
-    "현대로맨스",
-    "현대로맨스",
-  ]);
+  const [prohibitedWords, setProhibitedWords] = useState<string[]>([]);
   const [agreement1, setAgreement1] = useState(false);
   const [agreement2, setAgreement2] = useState(false);
 

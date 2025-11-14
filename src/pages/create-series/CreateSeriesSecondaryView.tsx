@@ -105,7 +105,7 @@ export const CreateSeriesSecondaryView: FC<Props> = ({
         </p>
 
         {/* Secondary Creation Settings */}
-        <div className="gap-xl flex w-814 flex-col items-start">
+        <div className="gap-xl flex w-full flex-col items-start">
           {/* Allow Secondary Creation */}
           <div className="flex w-full items-center justify-between">
             <InputLabel>2차 창작 허용</InputLabel>
@@ -115,68 +115,60 @@ export const CreateSeriesSecondaryView: FC<Props> = ({
             />
           </div>
 
-          {/* Allow Secondary Revenue */}
-          <div className="gap-sm flex w-full flex-col items-start">
-            <div className="flex w-full items-center justify-between">
-              <InputLabel>2차 창작물의 수익 허용</InputLabel>
-              <ToggleButton
-                checked={allowSecondaryRevenue}
-                onChange={onAllowSecondaryRevenueChange}
-              />
-            </div>
-            <p className="text-body-small-medium text-muted">
-              2차 창작물 수익의 40%가 작가님의 수익으로 정산돼요!
-            </p>
-          </div>
-
           {/* Guidelines */}
-          <div className="gap-xl flex w-full flex-col items-start py-0 pr-0 pl-16">
-            <div className="gap-sm flex w-full flex-col items-start">
-              <div className="gap-xs flex flex-col items-start">
-                <InputLabel>2차 창작 가이드라인</InputLabel>
-                <p className="text-body-small-medium text-muted">
-                  2차 창작자가 지켜야할 작품에 대한 가이드라인을 적어주세요!
-                </p>
+
+          {allowSecondaryCreation && (
+            <>
+              <div className="gap-sm flex w-full flex-col items-start">
+                <div className="gap-xs flex flex-col items-start">
+                  <InputLabel>2차 창작 가이드라인</InputLabel>
+                  <p className="text-body-small-medium text-text-muted pl-4">
+                    2차 창작자가 지켜야할 가이드라인이 있다면 적어주세요!
+                    <br />
+                    (*가이드라인을 벗어나는 글은 AI 검증 후 반려됩니다.)
+                  </p>
+                </div>
               </div>
-            </div>
 
-            {/* Relationship Aspect */}
-            <TextAreaInputList
-              title="관계/인물 측면"
-              textAreas={relationshipTextAreas}
-              onTextAreasChange={onRelationshipTextAreasChange}
-              className="opacity-100"
-              defaultExpanded={true}
-            />
+              <div className="flex w-full flex-col items-start gap-32 py-0 pr-0 pl-16">
+                {/* Relationship Aspect */}
+                <TextAreaInputList
+                  title="관계/인물 측면"
+                  textAreas={relationshipTextAreas}
+                  onTextAreasChange={onRelationshipTextAreasChange}
+                  className="opacity-100"
+                  defaultExpanded={false}
+                />
 
-            {/* Content Aspect */}
-            <TextAreaInputList
-              title="내용/스토리 측면"
-              textAreas={contentTextAreas}
-              onTextAreasChange={onContentTextAreasChange}
-              className="opacity-100"
-              defaultExpanded={true}
-            />
+                {/* Content Aspect */}
+                <TextAreaInputList
+                  title="내용/스토리 측면"
+                  textAreas={contentTextAreas}
+                  onTextAreasChange={onContentTextAreasChange}
+                  className="opacity-100"
+                  defaultExpanded={false}
+                />
 
-            {/* Background Aspect */}
-            <TextAreaInputList
-              title="배경/세계관 측면"
-              textAreas={backgroundTextAreas}
-              onTextAreasChange={onBackgroundTextAreasChange}
-              className="opacity-100"
-              defaultExpanded={false}
-            />
+                {/* Background Aspect */}
+                <TextAreaInputList
+                  title="배경/세계관 측면"
+                  textAreas={backgroundTextAreas}
+                  onTextAreasChange={onBackgroundTextAreasChange}
+                  className="opacity-100"
+                  defaultExpanded={false}
+                />
 
-            {/* Prohibited Words */}
-            <div className="gap-lg flex w-full flex-col items-start">
-              <InputLabel>금지어</InputLabel>
-              <TagsInput
-                tags={prohibitedWords}
-                onTagsChange={onProhibitedWordsChange}
-              />
-            </div>
-          </div>
-
+                {/* Prohibited Words */}
+                <div className="gap-lg flex w-full flex-col items-start">
+                  <InputLabel>금지어</InputLabel>
+                  <TagsInput
+                    tags={prohibitedWords}
+                    onTagsChange={onProhibitedWordsChange}
+                  />
+                </div>
+              </div>
+            </>
+          )}
           {/* Agreements */}
           <div className="gap-lg flex w-366 flex-col items-start">
             <div className="gap-md flex items-center">
