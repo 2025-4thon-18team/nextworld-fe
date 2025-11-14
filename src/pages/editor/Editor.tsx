@@ -14,6 +14,7 @@ import { useCreateWork } from "@/querys/useWorks";
 import { useSettleRevenue } from "@/querys/useRevenue";
 import { useGetAllWorks } from "@/querys/useWorks";
 import { useSearch } from "@/querys/useFeed";
+import { toast } from "sonner";
 import type { PostRequestDto } from "@/querys/types";
 
 type EditorVariant = "original-post" | "secondary-post" | "secondary-series";
@@ -27,7 +28,7 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [postSelected, setPostSelected] = useState(true);
-  const [tags] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [allowDerivative, setAllowDerivative] = useState(false);
   const [paidPost, setPaidPost] = useState(false);
   const [episodePrice, setEpisodePrice] = useState("");
@@ -38,6 +39,9 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
   const [categoryTab, setCategoryTab] = useState<"내 작품" | "원작">("내 작품");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedDraftId, setSelectedDraftId] = useState<number | null>(null);
+  const [sidebarVariant, setSidebarVariant] = useState<
+    "post-type" | "series-type" | "guideline"
+  >("post-type");
 
   // API Hooks
   const { mutate: createPost } = useCreatePost();
@@ -121,6 +125,10 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
     setCategoryTab(tab);
   }, []);
 
+  const onTagsChange = useCallback((tags: string[]) => {
+    setTags(tags);
+  }, []);
+
   const onBack = useCallback(() => {
     navigateBack();
   }, [navigateBack]);
@@ -142,7 +150,7 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
 
   const onSave = useCallback(() => {
     if (!title.trim() || !content.trim()) {
-      alert("제목과 내용을 입력해주세요.");
+      toast.error("제목과 내용을 입력해주세요.");
       return;
     }
 
@@ -157,19 +165,29 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
 
     if (selectedDraftId) {
       // 기존 임시저장 업데이트
-      updatePost({
-        id: selectedDraftId,
-        data: postData,
-      });
+      updatePost(
+        {
+          id: selectedDraftId,
+          data: postData,
+        },
+        {
+          onSuccess: () => {
+            toast.success("임시저장되었습니다.");
+          },
+          onError: () => {
+            toast.error("임시저장에 실패했습니다.");
+          },
+        },
+      );
     } else {
       // 새 임시저장
       saveDraft(postData, {
         onSuccess: (data) => {
           setSelectedDraftId(data.id);
-          alert("임시저장되었습니다.");
+          toast.success("임시저장되었습니다.");
         },
         onError: () => {
-          alert("임시저장에 실패했습니다.");
+          toast.error("임시저장에 실패했습니다.");
         },
       });
     }
@@ -187,7 +205,7 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
   // 포스트 발행 (EditorHeader의 "발행하기" 버튼)
   const onPublish = useCallback(() => {
     if (!title.trim() || !content.trim()) {
-      alert("제목과 내용을 입력해주세요.");
+      toast.error("제목과 내용을 입력해주세요.");
       return;
     }
 
@@ -202,11 +220,11 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
 
     createPost(postData, {
       onSuccess: () => {
-        alert("포스트가 발행되었습니다.");
+        toast.success("포스트가 발행되었습니다.");
         navigateBack();
       },
       onError: () => {
-        alert("포스트 발행에 실패했습니다.");
+        toast.error("포스트 발행에 실패했습니다.");
       },
     });
   }, [
@@ -223,10 +241,12 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
   const onSettle = useCallback(() => {
     settleRevenue(undefined, {
       onSuccess: (data) => {
-        alert(`정산이 완료되었습니다. 정산 금액: ${data.totalSettledAmount}원`);
+        toast.success(
+          `정산이 완료되었습니다. 정산 금액: ${data.totalSettledAmount}원`,
+        );
       },
       onError: () => {
-        alert("정산에 실패했습니다.");
+        toast.error("정산에 실패했습니다.");
       },
     });
   }, [settleRevenue]);
@@ -244,10 +264,10 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
             // 이미지 URL을 콘텐츠에 삽입
             const imageMarkdown = `![이미지](${imageUrl})\n`;
             setContent((prev) => prev + imageMarkdown);
-            alert("이미지가 업로드되었습니다.");
+            toast.success("이미지가 업로드되었습니다.");
           },
           onError: () => {
-            alert("이미지 업로드에 실패했습니다.");
+            toast.error("이미지 업로드에 실패했습니다.");
           },
         });
       }
@@ -259,13 +279,26 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
     setSidebarOpen(false);
   }, []);
 
+  const onPostClick = useCallback(() => {
+    setSidebarVariant("post-type");
+    setSidebarOpen(true);
+  }, []);
+
+  const onGuidelineClick = useCallback(() => {
+    setSidebarVariant("guideline");
+    setSidebarOpen(true);
+  }, []);
+
+  // 포스트 탭일 경우 원작 설정을 무조건 해야 함
+  const shouldRequireOriginal = postSelected && variant === "secondary-post";
+
   return (
     <EditorView
       title={title}
       content={content}
       postSelected={postSelected}
       tags={tags}
-      allowDerivative={allowDerivative}
+      allowDerivative={shouldRequireOriginal ? true : allowDerivative}
       paidPost={paidPost}
       episodePrice={episodePrice}
       searchValue={searchValue}
@@ -273,11 +306,14 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
       selectedSeriesId={selectedSeriesId}
       categoryTab={categoryTab}
       sidebarOpen={sidebarOpen}
+      sidebarVariant={sidebarVariant}
       editorVariant={variant}
       onTitleChange={onTitleChange}
       onContentChange={onContentChange}
       onPostChange={onPostChange}
-      onAllowDerivativeChange={onAllowDerivativeChange}
+      onAllowDerivativeChange={
+        shouldRequireOriginal ? undefined : onAllowDerivativeChange
+      }
       onPaidPostChange={onPaidPostChange}
       onEpisodePriceChange={onEpisodePriceChange}
       onSearchChange={onSearchChange}
@@ -290,6 +326,9 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
       onSettle={onPublish}
       onAddImage={onAddImage}
       onSidebarClose={onSidebarClose}
+      onPostClick={onPostClick}
+      onGuidelineClick={onGuidelineClick}
+      onTagsChange={onTagsChange}
     />
   );
 };

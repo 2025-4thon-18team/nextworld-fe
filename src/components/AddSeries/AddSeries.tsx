@@ -24,7 +24,7 @@ export const AddSeries: FC<AddSeriesProps> = ({ className, ...props }) => {
         <span className="text-grayscale-g3 text-4xl">+</span>
       </div>
       <p className="text-body-medium w-min-content min-w-full text-center tracking-tight text-black">
-        연재 작품 추가하기
+        연재할 작품 추가하기
       </p>
     </button>
   );

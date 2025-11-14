@@ -1,6 +1,7 @@
-import { FC } from "react";
+import { FC, useRef, useEffect } from "react";
 import { EditorHeader } from "@/components/EditorHeader/EditorHeader";
-import { EditorSidebar } from "@/components/EditorSidebar/EditorSidebar";
+import { PostTypeSidebar } from "@/components/PostTypeSidebar/PostTypeSidebar";
+import { GuidelineSidebar } from "@/components/GuidelineSidebar/GuidelineSidebar";
 
 type Props = {
   title: string;
@@ -15,11 +16,12 @@ type Props = {
   selectedSeriesId?: string;
   categoryTab: "내 작품" | "원작";
   sidebarOpen: boolean;
+  sidebarVariant?: "post-type" | "series-type" | "guideline";
   editorVariant: "original-post" | "secondary-post" | "secondary-series";
   onTitleChange: (value: string) => void;
   onContentChange: (value: string) => void;
   onPostChange: (selected: boolean) => void;
-  onAllowDerivativeChange: (checked: boolean) => void;
+  onAllowDerivativeChange?: (checked: boolean) => void;
   onPaidPostChange: (checked: boolean) => void;
   onEpisodePriceChange: (value: string) => void;
   onSearchChange: (value: string) => void;
@@ -32,6 +34,9 @@ type Props = {
   onSettle: () => void;
   onAddImage: () => void;
   onSidebarClose: () => void;
+  onPostClick?: () => void;
+  onGuidelineClick?: () => void;
+  onTagsChange: (tags: string[]) => void;
 };
 
 export const EditorView: FC<Props> = ({
@@ -47,6 +52,7 @@ export const EditorView: FC<Props> = ({
   selectedSeriesId,
   categoryTab,
   sidebarOpen,
+  sidebarVariant: sidebarVariantProp,
   editorVariant,
   onTitleChange,
   onContentChange,
@@ -60,11 +66,26 @@ export const EditorView: FC<Props> = ({
   onCategoryTabChange,
   onBack,
   onLoad,
+  onPostClick,
+  onGuidelineClick,
   onSave,
   onSettle,
   onAddImage,
   onSidebarClose,
+  onTagsChange,
 }) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      // 초기 높이 설정
+      textarea.style.height = "auto";
+      // scrollHeight를 사용하여 내용에 맞게 높이 조절
+      textarea.style.height = `${Math.max(textarea.scrollHeight, 600)}px`;
+    }
+  }, [content]);
+
   const getEditorOptionsVariant = () => {
     if (editorVariant === "secondary-series") {
       return "series";
@@ -73,6 +94,9 @@ export const EditorView: FC<Props> = ({
   };
 
   const getSidebarVariant = (): "post-type" | "series-type" | "guideline" => {
+    if (sidebarVariantProp) {
+      return sidebarVariantProp;
+    }
     if (editorVariant === "secondary-series") {
       return "series-type";
     }
@@ -88,11 +112,13 @@ export const EditorView: FC<Props> = ({
         onSettle={onSettle}
         onAddImage={onAddImage}
         editorOptionsVariant={getEditorOptionsVariant()}
+        onPostClick={onPostClick}
+        onGuidelineClick={onGuidelineClick}
       />
 
       <div className="relative flex h-full w-full items-start justify-center gap-10">
         {/* Editor Area */}
-        <div className="relative flex h-full w-890 shrink-0 flex-col overflow-hidden bg-white">
+        <div className="relative flex h-full w-890 shrink-0 flex-col bg-white">
           {/* Editable Content */}
           <div className="flex h-fit flex-col gap-10 px-59 pt-39">
             <input
@@ -104,8 +130,15 @@ export const EditorView: FC<Props> = ({
             />
             <div className="h-0 w-full border-t border-black" />
             <textarea
+              ref={textareaRef}
               value={content}
-              onChange={(e) => onContentChange(e.target.value)}
+              onChange={(e) => {
+                onContentChange(e.target.value);
+                // 높이 자동 조절
+                const textarea = e.target;
+                textarea.style.height = "auto";
+                textarea.style.height = `${Math.max(textarea.scrollHeight, 600)}px`;
+              }}
               placeholder="본문"
               className="text-body-regular min-h-600 w-full resize-none bg-transparent tracking-tight text-black outline-none placeholder:text-black"
             />
@@ -113,33 +146,57 @@ export const EditorView: FC<Props> = ({
         </div>
 
         {/* Sidebar */}
-        {sidebarOpen && (
-          <EditorSidebar
-            variant={getSidebarVariant()}
-            title="업로드 유형"
-            onClose={onSidebarClose}
-            postTypeTab={postSelected ? "포스트" : "작품 연재"}
-            onPostTypeTabChange={(tab) => onPostChange?.(tab === "포스트")}
-            originalSelected={allowDerivative}
-            onOriginalChange={onAllowDerivativeChange}
-            searchValue={searchValue}
-            onSearchChange={(e) => onSearchChange?.(e.target.value)}
-            series={series.map((item, index) => ({
-              imageUrl: item.imageUrl,
-              title: item.title,
-              selected: selectedSeriesId === (item.id || String(index)),
-            }))}
-            onSeriesClick={onSeriesSelect}
-            paidPostEnabled={paidPost}
-            onPaidPostChange={onPaidPostChange}
-            priceValue={episodePrice}
-            onPriceChange={onEpisodePriceChange}
-            tags={tags}
-            onAddSeries={onAddSeries}
-            categoryTab={categoryTab}
-            onCategoryTabChange={onCategoryTabChange}
-          />
-        )}
+        {sidebarOpen &&
+          (() => {
+            const currentVariant = getSidebarVariant();
+
+            if (currentVariant === "guideline") {
+              return (
+                <GuidelineSidebar
+                  title="가이드라인"
+                  onClose={onSidebarClose}
+                  categoryTab={categoryTab}
+                  onCategoryTabChange={onCategoryTabChange}
+                  forbiddenWords={[]}
+                  sections={[]}
+                  className="absolute top-0 right-0 h-full"
+                />
+              );
+            }
+
+            return (
+              <PostTypeSidebar
+                title="업로드 유형"
+                onClose={onSidebarClose}
+                variant={
+                  currentVariant === "series-type" ? "series-type" : "post-type"
+                }
+                postTypeTab={postSelected ? "포스트" : "작품 연재"}
+                onPostTypeTabChange={(tab) => onPostChange?.(tab === "포스트")}
+                originalSelected={allowDerivative}
+                onOriginalChange={onAllowDerivativeChange}
+                originalDisabled={onAllowDerivativeChange === undefined}
+                searchValue={searchValue}
+                onSearchChange={(e) => onSearchChange?.(e.target.value)}
+                series={series.map((item, index) => ({
+                  imageUrl: item.imageUrl,
+                  title: item.title,
+                  selected: selectedSeriesId === (item.id || String(index)),
+                }))}
+                onSeriesClick={onSeriesSelect}
+                paidPostEnabled={paidPost}
+                onPaidPostChange={onPaidPostChange}
+                priceValue={episodePrice}
+                onPriceChange={onEpisodePriceChange}
+                tags={tags}
+                onAddSeries={onAddSeries}
+                categoryTab={categoryTab}
+                onCategoryTabChange={onCategoryTabChange}
+                onTagsChange={onTagsChange}
+                className="absolute top-0 right-0 h-full"
+              />
+            );
+          })()}
       </div>
     </div>
   );
