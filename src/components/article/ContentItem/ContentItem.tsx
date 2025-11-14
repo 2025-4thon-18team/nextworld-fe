@@ -3,8 +3,14 @@ import { cn } from "@/utils";
 import { IconPoint, IconPicture } from "@/assets/icons";
 import { ArticleInfo } from "@/components/article/ArticleInfo/ArticleInfo";
 import { PaymentConfirmPopup } from "@/components/PaymentConfirmPopup/PaymentConfirmPopup";
+import { DropdownMenu } from "@/components/DropdownMenu/DropdownMenu";
+import { IconMore } from "@/components/IconMore/IconMore";
 import { usePurchasePost } from "@/hooks/usePurchasePost";
+import { useGetMe } from "@/querys/useAuth";
+import { useDeletePost } from "@/querys/usePosts";
+import { useNavigation } from "@/hooks/useNavigation";
 import type { PostResponseDto } from "@/querys/types";
+import { toast } from "sonner";
 
 interface ContentItemProps {
   title: string;
@@ -38,6 +44,12 @@ export const ContentItem: FC<ContentItemProps> = ({
   const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { purchasePost } = usePurchasePost();
+  const { data: currentUser } = useGetMe();
+  const { mutate: deletePost } = useDeletePost();
+  const { navigate } = useNavigation();
+
+  // 현재 사용자가 작가인지 확인
+  const isAuthor = currentUser && postData?.authorName === currentUser.nickname;
 
   // 포인트 표시 여부: price가 0이 아니고 null이 아니면 표시 (isPaid와 관계없이)
   const shouldShowPoint = price !== null && price > 0;
@@ -46,11 +58,15 @@ export const ContentItem: FC<ContentItemProps> = ({
   void isPaid;
 
   const handleClick = () => {
-    // 가격이 있으면 결제 팝업 표시 (isPaid와 관계없이)
-    if (price !== null && price > 0 && postData) {
+    // 이미 구매했거나 무료인 경우 바로 이동
+    if (postData?.hasPurchased || price === null || price === 0) {
+      onClick?.();
+      return;
+    }
+    // 가격이 있고 구매하지 않은 경우 결제 팝업 표시
+    if (price > 0 && postData) {
       setIsPaymentPopupOpen(true);
     } else {
-      // 무료인 경우 바로 이동
       onClick?.();
     }
   };
@@ -79,6 +95,25 @@ export const ContentItem: FC<ContentItemProps> = ({
     }
   };
 
+  const handleEdit = () => {
+    if (!postData?.id) return;
+    navigate(`/editor?postId=${postData.id}`);
+  };
+
+  const handleDelete = () => {
+    if (!postData?.id) return;
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    deletePost(postData.id, {
+      onSuccess: () => {
+        toast.success("포스트가 삭제되었습니다.");
+      },
+      onError: () => {
+        toast.error("포스트 삭제에 실패했습니다.");
+      },
+    });
+  };
+
   return (
     <>
       <div
@@ -97,6 +132,23 @@ export const ContentItem: FC<ContentItemProps> = ({
               <h3 className="text-headings-heading-3 whitespace-nowrap text-black">
                 {title}
               </h3>
+              {isAuthor && (
+                <DropdownMenu
+                  items={[
+                    {
+                      label: "수정",
+                      onClick: handleEdit,
+                    },
+                    {
+                      label: "삭제",
+                      onClick: handleDelete,
+                      className: "text-red-600",
+                    },
+                  ]}
+                >
+                  <IconMore className="text-text-muted" size={20} />
+                </DropdownMenu>
+              )}
             </div>
 
             {/* Article Info */}
