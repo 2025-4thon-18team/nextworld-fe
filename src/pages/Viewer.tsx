@@ -4,6 +4,11 @@ import { ViewerView } from "./ViewerView";
 import { useGetComments, useCreateComment } from "@/querys/useComments";
 import { useGetPostById } from "@/querys/usePosts";
 import { useGetWorkEpisodes } from "@/querys/useWorks";
+import {
+  useGetRatingSummary,
+  useGetMyRating,
+  useRatePost,
+} from "@/querys/useRatings";
 import { useNavigation } from "@/hooks/useNavigation";
 import type { CreateCommentRequest } from "@/querys/types";
 import { toast } from "sonner";
@@ -57,6 +62,16 @@ const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: comments } = useGetComments(postIdNum);
   const { mutate: createComment } = useCreateComment();
+
+  // 별점 조회 및 등록/수정
+  const { data: ratingSummary } = useGetRatingSummary(postIdNum);
+  const { data: myRating } = useGetMyRating(postIdNum);
+  const { mutate: ratePost } = useRatePost();
+
+  // 평균 별점 (별점 요약이 있으면 사용, 없으면 postData의 rating 사용)
+  const averageRating = ratingSummary?.averageScore ?? postData?.rating ?? 0;
+  // 내 별점
+  const myRatingScore = myRating?.myScore ?? null;
 
   const onPrevious = useCallback(() => {
     if (prevEpisodeId) {
@@ -123,6 +138,29 @@ const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
     [postIdNum, createComment],
   );
 
+  // 별점 등록/수정 핸들러
+  const handleRatingSubmit = useCallback(
+    (rating: number) => {
+      if (!postIdNum) return;
+
+      ratePost(
+        {
+          postId: postIdNum,
+          data: { score: rating },
+        },
+        {
+          onSuccess: () => {
+            toast("별점이 등록되었습니다.");
+          },
+          onError: () => {
+            toast("별점 등록에 실패했습니다.");
+          },
+        },
+      );
+    },
+    [postIdNum, ratePost],
+  );
+
   // EPISODE일 때만 작품명과 다음화/이전화 표시
   const isEpisode = actualPostType === "EPISODE";
 
@@ -134,8 +172,10 @@ const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
       tags={postData?.tags || []}
       authorName={postData?.authorName || ""}
       authorId={postData?.authorName ? undefined : undefined}
-      rating={postData?.rating ?? 0}
+      rating={averageRating}
+      myRating={myRatingScore}
       postId={postIdNum}
+      onRatingSubmit={handleRatingSubmit}
       originalSeriesImageUrl={
         postData?.parentWorkTitle ? "https://placehold.co/50x75" : ""
       }

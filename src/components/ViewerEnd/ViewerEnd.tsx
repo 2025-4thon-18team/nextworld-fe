@@ -10,6 +10,7 @@ interface ViewerEndProps {
   authorName: string;
   authorId?: string | number;
   rating?: number;
+  myRating?: number | null;
   commentsLabel?: string;
   postId?: number;
   onRatingSubmit?: (rating: number) => void;
@@ -20,6 +21,7 @@ export const ViewerEnd: FC<ViewerEndProps> = ({
   authorName,
   authorId,
   rating,
+  myRating,
   commentsLabel = "댓글",
   postId,
   onRatingSubmit,
@@ -110,7 +112,7 @@ export const ViewerEnd: FC<ViewerEndProps> = ({
         />
       )}
       <RatingPopup
-        currentRating={rating}
+        currentRating={myRating ?? undefined}
         isOpen={isRatingPopupOpen}
         onClose={() => setIsRatingPopupOpen(false)}
         onSubmit={handleRatingSubmit}

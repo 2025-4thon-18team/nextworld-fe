@@ -12,6 +12,7 @@ type Props = {
   authorName: string;
   authorId?: string | number;
   rating: number;
+  myRating?: number | null;
   postId?: number;
   originalSeriesImageUrl: string;
   originalSeriesLabel: string;
@@ -22,6 +23,7 @@ type Props = {
   onPrevious?: () => void;
   onNext?: () => void;
   onOriginalSeriesClick?: () => void;
+  onRatingSubmit?: (rating: number) => void;
 };
 
 export const ViewerView: FC<Props> = ({
@@ -32,6 +34,7 @@ export const ViewerView: FC<Props> = ({
   authorName,
   authorId,
   rating,
+  myRating,
   postId,
   originalSeriesImageUrl,
   originalSeriesLabel,
@@ -42,6 +45,7 @@ export const ViewerView: FC<Props> = ({
   onPrevious,
   onNext,
   onOriginalSeriesClick,
+  onRatingSubmit,
 }) => {
   const isEpisode = postType === "EPISODE";
 
@@ -72,7 +76,9 @@ export const ViewerView: FC<Props> = ({
             authorName={authorName}
             authorId={authorId}
             rating={rating}
+            myRating={myRating}
             postId={postId}
+            onRatingSubmit={onRatingSubmit}
           />
         </div>
 
