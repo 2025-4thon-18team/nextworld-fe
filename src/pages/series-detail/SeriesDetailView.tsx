@@ -41,6 +41,7 @@ interface SeriesDetailViewProps {
   authorName: string;
   description: string;
   onViewFirstEpisode: () => void;
+  onEditWork?: () => void;
 
   // Content info sidebar
   category: string;
@@ -77,6 +78,7 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
   authorName,
   description,
   onViewFirstEpisode,
+  onEditWork,
   category,
   rating,
   views,
@@ -112,6 +114,7 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
         authorName={authorName}
         description={description}
         onViewFirstEpisode={onViewFirstEpisode}
+        onEditWork={onEditWork}
         className="w-full max-w-1280"
       />
 

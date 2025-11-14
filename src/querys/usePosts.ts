@@ -44,6 +44,13 @@ export const postsApi = {
   // 포스트 삭제
   deletePost: (id: number) => client.delete<void>(`/api/posts/${id}`),
 
+  // 임시저장 수정
+  updateDraft: (id: number, data: PostRequestDto) =>
+    client.put<PostResponseDto>(`/api/posts/drafts/${id}`, data),
+
+  // 임시저장 삭제
+  deleteDraft: (id: number) => client.delete<void>(`/api/posts/drafts/${id}`),
+
   // 에피소드 전체 조회
   getAllEpisodes: () => client.get<PostResponseDto[]>("/api/episodes"),
 
@@ -218,6 +225,43 @@ export const useGetAllDrafts = () => {
     queryFn: async () => {
       const response = await postsApi.getAllDrafts();
       return response.data;
+    },
+  });
+};
+
+// Mutation: 임시저장 수정
+export const useUpdateDraft = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["useUpdateDraft"],
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: PostRequestDto;
+    }) => {
+      const response = await postsApi.updateDraft(id, data);
+      return response.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: postsKeys.drafts() });
+    },
+  });
+};
+
+// Mutation: 임시저장 삭제
+export const useDeleteDraft = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: ["useDeleteDraft"],
+    mutationFn: async (id: number) => {
+      await postsApi.deleteDraft(id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: postsKeys.drafts() });
     },
   });
 };

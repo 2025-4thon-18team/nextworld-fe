@@ -56,6 +56,7 @@ export const BlockList: FC<BlockListProps> = ({
             <BlockEditor
               id={block.id}
               html={block.html || ""}
+              isFirstBlock={blocks.findIndex((b) => b.id === block.id) === 0}
               onInput={onBlockInput}
               onKeyDown={onBlockKeyDown}
             />

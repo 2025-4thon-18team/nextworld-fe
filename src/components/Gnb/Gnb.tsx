@@ -47,6 +47,7 @@ export const Gnb: FC<GnbProps> = ({
             value={searchValue}
             onChange={(e) => onSearchChange?.(e.target.value)}
             className="w-370"
+            enableAutocomplete={true}
           />
 
           {/* Button */}

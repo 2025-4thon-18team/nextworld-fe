@@ -23,8 +23,11 @@ export const ButtonSmall: FC<ButtonSmallProps> = ({
       <button
         type="button"
         className={cn(
-          "bg-foreground-default gap-sm px-xl py-sm flex items-center justify-center rounded-sm",
-          "text-headings-heading-3 text-grayscale-white",
+          "gap-sm px-xl py-sm flex items-center justify-center rounded-sm",
+          "text-headings-heading-3",
+          props.disabled
+            ? "bg-grayscale-g2 text-text-muted cursor-not-allowed"
+            : "bg-foreground-default text-grayscale-white",
           className,
         )}
         onClick={onClick}
@@ -39,8 +42,11 @@ export const ButtonSmall: FC<ButtonSmallProps> = ({
     <button
       type="button"
       className={cn(
-        "border-md border-foreground-muted gap-sm px-xl py-sm flex items-center justify-center rounded-sm",
-        "text-headings-heading-3 text-text-on-accent-second bg-transparent",
+        "gap-sm px-xl py-sm flex items-center justify-center rounded-sm",
+        "text-headings-heading-3",
+        props.disabled
+          ? "border-md border-grayscale-g2 text-text-muted bg-transparent cursor-not-allowed"
+          : "border-md border-foreground-muted text-text-on-accent-second bg-transparent",
         className,
       )}
       onClick={onClick}

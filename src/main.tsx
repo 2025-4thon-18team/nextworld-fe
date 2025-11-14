@@ -13,7 +13,7 @@ if (
 }
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <WithMockServer />
+    {import.meta.env.VITE_ENABLE_MOCK === "true" && <WithMockServer />}
     <App />
   </React.StrictMode>,
 );

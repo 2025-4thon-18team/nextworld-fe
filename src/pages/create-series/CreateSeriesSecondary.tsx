@@ -76,19 +76,59 @@ const CreateSeriesSecondary = () => {
   }, [navigate]);
 
   const onComplete = useCallback(() => {
-    if (!agreement1 || !agreement2) {
-      toast("약관에 동의해주세요.");
-      return;
-    }
-
-    // localStorage에서 모든 단계 데이터 가져오기
+    // 필수 필드 검증
     const savedData = localStorage.getItem("createWorkData");
     if (!savedData) {
-      toast("작품 데이터를 찾을 수 없습니다. 처음부터 다시 시작해주세요.");
+      toast.error("작품 데이터를 찾을 수 없습니다. 처음부터 다시 시작해주세요.");
       return;
     }
 
     const workData = JSON.parse(savedData);
+    
+    // 기본 설정 필수 필드 검증
+    if (!workData.coverImageUrl) {
+      toast.error("표지 이미지를 선택해주세요.");
+      navigate("/create-series/basic");
+      return;
+    }
+    if (!workData.title?.trim()) {
+      toast.error("제목을 입력해주세요.");
+      navigate("/create-series/basic");
+      return;
+    }
+    if (!workData.description?.trim()) {
+      toast.error("작품 설명을 입력해주세요.");
+      navigate("/create-series/basic");
+      return;
+    }
+    if (!workData.serialDays || workData.serialDays.length === 0) {
+      toast.error("연재일을 선택해주세요.");
+      navigate("/create-series/basic");
+      return;
+    }
+    if (!workData.genres || workData.genres.length === 0) {
+      toast.error("장르 카테고리를 선택해주세요.");
+      navigate("/create-series/basic");
+      return;
+    }
+
+    // 유니버스 설정 필수 필드 검증 (유료 연재가 켜져있을 때만)
+    if (workData.paidSeries && !workData.episodePrice?.trim()) {
+      toast.error("회차 가격을 입력해주세요.");
+      navigate("/create-series/universe");
+      return;
+    }
+    if (workData.paidSeries && isNaN(Number(workData.episodePrice))) {
+      toast.error("올바른 가격을 입력해주세요.");
+      navigate("/create-series/universe");
+      return;
+    }
+
+    // 약관 동의 검증
+    if (!agreement1 || !agreement2) {
+      toast.error("약관에 동의해주세요.");
+      return;
+    }
 
     // Category 매핑 (genres 배열의 첫 번째 값을 사용)
     const categoryMap: Record<string, string> = {
@@ -134,7 +174,10 @@ const CreateSeriesSecondary = () => {
       onSuccess: () => {
         toast("작품이 성공적으로 생성되었습니다.");
         localStorage.removeItem("createWorkData");
-        navigate("/mypage");
+        // 작품 생성 시작 전 위치로 이동, 없으면 마이페이지로
+        const returnPath = sessionStorage.getItem("createWorkReturnPath");
+        sessionStorage.removeItem("createWorkReturnPath");
+        navigate(returnPath || "/my-page/main");
       },
       onError: () => {
         toast("작품 생성에 실패했습니다.");

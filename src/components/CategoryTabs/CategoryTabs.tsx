@@ -1,5 +1,6 @@
 import { FC, useMemo } from "react";
 import { cn } from "@/utils";
+import { useIsAuthenticated } from "@/querys/useAuth";
 
 export type TabsVariant = "home" | "guideline" | "post-type";
 export type HomeCategoryTab = "홈" | "신규" | "관심";
@@ -20,16 +21,19 @@ export const CategoryTabs: FC<CategoryTabsProps> = ({
   activeTab,
   onTabChange,
 }) => {
+  const isAuthenticated = useIsAuthenticated();
+  
   const tabs = useMemo(() => {
     if (variant === "home") {
-      return ["홈", "신규", "관심"];
+      // 로그인 상태에서만 관심 탭 표시
+      return isAuthenticated ? ["홈", "신규", "관심"] : ["홈", "신규"];
     } else if (variant === "guideline") {
       return ["내 작품", "원작"];
     } else if (variant === "post-type") {
       return ["포스트", "작품 연재"];
     }
     return [];
-  }, [variant]);
+  }, [variant, isAuthenticated]);
   return (
     <div className={cn("flex h-48 items-center", className)}>
       {tabs.map((tab) => {

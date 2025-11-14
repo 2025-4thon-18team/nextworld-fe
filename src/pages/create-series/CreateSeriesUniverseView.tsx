@@ -3,8 +3,9 @@ import { ToggleButton } from "@/components/ToggleButton/ToggleButton";
 import { InputLabel, TextInput } from "@/components/Input/Input";
 import { IconChevron } from "@/assets/icons";
 import Button from "@/components/Button/Button";
-import { Search } from "@/components/Search/Search";
+import { SearchWorkAutocomplete } from "@/components/SearchWorkAutocomplete/SearchWorkAutocomplete";
 import { SeriesCardSmall } from "@/components/SeriesCardSmall/SeriesCardSmall";
+import type { WorkResponseDto } from "@/querys/types";
 import { cn } from "@/utils";
 
 type StepType = "기본 설정" | "유니버스 설정" | "2차 창작 설정";
@@ -97,23 +98,28 @@ export const CreateSeriesUniverseView: FC<Props> = ({
           <div className="gap-lg flex w-full flex-col items-start">
             <div className="gap-sm flex w-full flex-col items-start">
               <InputLabel>원작 설정</InputLabel>
-              <Search
+              <SearchWorkAutocomplete
                 value={originalSeriesSearch}
                 onChange={(e) => onOriginalSeriesSearchChange(e.target.value)}
+                onWorkSelect={(work) => onOriginalSeriesSelect(String(work.id))}
+                selectedWorkId={selectedOriginalSeriesId}
                 className="w-full"
               />
             </div>
-            <div className="gap-lg flex items-center">
-              {originalSeriesList.map((series) => (
-                <SeriesCardSmall
-                  key={series.id}
-                  imageUrl={series.imageUrl}
-                  title={series.title}
-                  selected={selectedOriginalSeriesId === series.id}
-                  onClick={() => onOriginalSeriesSelect(series.id)}
-                />
-              ))}
-            </div>
+            {/* 작품 카드들 - Horizontal List */}
+            {originalSeriesList.length > 0 && (
+              <div className="gap-lg flex items-center overflow-x-auto">
+                {originalSeriesList.map((series) => (
+                  <SeriesCardSmall
+                    key={series.id}
+                    imageUrl={series.imageUrl}
+                    title={series.title}
+                    selected={selectedOriginalSeriesId === series.id}
+                    onClick={() => onOriginalSeriesSelect(series.id)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Paid Series Toggle */}
@@ -131,7 +137,7 @@ export const CreateSeriesUniverseView: FC<Props> = ({
               <div className="gap-sm flex h-107 w-full flex-col items-start">
                 <InputLabel required>회차 가격 입력</InputLabel>
                 <TextInput
-                  placeholder="placeholder"
+                  placeholder="예: 1000 (원 단위로 입력해주세요)"
                   value={episodePrice}
                   onChange={(e) => onEpisodePriceChange(e.target.value)}
                 />

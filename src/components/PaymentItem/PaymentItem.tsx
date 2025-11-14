@@ -12,6 +12,15 @@ interface PaymentItemProps {
   className?: string;
 }
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("ko-KR", {
+    year: "2-digit",
+    month: "long",
+    day: "numeric",
+  });
+};
+
 export const PaymentItem: FC<PaymentItemProps> = ({
   title,
   subtitle,
@@ -34,7 +43,7 @@ export const PaymentItem: FC<PaymentItemProps> = ({
       <div className="gap-xs flex shrink-0 flex-col items-end">
         <Point value={points} showPrefix={true} prefix="-" />
         <p className="text-body-small-medium text-subtle w-min-content text-right tracking-tight">
-          {date}
+          {formatDate(date)}
         </p>
       </div>
     </div>

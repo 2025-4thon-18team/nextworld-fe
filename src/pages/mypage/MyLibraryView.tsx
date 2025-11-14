@@ -107,7 +107,7 @@ export const MyLibraryView: FC<Props> = ({
                   comments={post.comments}
                   date={post.date}
                   onClick={() => handlePostClick(post.id)}
-                  className="border-background-subtle h-230 min-h-230 w-403 shrink-0 rounded-xs border-t-2 bg-white"
+                  className="border-background-subtle h-230 min-h-230 shrink-0 grow rounded-xs border-t-2 bg-white"
                   isPaid={post.isPaid}
                   price={post.price}
                   postData={post.postData}
