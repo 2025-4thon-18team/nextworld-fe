@@ -9,7 +9,7 @@ type Props = {
 
 export const LayoutView: FC<Props> = () => {
   return (
-    <div className="flex min-h-screen w-full flex-col bg-white">
+    <div className="flex w-full flex-col bg-white">
       <Gnb />
       <main className="mx-auto w-full max-w-1280 overflow-x-hidden">
         <Outlet />

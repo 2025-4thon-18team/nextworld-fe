@@ -10,7 +10,7 @@ const customTwMerge = extendTailwindMerge({
         "fontSizes-md",
         "fontSizes-lg",
         "fontSizes-xl",
-        "fontSizes-2xl",
+        "fontSizes-2xl"
       ],
       "border-w": [{ border: ["sm", "md"] }],
       "border-w-x": [{ "border-x": ["sm", "md"] }],
@@ -44,9 +44,9 @@ const customTwMerge = extendTailwindMerge({
       mt: [{ mt: ["xs", "sm", "md", "lg", "xl"] }],
       mr: [{ mr: ["xs", "sm", "md", "lg", "xl"] }],
       mb: [{ mb: ["xs", "sm", "md", "lg", "xl"] }],
-      ml: [{ ml: ["xs", "sm", "md", "lg", "xl"] }],
-    },
-  },
+      ml: [{ ml: ["xs", "sm", "md", "lg", "xl"] }]
+    }
+  }
 });
 
 export function cn(...inputs: ClassValue[]) {
@@ -61,7 +61,7 @@ interface Comment {
   content: string;
   createdAt: string;
   profileImageUrl?: string;
-  replies?: Comment[]; // 트리 변환 후에만 생김
+  replies?: Comment[];
 }
 
 export interface CommentResponse {

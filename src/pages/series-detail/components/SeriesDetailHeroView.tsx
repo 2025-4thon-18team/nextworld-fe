@@ -55,7 +55,7 @@ export const SeriesDetailHeroView: FC<SeriesDetailHeroViewProps> = ({
       <div className="bg-grayscale-g5 border-border-accent relative flex h-full w-full flex-col justify-between rounded-tr-md border-t-6 border-solid px-24 pt-108 pb-32">
         <div className="flex w-full flex-col items-start gap-32">
           {/* Title section */}
-          <div className="text-headings-heading-5 text-grayscale-white relative flex w-75 shrink-0 flex-col items-start gap-3 leading-normal">
+          <div className="text-headings-heading-5 text-grayscale-white relative flex w-full shrink-0 flex-col items-start gap-3 leading-normal">
             <p className="text-headings-heading-5 relative w-full shrink-0 tracking-tight">
               {universeName}
             </p>
