@@ -7,6 +7,7 @@ import type {
   VerifyRequest,
   ChargeOptionsResponse,
   PaymentHistoryResponse,
+  PurchasedWorkResponse,
 } from "./types";
 import { mypageKeys } from "./useMypage";
 
@@ -40,6 +41,18 @@ export const paymentApi = {
   // 충전 내역 조회
   getChargeHistory: () =>
     client.get<PaymentHistoryResponse[]>("/api/payment/history/charge"),
+
+  // 구매한 포스트 리스트
+  getPurchasedPosts: () =>
+    client.get<PurchasedWorkResponse[]>("/api/payment/purchases/posts"),
+
+  // 구매한 작품 리스트
+  getPurchasedWorks: () =>
+    client.get<PurchasedWorkResponse[]>("/api/payment/purchases/works"),
+
+  // 구매한 모든 작품 리스트
+  getAllPurchases: () =>
+    client.get<PurchasedWorkResponse[]>("/api/payment/purchases/all"),
 };
 
 // ============================================
@@ -51,6 +64,9 @@ export const paymentKeys = {
   options: () => [...paymentKeys.all, "options"] as const,
   usageHistory: () => [...paymentKeys.all, "usageHistory"] as const,
   chargeHistory: () => [...paymentKeys.all, "chargeHistory"] as const,
+  purchasedPosts: () => [...paymentKeys.all, "purchasedPosts"] as const,
+  purchasedWorks: () => [...paymentKeys.all, "purchasedWorks"] as const,
+  allPurchases: () => [...paymentKeys.all, "allPurchases"] as const,
 };
 
 // ============================================
@@ -144,6 +160,39 @@ export const useGetChargeHistory = () => {
     queryKey: ["useGetChargeHistory", ...paymentKeys.chargeHistory()],
     queryFn: async () => {
       const response = await paymentApi.getChargeHistory();
+      return response.data;
+    },
+  });
+};
+
+// Query: 구매한 포스트 리스트
+export const useGetPurchasedPosts = () => {
+  return useQuery({
+    queryKey: ["useGetPurchasedPosts", ...paymentKeys.purchasedPosts()],
+    queryFn: async () => {
+      const response = await paymentApi.getPurchasedPosts();
+      return response.data;
+    },
+  });
+};
+
+// Query: 구매한 작품 리스트
+export const useGetPurchasedWorks = () => {
+  return useQuery({
+    queryKey: ["useGetPurchasedWorks", ...paymentKeys.purchasedWorks()],
+    queryFn: async () => {
+      const response = await paymentApi.getPurchasedWorks();
+      return response.data;
+    },
+  });
+};
+
+// Query: 구매한 모든 작품 리스트
+export const useGetAllPurchases = () => {
+  return useQuery({
+    queryKey: ["useGetAllPurchases", ...paymentKeys.allPurchases()],
+    queryFn: async () => {
+      const response = await paymentApi.getAllPurchases();
       return response.data;
     },
   });

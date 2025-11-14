@@ -39,6 +39,7 @@ export type EpisodeItem = {
  * @param maxLength 최대 길이 (기본값: 전체)
  * @param contentPreviewLength 콘텐츠 미리보기 길이 (기본값: 100)
  */
+
 export function usePostTransform(
   posts: PostResponseDto[] | undefined,
   maxLength?: number,
@@ -51,7 +52,7 @@ export function usePostTransform(
       id: String(post.id),
       title: post.title,
       content:
-        post.content.length > contentPreviewLength
+        post.content && post.content.length > contentPreviewLength
           ? post.content.substring(0, contentPreviewLength) + "..."
           : post.content,
       points: post.price || 0,
@@ -109,4 +110,3 @@ export function useEpisodeTransform(posts: PostResponseDto[] | undefined) {
 
   return episodeList;
 }
-

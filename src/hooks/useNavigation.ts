@@ -27,13 +27,6 @@ export function useNavigation() {
     [navigate],
   );
 
-  const navigateToViewer = useCallback(
-    (episodeId: string | number) => {
-      navigate(`/viewer?episode=${episodeId}`);
-    },
-    [navigate],
-  );
-
   const navigateToContent = useCallback(
     (id: string | number) => {
       navigate(`/content/${id}`);
@@ -81,7 +74,6 @@ export function useNavigation() {
     navigateToSeries,
     navigateToSeriesContent,
     navigateToPost,
-    navigateToViewer,
     navigateToContent,
     navigateToHome,
     navigateToNew,
