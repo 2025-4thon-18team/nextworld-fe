@@ -4,7 +4,7 @@ import { RadioButton } from "@/components/RadioButton/RadioButton";
 import { SeriesCard } from "@/components/SeriesCard/SeriesCard";
 import { PostItem } from "@/components/article/PostItem/PostItem";
 import { useNavigation } from "@/hooks/useNavigation";
-import { AuthorProfileResponse } from "@/querys";
+import type { AuthorProfileResponse } from "@/querys/types";
 import { SeriesItem } from "@/hooks/useWorkTransform";
 import { PostItem as PostItemType } from "@/hooks/usePostTransform";
 

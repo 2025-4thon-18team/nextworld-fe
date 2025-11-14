@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { SignUpView } from "./SignUpView";
 import { useSignup } from "@/querys/useAuth";
 import { useNavigation } from "@/hooks/useNavigation";
+import { toast } from "sonner";
 
 const SignUp = () => {
   const signupMutation = useSignup();

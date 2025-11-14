@@ -24,7 +24,7 @@ export const Search: FC<SearchProps> = ({
       <input
         type="text"
         value={value}
-        onChange={(e) => onChange?.(e.target.value)} // ⭐ 수정된 부분
+        onChange={onChange}
         className="text-body-medium flex-1 bg-transparent text-black tracking-tight outline-none placeholder:text-text-subtle"
         placeholder="검색어를 입력하세요"
         {...props}

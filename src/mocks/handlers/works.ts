@@ -27,9 +27,9 @@ export const worksHandlers = [
     const workId = Math.floor(Math.random() * 10000) + 1;
 
     const work = {
-      id: workId,
       ...createMockWork(workId),
       ...(body as object),
+      id: workId,
     };
 
     return HttpResponse.json(work);
@@ -39,9 +39,9 @@ export const worksHandlers = [
   http.get(serverUrl("/api/works"), ({ request }) => {
     const url = new URL(request.url);
     const workType = url.searchParams.get("workType");
-    
+
     const works = Array.from({ length: 20 }, (_, i) => createMockWork(i + 1));
-    
+
     // workType 필터링
     const filteredWorks = workType
       ? works.filter((work) => work.workType === workType)

@@ -42,9 +42,9 @@ export const postsHandlers = [
     const postId = Math.floor(Math.random() * 10000) + 1;
 
     const post = {
-      id: postId,
       ...createMockPost(postId, { postType: "POST", workId: null, episodeNumber: null }),
       ...(body as object),
+      id: postId,
     };
 
     return HttpResponse.json(post);
@@ -57,13 +57,13 @@ export const postsHandlers = [
     const postId = Math.floor(Math.random() * 10000) + 1;
 
     const post = {
-      id: postId,
       ...createMockPost(postId, {
         workId: parseInt(workId as string),
         postType: "EPISODE",
         episodeNumber: (postId % 10) + 1,
       }),
       ...(body as object),
+      id: postId,
     };
 
     return HttpResponse.json(post);
@@ -99,9 +99,9 @@ export const postsHandlers = [
     const draftId = Math.floor(Math.random() * 10000) + 1;
 
     const draft = {
-      id: draftId,
       ...createMockPost(draftId),
       ...(body as object),
+      id: draftId,
       status: "DRAFT" as const,
     };
 

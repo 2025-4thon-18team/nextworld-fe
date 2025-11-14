@@ -3,7 +3,6 @@ import { cn } from "@/utils";
 import { IconCross } from "@/assets/icons";
 import {
   CategoryTabs,
-  CategoryTabsTab,
   PostTypeCategoryTab,
 } from "@/components/CategoryTabs/CategoryTabs";
 import { Search } from "@/components/Search/Search";
@@ -54,7 +53,8 @@ export const PostTypeSidebar: FC<PostTypeSidebarProps> = ({
   onAddSeries,
   variant = "post-type",
   onTagsChange,
-  onCategoryTabChange,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onCategoryTabChange: _,
 }) => {
   // post-type
   if (variant === "post-type") {

@@ -54,6 +54,7 @@ const SeriesDetail = () => {
       category: workData.category || "",
       rating: workData.totalRating != null ? workData.totalRating : 0,
       views: workData.totalViewsCount ?? 0,
+      schedule: workData.serializationSchedule ?? null,
       isSerializing:
         workData.serializationSchedule != null &&
         workData.serializationSchedule !== "완결",
@@ -185,6 +186,7 @@ const SeriesDetail = () => {
         category=""
         rating={0}
         views={0}
+        schedule={null}
         isSerializing={false}
         tags={[]}
         likes={0}
@@ -217,6 +219,7 @@ const SeriesDetail = () => {
       category={seriesData.category}
       rating={seriesData.rating}
       views={seriesData.views}
+      schedule={seriesData.schedule}
       isSerializing={seriesData.isSerializing}
       tags={seriesData.tags}
       likes={seriesData.likes}

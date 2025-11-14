@@ -3,11 +3,10 @@ import { cn } from "@/utils";
 import { IconCross } from "@/assets/icons";
 import {
   CategoryTabs,
-  CategoryTabsTab,
+  GuidelineCategoryTab,
 } from "@/components/CategoryTabs/CategoryTabs";
 import { TagList } from "@/components/TagList/TagList";
 import { StickerCard } from "@/components/StickerCard/StickerCard";
-import { GuidelineCategoryTab } from "../CategoryTabs/CategoryTabs";
 
 interface GuidelineSidebarProps {
   title: string;
@@ -57,10 +56,10 @@ export const GuidelineSidebar: FC<GuidelineSidebarProps> = ({
         {/* CategoryTabs for guideline */}
         <CategoryTabs
           activeTab={categoryTab}
-          onTabChange={(tab: CategoryTabsTab) =>
+          onTabChange={(tab) =>
             onCategoryTabChange?.(tab as GuidelineCategoryTab)
           }
-          variant="editor"
+          variant="guideline"
           className="h-48"
         />
       </div>

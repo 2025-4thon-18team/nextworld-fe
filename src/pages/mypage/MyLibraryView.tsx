@@ -3,6 +3,7 @@ import { SeriesCardSmall } from "@/components/SeriesCardSmall/SeriesCardSmall";
 import { PostItem } from "@/components/article/PostItem/PostItem";
 import { RadioButton } from "@/components/RadioButton/RadioButton";
 import { useNavigation } from "@/hooks/useNavigation";
+import type { PostResponseDto } from "@/querys/types";
 
 type TabType = "구매한 작품" | "구매한 포스트";
 
@@ -16,6 +17,9 @@ type PostItemData = {
   views: number;
   comments: number;
   date: string;
+  isPaid?: boolean;
+  price?: number | null;
+  postData?: PostResponseDto;
 };
 
 type Props = {

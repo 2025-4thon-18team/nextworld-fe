@@ -1,20 +1,28 @@
 import { FC, ReactNode } from "react";
 import { cn } from "@/utils";
-import { CategoryTabs } from "@/components/CategoryTabs/CategoryTabs";
+import {
+  CategoryTabs,
+  HomeCategoryTab,
+} from "@/components/CategoryTabs/CategoryTabs";
 import { Outlet } from "react-router-dom";
-
-type CategoryTabsTab = "홈" | "신규" | "관심";
 
 interface HomeLayoutViewProps {
   className?: string;
-  activeTab: CategoryTabsTab;
-  onTabChange: (tab: CategoryTabsTab) => void;
+  activeTab: HomeCategoryTab;
+  onTabChange: (tab: HomeCategoryTab) => void;
   categoryClassName?: string;
   contentClassName?: string;
   children: ReactNode;
 }
 
-export const HomeLayoutView: FC<Props> = ({ className }) => {
+export const HomeLayoutView: FC<HomeLayoutViewProps> = ({
+  className,
+  activeTab,
+  onTabChange,
+  categoryClassName,
+  contentClassName,
+  children,
+}) => {
   return (
     <div
       className={cn("flex size-full min-h-screen flex-col bg-white", className)}
@@ -22,35 +30,24 @@ export const HomeLayoutView: FC<Props> = ({ className }) => {
       <div className="flex h-20 w-full shrink-0 items-center justify-center">
         {/* Home Category */}
         <CategoryTabs
-          activeTab={
-            activeTab as
-              | "홈"
-              | "신규"
-              | "관심"
-              | "내 작품"
-              | "원작"
-              | "포스트"
-              | "작품 연재"
-          }
+          variant="home"
+          activeTab={activeTab}
           onTabChange={
             onTabChange as (
               tab:
-                | "홈"
-                | "신규"
-                | "관심"
-                | "내 작품"
-                | "원작"
-                | "포스트"
-                | "작품 연재",
+                | HomeCategoryTab
+                | import("@/components/CategoryTabs/CategoryTabs").GuidelineCategoryTab
+                | import("@/components/CategoryTabs/CategoryTabs").PostTypeCategoryTab,
             ) => void
           }
-          className="flex h-48 items-center"
+          className={cn("flex h-48 items-center", categoryClassName)}
         />
+      </div>
 
-        {/* Main Content */}
-        <div className={cn("flex items-start", contentClassName)}>
-          <Outlet />
-        </div>
+      {/* Main Content */}
+      <div className={cn("flex items-start", contentClassName)}>
+        {children}
+        <Outlet />
       </div>
     </div>
   );

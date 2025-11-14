@@ -1,5 +1,4 @@
 import { FC } from "react";
-import { IconPoint } from "@/assets/icons";
 import { cn } from "@/utils";
 
 interface ChargePointOptionProps {

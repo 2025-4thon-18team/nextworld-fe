@@ -28,10 +28,7 @@ export const usersHandlers = [
   }),
 
   // 작가 작품 조회 (BaseResponse 없이 직접 반환)
-  http.get(serverUrl("/api/author/:authorId/works"), ({ params }) => {
-    const { authorId } = params;
-    const authorIdNum = parseInt(authorId as string);
-
+  http.get(serverUrl("/api/author/:authorId/works"), ({ params: _params }) => {
     const works = Array.from({ length: 10 }, (_, i) => ({
       workId: i + 1,
       title: `작품 제목 ${i + 1}`,
@@ -45,10 +42,7 @@ export const usersHandlers = [
   }),
 
   // 작가 포스트 조회 (BaseResponse 없이 직접 반환)
-  http.get(serverUrl("/api/author/:authorId/posts"), ({ params }) => {
-    const { authorId } = params;
-    const authorIdNum = parseInt(authorId as string);
-
+  http.get(serverUrl("/api/author/:authorId/posts"), ({ params: _params }) => {
     const posts = Array.from({ length: 10 }, (_, i) => ({
       postId: i + 1,
       workId: i % 3 === 0 ? null : Math.floor(i / 3) + 1,

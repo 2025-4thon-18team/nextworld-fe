@@ -3,6 +3,7 @@ import { FC, useCallback } from "react";
 import { cn } from "@/utils";
 import { PostItem } from "@/components/article/PostItem/PostItem";
 import { useNavigation } from "@/hooks";
+import type { PostResponseDto } from "@/querys/types";
 
 type PostItemData = {
   id: string;
@@ -14,6 +15,9 @@ type PostItemData = {
   views: number;
   comments: number;
   date: string;
+  isPaid?: boolean;
+  price?: number | null;
+  postData?: PostResponseDto;
 };
 
 type Props = {

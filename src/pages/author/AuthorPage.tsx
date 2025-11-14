@@ -7,7 +7,7 @@ import {
 } from "@/querys/useUsers";
 import { useTab } from "@/hooks/useTab";
 import { usePostTransform, useWorkTransform } from "@/hooks";
-import { PostResponseDto, WorkResponseDto } from "@/querys";
+import type { PostResponseDto, WorkResponseDto } from "@/querys/types";
 
 const AuthorPage = () => {
   const { activeTab, onTabChange } = useTab<"작품" | "포스트">("작품");
@@ -19,8 +19,8 @@ const AuthorPage = () => {
   const { data: authorWorks } = useGetAuthorWorks(authorIdNum);
   const { data: authorPosts } = useGetAuthorPosts(authorIdNum);
 
-  const seriesList = useWorkTransform(authorWorks as WorkResponseDto[]);
-  const postList = usePostTransform(authorPosts as PostResponseDto[]);
+  const seriesList = useWorkTransform(authorWorks as unknown as WorkResponseDto[]);
+  const postList = usePostTransform(authorPosts as unknown as PostResponseDto[]);
   if (!authorProfile) return <div>작가 정보를 찾을 수 없습니다.</div>;
 
   return (

@@ -21,9 +21,7 @@ export const likesHandlers = [
   }),
 
   // 좋아요 취소
-  http.delete(serverUrl("/api/likes/:workId"), ({ params }) => {
-    const { workId } = params;
-
+  http.delete(serverUrl("/api/likes/:workId"), ({ params: _params }) => {
     return HttpResponse.json({
       success: true,
       code: 200,

@@ -38,7 +38,11 @@ export const CategoryTabs: FC<CategoryTabsProps> = ({
           <button
             key={tab}
             type="button"
-            onClick={() => onTabChange(tab)}
+            onClick={() =>
+              onTabChange(
+                tab as HomeCategoryTab | GuidelineCategoryTab | PostTypeCategoryTab,
+              )
+            }
             className={cn(
               "gap-sm px-lg flex h-full min-h-40 min-w-50 flex-col items-center justify-center py-0",
               isSelected

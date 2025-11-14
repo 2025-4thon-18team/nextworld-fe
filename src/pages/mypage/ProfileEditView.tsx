@@ -26,10 +26,10 @@ interface Props {
   isSaving: boolean;
   isValid: boolean;
 
-  fileInputRef: React.RefObject<HTMLInputElement>;
+  fileInputRef: React.RefObject<HTMLInputElement | null>;
 
   // ⭐ 추가됨: textarea auto-resize용 ref
-  textareaRef: React.RefObject<HTMLTextAreaElement>;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
 }
 
 export const ProfileEditView: FC<Props> = ({

@@ -6,6 +6,7 @@ import { usePoints } from "@/hooks/usePoints";
 import { Gnb } from "@/components/Gnb/Gnb";
 import { useIsAuthenticated, useGetMe } from "@/querys/useAuth";
 import { Toaster } from "@/components/ui/sonner";
+import type { UserProfileResponse } from "@/querys/types";
 
 const menuMap: Record<string, string> = {
   "/my-page/favorites": "선호 작품",
@@ -58,7 +59,9 @@ export const MyPageLayout: FC = () => {
         searchValue={searchValue}
         onSearchChange={setSearchValue}
         onWriteClick={onWriteClick}
-        profileImageUrl={(profileData as any)?.profileImageUrl}
+        profileImageUrl={
+          (profileData as UserProfileResponse | undefined)?.profileImageUrl
+        }
       />
       <Toaster />
       <div className="flex items-start gap-38 px-80 pt-48">
