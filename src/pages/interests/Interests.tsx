@@ -10,11 +10,11 @@ import {
   useContentItemTransform,
 } from "@/hooks/usePostTransform";
 
-type HomeCategoryTab = "홈" | "신규" | "관심";
+type CategoryTabsTab = "홈" | "신규" | "관심";
 
 export const Interests: FC = () => {
   const { activeTab, onTabChange: setActiveTab } =
-    useTab<HomeCategoryTab>("관심");
+    useTab<CategoryTabsTab>("관심");
   const { navigateToNew, navigateToHome, navigateToContent } = useNavigation();
 
   // 스크랩된 작품 목록 조회
@@ -77,7 +77,7 @@ export const Interests: FC = () => {
   );
 
   const handleTabChange = useCallback(
-    (tab: HomeCategoryTab) => {
+    (tab: CategoryTabsTab) => {
       setActiveTab(tab);
       if (tab === "신규") {
         navigateToNew();

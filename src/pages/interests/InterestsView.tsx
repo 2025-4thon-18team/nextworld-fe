@@ -1,11 +1,11 @@
 import { FC } from "react";
 import { cn } from "@/utils";
-import { HomeCategory } from "@/components/HomeCategory/HomeCategory";
+import { CategoryTabs } from "@/components/CategoryTabs/CategoryTabs";
 import { PostListHorizontal } from "@/components/PostListHorizontal/PostListHorizontal";
 import { SeriesCard } from "@/components/SeriesCard/SeriesCard";
 import { ContentItem } from "@/components/article/ContentItem/ContentItem";
 
-type HomeCategoryTab = "홈" | "신규" | "관심";
+type CategoryTabsTab = "홈" | "신규" | "관심";
 
 type SeriesItem = {
   id: string;
@@ -38,8 +38,8 @@ type ContentItemData = {
 
 type Props = {
   className?: string;
-  activeTab: HomeCategoryTab;
-  onTabChange: (tab: HomeCategoryTab) => void;
+  activeTab: CategoryTabsTab;
+  onTabChange: (tab: CategoryTabsTab) => void;
   favoriteSeries: SeriesItem[];
   latestUpdates: ContentItemData[];
   newPosts: PostItem[];
@@ -65,9 +65,9 @@ export const InterestsView: FC<Props> = ({
     <div className={cn("flex size-full flex-col bg-white", className)}>
       {/* Home Category */}
       <div className="flex justify-center">
-        <HomeCategory
+        <CategoryTabs
           activeTab={activeTab as "홈" | "신규" | "관심"}
-          onTabChange={(tab) => onTabChange(tab as HomeCategoryTab)}
+          onTabChange={(tab) => onTabChange(tab as CategoryTabsTab)}
           className="flex h-48 items-center"
         />
       </div>

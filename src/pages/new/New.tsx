@@ -7,11 +7,11 @@ import { useNavigation } from "@/hooks/useNavigation";
 import { useWorkTransform } from "@/hooks/useWorkTransform";
 import { usePostTransform } from "@/hooks/usePostTransform";
 
-type HomeCategoryTab = "홈" | "신규" | "관심";
+type CategoryTabsTab = "홈" | "신규" | "관심";
 
 export const New: FC = () => {
   const { activeTab, onTabChange: setActiveTab } =
-    useTab<HomeCategoryTab>("신규");
+    useTab<CategoryTabsTab>("신규");
   const { navigateToHome, navigateToInterests } = useNavigation();
 
   // React Query hooks 직접 사용
@@ -22,7 +22,7 @@ export const New: FC = () => {
   const newPosts = usePostTransform(postsData, 9);
 
   const handleTabChange = useCallback(
-    (tab: HomeCategoryTab) => {
+    (tab: CategoryTabsTab) => {
       setActiveTab(tab);
       if (tab === "홈") {
         navigateToHome();
