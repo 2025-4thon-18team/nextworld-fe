@@ -2,7 +2,7 @@ import { IconComment, IconEye, IconStar } from "@/assets/icons";
 import { FC } from "react";
 
 interface ArticleInfoProps {
-  rating: number;
+  rating: number | null;
   views: number;
   comments: number;
   date: string;
@@ -14,6 +14,7 @@ export const ArticleInfo: FC<ArticleInfoProps> = ({
   comments,
   date,
 }) => {
+  const displayRating = rating != null ? rating : 0;
   return (
     <div className="gap-lg flex items-center relative shrink-0">
       <div className="gap-xs flex items-center relative shrink-0">
@@ -21,7 +22,7 @@ export const ArticleInfo: FC<ArticleInfoProps> = ({
           <IconStar className="size-24" />
         </div>
         <p className="text-body-small-medium text-muted text-nowrap tracking-tight whitespace-pre">
-          {rating.toFixed(1)}
+          {displayRating.toFixed(1)}
         </p>
       </div>
       <div className="gap-xs flex items-center relative shrink-0">

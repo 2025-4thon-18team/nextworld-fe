@@ -11,7 +11,7 @@ import {
 
 interface ContentInfoProps {
   category: string;
-  rating: number;
+  rating: number | null;
   views: number;
   isSerializing: boolean;
   tags: string[];
@@ -34,6 +34,7 @@ export const ContentInfo: FC<ContentInfoProps> = ({
   onShare,
   className,
 }) => {
+  const displayRating = rating != null ? rating : 0;
   return (
     <div className={cn("flex w-358 flex-col items-start gap-26", className)}>
       {/* Main Info Section */}
@@ -49,7 +50,7 @@ export const ContentInfo: FC<ContentInfoProps> = ({
               <div className="gap-xs flex shrink-0 items-center justify-center">
                 <IconStar className="size-24 shrink-0 overflow-hidden text-black" />
                 <p className="text-body-medium tracking-tight text-nowrap whitespace-pre text-black">
-                  {rating.toFixed(1)}
+                  {displayRating.toFixed(1)}
                 </p>
               </div>
               {/* Views */}

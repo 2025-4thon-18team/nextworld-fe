@@ -12,7 +12,7 @@ import { TagList } from "@/components/TagList/TagList";
 
 interface SeriesInfoProps {
   category: string;
-  rating: number;
+  rating: number | null;
   views: number;
   isSerializing: boolean;
   tags: string[];
@@ -35,6 +35,7 @@ export const SeriesInfo: FC<SeriesInfoProps> = ({
   onShare,
   className,
 }) => {
+  const displayRating = rating != null ? rating : 0;
   return (
     <div className={cn("flex w-358 flex-col items-start gap-26", className)}>
       {/* Main Info Section */}
@@ -50,7 +51,7 @@ export const SeriesInfo: FC<SeriesInfoProps> = ({
               <div className="gap-xs flex shrink-0 items-center justify-center">
                 <IconStar className="size-24 shrink-0 overflow-hidden text-black" />
                 <p className="text-body-medium tracking-tight text-nowrap whitespace-pre text-black">
-                  {rating.toFixed(1)}
+                  {displayRating.toFixed(1)}
                 </p>
               </div>
               {/* Views */}
