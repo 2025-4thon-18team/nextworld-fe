@@ -1,5 +1,6 @@
 export * from "./client";
-export * from "./types";
+import type * as types from "./types.d.ts";
+export type { types };
 export * from "./useAuth";
 export * from "./useUsers";
 export * from "./useMypage";

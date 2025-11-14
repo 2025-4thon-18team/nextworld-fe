@@ -203,11 +203,11 @@ export interface PayItemResponse {
 // ============================================
 
 export interface RevenueDashboardResponse {
-  totalSalesCount: number;
-  totalRevenue: number;
-  originalAuthorFee: number;
-  platformFee: number;
-  netIncome: number;
+  totalSalesCount: number | null;
+  totalRevenue: number | null;
+  originalAuthorFee: number | null;
+  platformFee: number | null;
+  netIncome: number | null;
 }
 
 export interface RevenueSaleItemResponse {
