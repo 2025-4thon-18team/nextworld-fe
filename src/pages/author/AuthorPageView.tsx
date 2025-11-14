@@ -108,10 +108,13 @@ export const AuthorPageView: FC<Props> = ({
                     views={post.views}
                     comments={post.comments}
                     date={post.date}
-                    onClick={() => navigateToPost(post.id)}
-                    className="w-403 shrink-0"
-                  />
-                ))}
+                  onClick={() => navigateToPost(post.id)}
+                  className="w-403 shrink-0"
+                  isPaid={post.isPaid}
+                  price={post.price}
+                  postData={post.postData}
+                />
+              ))}
             </div>
           )}
         </div>

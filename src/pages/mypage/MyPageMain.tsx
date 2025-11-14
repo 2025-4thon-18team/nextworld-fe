@@ -3,8 +3,10 @@ import { MyPageMainView } from "./MyPageMainView";
 import { useGetMe, useLogout } from "@/querys/useAuth";
 import { useTab } from "@/hooks/useTab";
 import { useSimpleWorkTransform } from "@/hooks/useWorkTransform";
+import { usePostTransform } from "@/hooks/usePostTransform";
 import { useNavigation } from "@/hooks/useNavigation";
 import { toast } from "sonner";
+import { useGetMyWorks, useGetMyPosts } from "@/querys/useMypage";
 
 type TabType = "작품" | "포스트";
 
@@ -14,12 +16,12 @@ const MyPageMain = () => {
 
   // React Query hooks 직접 사용
   const { data: profileData } = useGetMe();
-  // TODO: /api/mypage/works 엔드포인트가 backend-rule.mdc에 없음
-  // 임시로 빈 배열 사용
-  const worksData = undefined;
+  const { data: worksData } = useGetMyWorks();
+  const { data: postsData } = useGetMyPosts();
   const { mutate: logout } = useLogout();
 
-  const seriesList = useSimpleWorkTransform(worksData);
+  const worksList = useSimpleWorkTransform(worksData);
+  const postsList = usePostTransform(postsData);
 
   const profile = useMemo(() => {
     if (!profileData) return null;
@@ -50,7 +52,8 @@ const MyPageMain = () => {
   return (
     <MyPageMainView
       profile={profile}
-      seriesList={seriesList}
+      worksList={worksList}
+      postsList={postsList}
       activeTab={activeTab}
       onTabChange={onTabChange}
       onProfileEdit={onProfileEdit}

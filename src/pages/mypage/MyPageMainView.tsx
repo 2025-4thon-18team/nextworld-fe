@@ -1,9 +1,23 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import { SeriesCardSmall } from "@/components/SeriesCardSmall/SeriesCardSmall";
+import { PostItem } from "@/components/article/PostItem/PostItem";
 import { AddSeries } from "@/components/AddSeries/AddSeries";
 import { RadioButton } from "@/components/RadioButton/RadioButton";
+import { useNavigation } from "@/hooks/useNavigation";
 
 type TabType = "작품" | "포스트";
+
+type PostItemData = {
+  id: string;
+  title: string;
+  content: string;
+  points: number;
+  tags: string[];
+  rating: number;
+  views: number;
+  comments: number;
+  date: string;
+};
 
 type Props = {
   profile: {
@@ -12,7 +26,8 @@ type Props = {
     contact: string;
     profileImageUrl?: string;
   } | null;
-  seriesList: Array<{ id: number; imageUrl: string; title: string }>;
+  worksList: Array<{ id: number; imageUrl: string; title: string }>;
+  postsList: PostItemData[];
   activeTab: TabType;
   onTabChange: (tab: TabType) => void;
   onProfileEdit: () => void;
@@ -21,12 +36,29 @@ type Props = {
 
 export const MyPageMainView: FC<Props> = ({
   profile,
-  seriesList,
+  worksList,
+  postsList,
   activeTab,
   onTabChange,
   onProfileEdit,
   onLogout,
 }) => {
+  const { navigateToSeries, navigateToPost } = useNavigation();
+
+  const handleWorkClick = useCallback(
+    (id: number) => {
+      navigateToSeries(id);
+    },
+    [navigateToSeries],
+  );
+
+  const handlePostClick = useCallback(
+    (id: string) => {
+      navigateToPost(id);
+    },
+    [navigateToPost],
+  );
+
   return (
     <div className="flex flex-col gap-10">
       {/* Profile Section */}
@@ -76,17 +108,47 @@ export const MyPageMainView: FC<Props> = ({
         </RadioButton>
       </div>
 
-      {/* Series Grid */}
-      <div className="px-md flex flex-wrap items-center gap-12 py-0">
-        <AddSeries />
-        {seriesList.map((series) => (
-          <SeriesCardSmall
-            key={series.id}
-            imageUrl={series.imageUrl}
-            title={series.title}
-          />
-        ))}
-      </div>
+      {/* Works or Posts List */}
+      {activeTab === "작품" ? (
+        <div className="px-md flex flex-wrap items-center gap-12 py-0">
+          <AddSeries />
+          {worksList.map((work) => (
+            <SeriesCardSmall
+              key={work.id}
+              imageUrl={work.imageUrl}
+              title={work.title}
+              onClick={() => handleWorkClick(work.id)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="px-md flex flex-wrap items-start gap-12 py-0">
+          {postsList.length > 0 ? (
+            postsList.map((post) => (
+              <PostItem
+                key={post.id}
+                title={post.title}
+                points={post.points}
+                content={post.content}
+                tags={post.tags}
+                rating={post.rating}
+                views={post.views}
+                comments={post.comments}
+                date={post.date}
+                onClick={() => handlePostClick(post.id)}
+                className="border-background-subtle h-230 min-h-230 w-403 shrink-0 rounded-xs border-t-2 bg-white"
+                isPaid={post.isPaid}
+                price={post.price}
+                postData={post.postData}
+              />
+            ))
+          ) : (
+            <p className="text-body-regular text-text-muted">
+              작성한 포스트가 없습니다.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Action Buttons */}
       <div className="flex items-center gap-10 pt-13">
