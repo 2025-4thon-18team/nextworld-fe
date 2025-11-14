@@ -8,6 +8,7 @@ export * from "./usePayment";
 export * from "./useRevenue";
 export * from "./useWorks";
 export * from "./usePosts";
+export * from "./useRatings";
 export * from "./useAdmin";
 export * from "./useLike";
 export * from "./useScrap";

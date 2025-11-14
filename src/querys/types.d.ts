@@ -378,3 +378,18 @@ export interface PurchasedWorkResponse {
   workType: string;
   parentWorkId: number | null;
 }
+
+// ============================================
+// 별점 관련 (Rating)
+// ============================================
+
+export interface PostRatingRequest {
+  score: number; // 0.00 ~ 5.00 (BigDecimal)
+}
+
+export interface PostRatingResponse {
+  postId: number;
+  myScore: number | null; // 내가 준 점수(null 가능)
+  averageScore: number; // 평균 점수 (BigDecimal)
+  ratingCount: number; // 평가한 사람 수
+}

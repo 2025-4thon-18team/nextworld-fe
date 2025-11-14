@@ -43,6 +43,21 @@ export const postsApi = {
 
   // 포스트 삭제
   deletePost: (id: number) => client.delete<void>(`/api/posts/${id}`),
+
+  // 에피소드 전체 조회
+  getAllEpisodes: () => client.get<PostResponseDto[]>("/api/episodes"),
+
+  // 작품 회차 목록 조회
+  getEpisodesByWork: (workId: number) =>
+    client.get<PostResponseDto[]>(`/api/episodes/work/${workId}`),
+
+  // 이전 회차 조회
+  getPreviousEpisode: (id: number) =>
+    client.get<PostResponseDto>(`/api/episodes/${id}/previous`),
+
+  // 다음 회차 조회
+  getNextEpisode: (id: number) =>
+    client.get<PostResponseDto>(`/api/episodes/${id}/next`),
 };
 
 // ============================================
@@ -204,5 +219,52 @@ export const useGetAllDrafts = () => {
       const response = await postsApi.getAllDrafts();
       return response.data;
     },
+  });
+};
+
+// Query: 에피소드 전체 조회
+export const useGetAllEpisodes = () => {
+  return useQuery({
+    queryKey: ["useGetAllEpisodes", ...postsKeys.lists()],
+    queryFn: async () => {
+      const response = await postsApi.getAllEpisodes();
+      return response.data;
+    },
+  });
+};
+
+// Query: 작품 회차 목록 조회
+export const useGetEpisodesByWork = (workId: number) => {
+  return useQuery({
+    queryKey: ["useGetEpisodesByWork", ...postsKeys.lists(), workId],
+    queryFn: async () => {
+      const response = await postsApi.getEpisodesByWork(workId);
+      return response.data;
+    },
+    enabled: !!workId,
+  });
+};
+
+// Query: 이전 회차 조회
+export const useGetPreviousEpisode = (id: number) => {
+  return useQuery({
+    queryKey: ["useGetPreviousEpisode", ...postsKeys.detail(id), "previous"],
+    queryFn: async () => {
+      const response = await postsApi.getPreviousEpisode(id);
+      return response.data;
+    },
+    enabled: !!id,
+  });
+};
+
+// Query: 다음 회차 조회
+export const useGetNextEpisode = (id: number) => {
+  return useQuery({
+    queryKey: ["useGetNextEpisode", ...postsKeys.detail(id), "next"],
+    queryFn: async () => {
+      const response = await postsApi.getNextEpisode(id);
+      return response.data;
+    },
+    enabled: !!id,
   });
 };

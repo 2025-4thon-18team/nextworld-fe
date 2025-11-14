@@ -3,6 +3,8 @@ import { client } from "./client";
 import type {
   PointsResponse,
   PayItemResponse,
+  WorkResponseDto,
+  PostResponseDto,
 } from "./types";
 
 // ============================================
@@ -15,6 +17,12 @@ export const mypageApi = {
 
   // 결제 내역 조회
   getPaylist: () => client.get<PayItemResponse[]>("/api/mypage/paylist"),
+
+  // 내 작품 리스트 조회
+  getMyWorks: () => client.get<WorkResponseDto[]>("/api/mypage/works"),
+
+  // 내 포스트 리스트 조회
+  getMyPosts: () => client.get<PostResponseDto[]>("/api/mypage/posts"),
 };
 
 // ============================================
@@ -25,6 +33,8 @@ export const mypageKeys = {
   all: ["mypage"] as const,
   points: () => [...mypageKeys.all, "points"] as const,
   paylist: () => [...mypageKeys.all, "paylist"] as const,
+  works: () => [...mypageKeys.all, "works"] as const,
+  posts: () => [...mypageKeys.all, "posts"] as const,
 };
 
 // ============================================
@@ -48,6 +58,28 @@ export const useGetPaylist = () => {
     queryKey: ["useGetPaylist", ...mypageKeys.paylist()],
     queryFn: async () => {
       const response = await mypageApi.getPaylist();
+      return response.data;
+    },
+  });
+};
+
+// Query: 내 작품 리스트
+export const useGetMyWorks = () => {
+  return useQuery({
+    queryKey: ["useGetMyWorks", ...mypageKeys.works()],
+    queryFn: async () => {
+      const response = await mypageApi.getMyWorks();
+      return response.data;
+    },
+  });
+};
+
+// Query: 내 포스트 리스트
+export const useGetMyPosts = () => {
+  return useQuery({
+    queryKey: ["useGetMyPosts", ...mypageKeys.posts()],
+    queryFn: async () => {
+      const response = await mypageApi.getMyPosts();
       return response.data;
     },
   });
