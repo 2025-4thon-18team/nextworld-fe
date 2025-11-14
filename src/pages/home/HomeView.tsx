@@ -1,10 +1,10 @@
 import { FC } from "react";
 import { cn } from "@/utils";
-import { HomeCategory } from "@/components/HomeCategory/HomeCategory";
+import { CategoryTabs } from "@/components/CategoryTabs/CategoryTabs";
 import { PostListHorizontal } from "@/components/PostListHorizontal/PostListHorizontal";
 import { SeriesListHorizontal } from "@/components/SeriesListHorizontal/SeriesListHorizontal";
 
-type HomeCategoryTab = "홈" | "신규" | "관심";
+type CategoryTabsTab = "홈" | "신규" | "관심";
 
 type UniverseItem = {
   id: string;
@@ -34,8 +34,8 @@ type SeriesItem = {
 
 type Props = {
   className?: string;
-  activeTab: HomeCategoryTab;
-  onTabChange: (tab: HomeCategoryTab) => void;
+  activeTab: CategoryTabsTab;
+  onTabChange: (tab: CategoryTabsTab) => void;
   universeOfWeek: UniverseItem | null;
   popularSeries: SeriesItem[];
   popularPosts: PostItem[];
@@ -53,9 +53,9 @@ export const HomeView: FC<Props> = ({
     <div className={cn("flex size-full flex-col bg-white", className)}>
       {/* Home Category */}
       <div className="flex justify-center">
-        <HomeCategory
+        <CategoryTabs
           activeTab={activeTab as "홈" | "신규" | "관심"}
-          onTabChange={(tab) => onTabChange(tab as HomeCategoryTab)}
+          onTabChange={(tab) => onTabChange(tab as CategoryTabsTab)}
           className="flex h-48 items-center"
         />
       </div>

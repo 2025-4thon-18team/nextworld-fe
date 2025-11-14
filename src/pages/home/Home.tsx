@@ -7,11 +7,11 @@ import { useNavigation } from "@/hooks/useNavigation";
 import { useWorkTransform } from "@/hooks/useWorkTransform";
 import { usePostTransform } from "@/hooks/usePostTransform";
 
-type HomeCategoryTab = "홈" | "신규" | "관심";
+type CategoryTabsTab = "홈" | "신규" | "관심";
 
 export const Home: FC = () => {
   const { activeTab, onTabChange: setActiveTab } =
-    useTab<HomeCategoryTab>("홈");
+    useTab<CategoryTabsTab>("홈");
   const { navigateToNew, navigateToInterests, navigateToHome } =
     useNavigation();
 
@@ -34,7 +34,7 @@ export const Home: FC = () => {
   }, [worksData]);
 
   const handleTabChange = useCallback(
-    (tab: HomeCategoryTab) => {
+    (tab: CategoryTabsTab) => {
       setActiveTab(tab);
       if (tab === "신규") {
         navigateToNew();
