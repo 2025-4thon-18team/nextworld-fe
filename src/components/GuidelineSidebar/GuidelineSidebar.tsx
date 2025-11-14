@@ -34,7 +34,7 @@ export const GuidelineSidebar: FC<GuidelineSidebarProps> = ({
   return (
     <div
       className={cn(
-        "bg-background-subtle gap-lg flex h-890 w-442 flex-col items-start shadow-[-2px_1px_4px_0px_rgba(0,0,0,0.25)]",
+        "bg-background-subtle gap-lg flex h-full w-442 flex-col items-start shadow-[-2px_1px_4px_0px_rgba(0,0,0,0.25)]",
         className,
       )}
     >
@@ -66,7 +66,7 @@ export const GuidelineSidebar: FC<GuidelineSidebarProps> = ({
       </div>
 
       {/* Content Section */}
-      <div className="gap-md relative flex min-h-px w-full min-w-px shrink-0 grow basis-0 flex-col items-start px-32 py-0">
+      <div className="gap-md relative flex w-full shrink-0 grow flex-col items-start px-32 py-0">
         {/* 금지어 */}
         <div className="px-sm flex w-full shrink-0 flex-col items-start gap-10 rounded-sm bg-white py-4">
           <div className="flex items-center justify-center gap-3 px-4 py-0">

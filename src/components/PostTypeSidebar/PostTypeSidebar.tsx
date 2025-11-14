@@ -19,9 +19,6 @@ interface PostTypeSidebarProps {
   // Post Type props
   postTypeTab?: "포스트" | "작품 연재";
   onPostTypeTabChange?: (tab: "포스트" | "작품 연재") => void;
-  originalSelected?: boolean;
-  onOriginalChange?: (selected: boolean) => void;
-  originalDisabled?: boolean;
   searchValue?: string;
   onSearchChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   series?: Array<{ imageUrl: string; title: string; selected?: boolean }>;
@@ -45,9 +42,6 @@ export const PostTypeSidebar: FC<PostTypeSidebarProps> = ({
   className,
   postTypeTab = "포스트",
   onPostTypeTabChange,
-  originalSelected = false,
-  onOriginalChange,
-  originalDisabled = false,
   searchValue = "",
   onSearchChange,
   series = [],
@@ -62,39 +56,12 @@ export const PostTypeSidebar: FC<PostTypeSidebarProps> = ({
   onTagsChange,
   onCategoryTabChange,
 }) => {
-  const renderContent = () => {
-    if (variant === "series-type") {
-      return (
-        <div className="gap-md relative flex w-full shrink-0 flex-col items-start">
-          {/* 작품 카드들 */}
-          <div className="gap-md relative flex w-full shrink-0 flex-wrap items-start justify-between">
-            {series.map((item, index) => (
-              <SeriesCardSmall
-                key={index}
-                imageUrl={item.imageUrl}
-                title={item.title}
-                selected={item.selected}
-                onClick={() => onSeriesClick?.(index)}
-              />
-            ))}
-            {onAddSeries && <AddSeries onClick={onAddSeries} />}
-          </div>
-        </div>
-      );
-    }
-
-    // post-type
+  // post-type
+  if (variant === "post-type") {
     return (
-      <div className="gap-md relative flex w-full shrink-0 flex-col items-start">
+      <div className="gap-md absolute top-0 right-0 flex w-fit max-w-442 shrink-0 flex-col items-start">
         {/* 원작 설정 */}
-        <div className="relative flex w-full shrink-0 items-center justify-between">
-          <InputLabel>원작 설정</InputLabel>
-          <ToggleButton
-            checked={originalSelected}
-            onChange={onOriginalChange}
-            disabled={originalDisabled}
-          />
-        </div>
+        <InputLabel>원작 설정</InputLabel>
 
         {/* 검색 */}
         <Search
@@ -140,18 +107,16 @@ export const PostTypeSidebar: FC<PostTypeSidebarProps> = ({
         {/* 태그 */}
         <div className="gap-sm relative flex w-full shrink-0 flex-col items-start">
           <InputLabel>태그</InputLabel>
-          <div className="border-sm border-grayscale-g2 px-lg py-md flex w-full shrink-0 items-start gap-10 rounded-md">
-            <TagsInput tags={tags} onTagsChange={onTagsChange} />
-          </div>
+          <TagsInput tags={tags} onTagsChange={onTagsChange} />
         </div>
       </div>
     );
-  };
+  }
 
   return (
     <div
       className={cn(
-        "bg-background-subtle gap-lg flex h-1175 w-374 flex-col items-start shadow-[-2px_1px_4px_0px_rgba(0,0,0,0.25)]",
+        "bg-background-subtle gap-lg flex h-full w-374 flex-col items-start shadow-[-2px_1px_4px_0px_rgba(0,0,0,0.25)]",
         className,
       )}
     >
@@ -183,8 +148,24 @@ export const PostTypeSidebar: FC<PostTypeSidebarProps> = ({
       </div>
 
       {/* Content Section */}
-      <div className="gap-md relative flex min-h-px w-full min-w-px shrink-0 grow basis-0 flex-col items-start px-32 py-0">
-        {renderContent()}
+      <div className="gap-md relative flex w-full min-w-px shrink-0 grow flex-col items-start px-32 py-0">
+        {variant === "series-type" && (
+          <div className="gap-md relative flex w-full shrink-0 flex-col items-start">
+            {/* 작품 카드들 */}
+            <div className="gap-md relative flex w-full shrink-0 flex-wrap items-start justify-between">
+              {series.map((item, index) => (
+                <SeriesCardSmall
+                  key={index}
+                  imageUrl={item.imageUrl}
+                  title={item.title}
+                  selected={item.selected}
+                  onClick={() => onSeriesClick?.(index)}
+                />
+              ))}
+              {onAddSeries && <AddSeries onClick={onAddSeries} />}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
