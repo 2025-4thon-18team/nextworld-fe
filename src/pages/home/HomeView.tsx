@@ -1,3 +1,4 @@
+// ⭐ HomeView.tsx — 스크린샷 레이아웃 반영
 import { FC } from "react";
 import { cn } from "@/utils";
 import { CategoryTabs } from "@/components/CategoryTabs/CategoryTabs";
@@ -52,93 +53,83 @@ export const HomeView: FC<Props> = ({
   popularPosts,
 }) => {
   return (
-    <div className={cn("flex size-full flex-col bg-white", className)}>
+    <div className={cn("flex flex-col bg-white", className)}>
       {/* Home Category */}
       <div className="flex justify-center">
         <CategoryTabs
           activeTab={activeTab as "홈" | "신규" | "관심"}
           onTabChange={(tab) => onTabChange(tab as CategoryTabsTab)}
-          className="flex h-48 items-center"
+          className="flex h-20 items-center"
         />
       </div>
 
-      {/* Main Content */}
-      <div className="flex flex-col gap-44 px-[calc(8.333%+68px)]">
-        {/* Universe of the Week Section */}
-        <div className="gap-md flex flex-col items-start">
-          <h2 className="text-headings-heading-2 w-full tracking-tight text-black">
-            금주의 유니버스
-          </h2>
-          <div className="gap-lg flex w-full items-start">
-            {/* Featured Universe Card */}
+      {/* ⭐ 메인 컨텐츠 전체 패딩 */}
+      <div className="mt-10 flex flex-col gap-20 px-20">
+        {/* ⭐ 금주의 유니버스 */}
+        <div className="flex flex-col gap-4">
+          <h2 className="text-xl font-semibold text-black">금주의 유니버스</h2>
+
+          <div className="flex w-full items-stretch gap-6">
+            {/* 왼쪽 대표 카드 */}
             {universeOfWeek && (
-              <div className="gap-sm relative flex w-310 shrink-0 flex-col overflow-hidden">
-                <div className="relative h-476 w-310 overflow-hidden rounded-sm blur-sm">
-                  <picture
-                    className="pointer-events-none absolute inset-0 size-full max-w-none rounded-sm object-cover object-center"
-                    draggable={false}
-                    aria-label={universeOfWeek.title}
-                  >
-                    <source srcSet={universeOfWeek.imageUrl} type="image/png" />
+              <div className={cn("flex h-453 items-center", className)}>
+                {/* Left: Blurred background + clear image */}
+                <div className="bg-background-subtle relative h-full w-411 shrink-0 overflow-hidden rounded-tl-md">
+                  {/* Blurred background */}
+                  <div className="absolute inset-0 h-450 w-424 blur filter">
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0"
+                    >
+                      <img
+                        alt=""
+                        className="absolute size-full max-w-none object-cover object-center"
+                        src={universeOfWeek.imageUrl}
+                        draggable={false}
+                      />
+                      <div className="absolute inset-0 bg-[rgba(122,122,122,0.4)]" />
+                    </div>
+                  </div>
+
+                  {/* Clear image */}
+                  <div className="absolute top-1/2 left-1/2 h-300 w-200 -translate-x-1/2 -translate-y-1/2 rounded-xs">
                     <img
-                      src={PresetImage}
-                      className="size-full rounded-sm object-cover object-center"
-                      draggable={false}
                       alt={universeOfWeek.title}
+                      className="pointer-events-none absolute inset-0 size-full max-w-none rounded-xs object-cover object-center"
+                      draggable={false}
+                      src={universeOfWeek.imageUrl}
                     />
-                  </picture>
+                  </div>
                 </div>
-                <div className="bg-background-subtle absolute inset-0 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-sm">
-                  <SeriesCard
-                    seriesId={universeOfWeek.id}
-                    imageUrl={universeOfWeek.imageUrl}
-                    title={universeOfWeek.title}
-                    tags={universeOfWeek.tags}
-                    className="size-full rounded-sm object-cover object-center"
-                  />
-                </div>
-              </div>
+              </div> // ⭐ 여기 닫힘 추가
             )}
-            {/* Post Lists */}
-            <div className="gap-lg flex flex-1 shrink-0 flex-col">
+
+            {/* 오른쪽 포스트 리스트 2x2 */}
+            <div className="flex flex-1 flex-col gap-4">
               <PostListHorizontal
                 items={popularPosts.slice(0, 4)}
-                className="flex w-full items-center"
-              />
-              <PostListHorizontal
-                items={popularPosts.slice(4, 8)}
-                className="flex w-full items-center"
+                className="grid grid-cols-2 gap-4 overflow-visible"
               />
             </div>
           </div>
         </div>
 
-        {/* Popular Series Section */}
-        <div className="gap-md flex flex-col items-start">
-          <h2 className="text-headings-heading-2 w-full tracking-tight text-black">
-            인기 작품
-          </h2>
+        {/* ⭐ 인기 작품 */}
+        <div className="flex flex-col gap-4">
+          <h2 className="text-xl font-semibold text-black">인기 작품</h2>
           <SeriesListHorizontal
             items={popularSeries}
-            className="flex w-full items-center"
+            className="grid grid-cols-6 gap-6"
           />
         </div>
 
-        {/* Popular Posts Section */}
-        <div className="gap-md flex flex-col items-start">
-          <h2 className="text-headings-heading-2 w-full tracking-tight text-black">
-            인기 포스트
-          </h2>
-          <div className="flex w-full flex-col items-start">
-            <PostListHorizontal
-              items={popularPosts.slice(0, 4)}
-              className="flex w-full items-center"
-            />
-            <PostListHorizontal
-              items={popularPosts.slice(4, 8)}
-              className="flex w-full items-center"
-            />
-          </div>
+        {/* ⭐ 인기 포스트 */}
+        <div className="flex flex-col gap-4">
+          <h2 className="text-xl font-semibold text-black">인기 포스트</h2>
+          <PostListHorizontal
+            items={popularPosts.slice(0, 6)}
+            className="grid grid-cols-3 gap-6 overflow-visible"
+          />
         </div>
       </div>
     </div>

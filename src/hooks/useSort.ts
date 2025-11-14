@@ -23,16 +23,21 @@ export function useSort<T>(items: T[], sortOrder: SortOrder) {
 /**
  * 정렬 라벨을 생성하는 훅
  * @param sortOrder 정렬 순서
- * @returns 메인 라벨과 서브 라벨
+ * @returns 메인 라벨과 서브 라벨 (+ 어떤 것이 active인지 알려주는 필드)
  */
 export function useSortLabels(sortOrder: SortOrder) {
   const labels = useMemo(() => {
     return {
       main: sortOrder === "latest" ? "최신순" : "1화부터",
       sub: sortOrder === "latest" ? "| 1화부터" : "| 최신순",
+
+      /** ⭐ 추가됨: 어느 정렬이 선택되었는지 UI가 바로 판단 가능 */
+      active: {
+        latest: sortOrder === "latest",
+        oldest: sortOrder === "oldest",
+      },
     };
   }, [sortOrder]);
 
   return labels;
 }
-

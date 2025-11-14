@@ -1,3 +1,4 @@
+// ⭐ PostListHorizontal.tsx — grid & hover-shadow 반영
 import { FC, useCallback } from "react";
 import { cn } from "@/utils";
 import { PostItem } from "@/components/article/PostItem/PostItem";
@@ -24,16 +25,15 @@ export const PostListHorizontal: FC<Props> = ({ className, items }) => {
   const { navigateToPost } = useNavigation();
 
   const handlePostClick = useCallback(
-    (id: string) => {
-      navigateToPost(id);
-    },
+    (id: string) => navigateToPost(id),
     [navigateToPost],
   );
 
   return (
     <div
       className={cn(
-        "gap-lg flex h-full items-center overflow-x-scroll scroll-smooth",
+        // ⭐ 기존 overflow-scroll 삭제 → grid로 운영 가능
+        "gap-4",
         className,
       )}
     >
@@ -49,7 +49,7 @@ export const PostListHorizontal: FC<Props> = ({ className, items }) => {
           comments={item.comments}
           date={item.date}
           onClick={() => handlePostClick(item.id)}
-          className="border-background-subtle h-230 min-h-230 w-403 shrink-0 rounded-xs border-t-2 bg-white select-none"
+          className="rounded-md transition hover:shadow-md" // ⭐ hover-shadow 추가
           isPaid={item.isPaid}
           price={item.price}
           postData={item.postData}

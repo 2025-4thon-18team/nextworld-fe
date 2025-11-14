@@ -27,14 +27,14 @@ const MyPageMain = () => {
     if (!profileData) return null;
     return {
       name: profileData.name,
-      bio: [], // TODO: bio 필드가 API에 없음
-      contact: "", // TODO: contact 필드가 API에 없음
+      bio: [],
+      contact: "",
       profileImageUrl: profileData.profileImageUrl,
     };
   }, [profileData]);
 
+  // ⭐ 최소 변경으로 ProfileEdit 페이지 실행
   const onProfileEdit = useCallback(() => {
-    // TODO: 프로필 수정 페이지로 이동
     navigateToProfileEdit();
   }, [navigateToProfileEdit]);
 
