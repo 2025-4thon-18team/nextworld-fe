@@ -1,7 +1,6 @@
 import { useMemo, useCallback } from "react";
 import { MyPageMainView } from "./MyPageMainView";
-import { useGetMe } from "@/querys/useAuth";
-import { useGetAllWorks } from "@/querys/useWorks";
+import { useGetMe, useLogout } from "@/querys/useAuth";
 import { useTab } from "@/hooks/useTab";
 import { useSimpleWorkTransform } from "@/hooks/useWorkTransform";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -11,10 +10,13 @@ type TabType = "작품" | "포스트";
 const MyPageMain = () => {
   const { activeTab, onTabChange } = useTab<TabType>("작품");
   const { navigateToProfileEdit, navigateToLogin } = useNavigation();
-  
+
   // React Query hooks 직접 사용
   const { data: profileData } = useGetMe();
-  const { data: worksData } = useGetAllWorks("ORIGINAL");
+  // TODO: /api/mypage/works 엔드포인트가 backend-rule.mdc에 없음
+  // 임시로 빈 배열 사용
+  const worksData = undefined;
+  const { mutate: logout } = useLogout();
 
   const seriesList = useSimpleWorkTransform(worksData);
 
@@ -34,9 +36,15 @@ const MyPageMain = () => {
   }, [navigateToProfileEdit]);
 
   const onLogout = useCallback(() => {
-    // TODO: 로그아웃 로직
-    navigateToLogin();
-  }, [navigateToLogin]);
+    logout(undefined, {
+      onSuccess: () => {
+        navigateToLogin();
+      },
+      onError: () => {
+        alert("로그아웃에 실패했습니다.");
+      },
+    });
+  }, [logout, navigateToLogin]);
 
   return (
     <MyPageMainView

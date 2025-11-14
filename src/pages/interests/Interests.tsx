@@ -1,11 +1,7 @@
 import { FC, useCallback, useState, useMemo, useEffect } from "react";
 import { InterestsView } from "./InterestsView";
-import {
-  useGetAllWorks,
-  useGetWorkEpisodes,
-  useGetDerivativePosts,
-} from "@/querys/useWorks";
-import { useGetScrappedWorks } from "@/querys/useScrap";
+import { useGetWorkEpisodes, useGetDerivativePosts } from "@/querys/useWorks";
+import { useGetMyWorkScraps } from "@/querys/useScrap";
 import { useTab } from "@/hooks/useTab";
 import { useNavigation } from "@/hooks/useNavigation";
 import { useWorkTransform } from "@/hooks/useWorkTransform";
@@ -22,7 +18,7 @@ export const Interests: FC = () => {
   const { navigateToNew, navigateToHome, navigateToContent } = useNavigation();
 
   // 스크랩된 작품 목록 조회
-  const { data: scrappedWorks } = useGetScrappedWorks();
+  const { data: scrappedWorks } = useGetMyWorkScraps();
   const favoriteSeries = useWorkTransform(scrappedWorks);
 
   // 선택된 작품 ID
@@ -67,16 +63,15 @@ export const Interests: FC = () => {
     9,
   );
 
-  // 선택된 작품을 parent로 하는 DERIVATIVE 작품 목록 조회 (신규 유니버스)
-  const { data: allDerivativeWorks } = useGetAllWorks("DERIVATIVE");
+  // 스크랩된 작품 중 DERIVATIVE 타입인 것들을 필터링 (신규 유니버스)
   const filteredDerivativeWorks = useMemo(() => {
-    if (!allDerivativeWorks || !selectedWorkId) return [];
-    // parentWorkId가 선택된 작품 ID와 일치하는 작품만 필터링
-    // TODO: 백엔드에서 createdAt 필드 추가 후 최신순 정렬 구현 필요
-    return allDerivativeWorks.filter(
-      (work) => work.parentWorkId === selectedWorkId,
+    if (!scrappedWorks || !selectedWorkId) return [];
+    // parentWorkId가 선택된 작품 ID와 일치하는 DERIVATIVE 작품만 필터링
+    return scrappedWorks.filter(
+      (work) =>
+        work.workType === "DERIVATIVE" && work.parentWorkId === selectedWorkId,
     );
-  }, [allDerivativeWorks, selectedWorkId]);
+  }, [scrappedWorks, selectedWorkId]);
   const newUniverseSeries = useWorkTransform(
     filteredDerivativeWorks.slice(0, 6),
   );

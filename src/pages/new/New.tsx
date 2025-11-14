@@ -15,8 +15,7 @@ export const New: FC = () => {
   const { navigateToHome, navigateToInterests } = useNavigation();
 
   // React Query hooks 직접 사용
-  // TODO: 백엔드에 신규 작품/포스트 API가 없어서 임시로 모든 작품/포스트 조회
-  const { data: worksData } = useGetAllWorks("ORIGINAL");
+  const { data: worksData } = useGetAllWorks();
   const { data: postsData } = useGetAllPosts();
 
   const newSeries = useWorkTransform(worksData?.slice(0, 12));

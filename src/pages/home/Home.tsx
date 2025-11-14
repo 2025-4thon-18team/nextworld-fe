@@ -16,8 +16,7 @@ export const Home: FC = () => {
     useNavigation();
 
   // React Query hooks 직접 사용
-  // TODO: 백엔드에 주간 유니버스, 인기 작품/포스트 API가 없어서 임시로 모든 작품/포스트 조회
-  const { data: worksData } = useGetAllWorks("ORIGINAL");
+  const { data: worksData } = useGetAllWorks();
   const { data: postsData } = useGetAllPosts();
 
   const popularSeries = useWorkTransform(worksData?.slice(0, 4));

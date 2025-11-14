@@ -1,6 +1,8 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { CreateSeriesSecondaryView } from "./CreateSeriesSecondaryView";
 import { useNavigate } from "react-router-dom";
+import { useCreateWork } from "@/querys/useWorks";
+import type { WorkRequestDto, WorkTypeEnum } from "@/querys/types";
 
 type StepType = "기본 설정" | "유니버스 설정" | "2차 창작 설정";
 
@@ -22,6 +24,18 @@ const CreateSeriesSecondary = () => {
   ]);
   const [agreement1, setAgreement1] = useState(false);
   const [agreement2, setAgreement2] = useState(false);
+
+  // API Hooks
+  const { mutate: createWork } = useCreateWork();
+
+  // localStorage에서 이전 단계 데이터 로드
+  useEffect(() => {
+    const savedData = localStorage.getItem("createWorkData");
+    if (savedData) {
+      // 필요시 데이터 복원
+      // const workData = JSON.parse(savedData);
+    }
+  }, []);
 
   const onStepChange = useCallback((step: StepType) => {
     setActiveStep(step);
@@ -64,9 +78,82 @@ const CreateSeriesSecondary = () => {
   }, [navigate]);
 
   const onComplete = useCallback(() => {
-    // TODO: Complete creation
-    console.log("Complete creation");
-  }, []);
+    if (!agreement1 || !agreement2) {
+      alert("약관에 동의해주세요.");
+      return;
+    }
+
+    // localStorage에서 모든 단계 데이터 가져오기
+    const savedData = localStorage.getItem("createWorkData");
+    if (!savedData) {
+      alert("작품 데이터를 찾을 수 없습니다. 처음부터 다시 시작해주세요.");
+      return;
+    }
+
+    const workData = JSON.parse(savedData);
+
+    // Category 매핑 (genres 배열의 첫 번째 값을 사용)
+    const categoryMap: Record<string, string> = {
+      현대로맨스: "ROMANCE",
+      스릴러: "THRILLER",
+      판타지: "FANTASY",
+      무협: "MARTIAL_ARTS",
+      드라마: "DRAMA",
+      SF: "SF",
+      코미디: "COMEDY",
+    };
+    const category = workData.genres?.[0]
+      ? categoryMap[workData.genres[0]] || "ROMANCE"
+      : undefined;
+
+    // workType 자동 설정: 원작이 있으면 DERIVATIVE, 없으면 ORIGINAL
+    const parentWorkId = workData.selectedOriginalSeriesId
+      ? Number(workData.selectedOriginalSeriesId)
+      : undefined;
+    const workTypeValue: WorkTypeEnum = parentWorkId
+      ? "DERIVATIVE"
+      : "ORIGINAL";
+
+    // WorkRequestDto 생성
+    const workRequest: WorkRequestDto = {
+      workType: workTypeValue,
+      parentWorkId,
+      title: workData.title,
+      description: workData.description,
+      coverImageUrl: workData.coverImageUrl,
+      category: category, // category 필드 사용
+      serializationSchedule: workData.serialDays?.join(", ") || undefined,
+      tags: workData.tags || [],
+      allowDerivative: allowSecondaryCreation,
+      guidelineRelation: relationshipTextAreas.join("\n"),
+      guidelineContent: contentTextAreas.join("\n"),
+      guidelineBackground: backgroundTextAreas.join("\n"),
+      bannedWords:
+        prohibitedWords.length > 0 ? prohibitedWords.join(", ") : undefined,
+    };
+
+    createWork(workRequest, {
+      onSuccess: () => {
+        alert("작품이 성공적으로 생성되었습니다.");
+        localStorage.removeItem("createWorkData");
+        navigate("/mypage");
+      },
+      onError: () => {
+        alert("작품 생성에 실패했습니다.");
+      },
+    });
+  }, [
+    agreement1,
+    agreement2,
+    allowSecondaryCreation,
+    allowSecondaryRevenue,
+    relationshipTextAreas,
+    contentTextAreas,
+    backgroundTextAreas,
+    prohibitedWords,
+    createWork,
+    navigate,
+  ]);
 
   return (
     <CreateSeriesSecondaryView
@@ -95,4 +182,3 @@ const CreateSeriesSecondary = () => {
 };
 
 export default CreateSeriesSecondary;
-
