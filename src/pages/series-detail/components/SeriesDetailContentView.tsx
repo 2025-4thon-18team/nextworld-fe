@@ -119,7 +119,7 @@ export const SeriesDetailContentView: FC<SeriesDetailContentViewProps> = ({
           </div>
         </>
       ) : (
-        <div className="relative flex w-full flex-col items-start gap-36">
+        <div className="relative flex w-full flex-col items-start gap-36 mt-8">
           {/* Popular Universe Works */}
           <div className="gap-md relative flex w-full flex-col items-start">
             <p className="text-headings-heading-2 w-full tracking-tight text-black">

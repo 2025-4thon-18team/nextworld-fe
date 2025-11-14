@@ -1,3 +1,4 @@
+// ⭐ SeriesListHorizontal.tsx — grid-friendly로 수정
 import { FC, useCallback } from "react";
 import { cn } from "@/utils";
 import { SeriesCard } from "@/components/SeriesCard/SeriesCard";
@@ -19,14 +20,17 @@ export const SeriesListHorizontal: FC<Props> = ({ className, items }) => {
   const { navigateToSeries } = useNavigation();
 
   const handleSeriesClick = useCallback(
-    (id: string) => {
-      navigateToSeries(id);
-    },
+    (id: string) => navigateToSeries(id),
     [navigateToSeries],
   );
 
   return (
-    <div className={cn("gap-sm flex items-center", className)}>
+    <div
+      className={cn(
+        "gap-4",   // ⭐ flex 제거 → HomeView의 grid가 정상 적용됨
+        className,
+      )}
+    >
       {items.map((item) => (
         <SeriesCard
           key={item.id}
@@ -35,7 +39,7 @@ export const SeriesListHorizontal: FC<Props> = ({ className, items }) => {
           tags={item.tags}
           seriesId={item.id}
           onClick={() => handleSeriesClick(item.id)}
-          className="shrink-0"
+          className="hover:shadow-md transition rounded-md"
         />
       ))}
     </div>

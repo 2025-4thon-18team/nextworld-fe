@@ -123,7 +123,9 @@ export const EditorView: FC<Props> = ({
             originalSelected={allowDerivative}
             onOriginalChange={onAllowDerivativeChange}
             searchValue={searchValue}
-            onSearchChange={(e) => onSearchChange?.(e.target.value)}
+
+            onSearchChange={onSearchChange}   
+
             series={series.map((item, index) => ({
               imageUrl: item.imageUrl,
               title: item.title,
