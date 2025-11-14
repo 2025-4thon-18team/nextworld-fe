@@ -1,5 +1,12 @@
-import { FC, InputHTMLAttributes, TextareaHTMLAttributes } from "react";
+import {
+  FC,
+  InputHTMLAttributes,
+  TextareaHTMLAttributes,
+  useState,
+  KeyboardEvent,
+} from "react";
 import { cn } from "@/utils";
+import { Tag } from "@/components/Tag/Tag";
 
 // Input Label Component
 interface InputLabelProps {
@@ -15,7 +22,7 @@ export const InputLabel: FC<InputLabelProps> = ({
 }) => {
   return (
     <div className={cn("flex items-start gap-4", className)}>
-      <p className="text-headings-heading-4 text-muted whitespace-nowrap">
+      <p className="text-headings-heading-4 whitespace-nowrap text-black">
         {children}
       </p>
       {required && (
@@ -74,21 +81,50 @@ export const TagsInput: FC<TagsInputProps> = ({
   tags,
   onTagsChange,
 }) => {
+  const [inputValue, setInputValue] = useState("");
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === " " && inputValue.trim()) {
+      e.preventDefault();
+      const newTag = inputValue.trim();
+      if (newTag && !tags.includes(newTag)) {
+        onTagsChange([...tags, newTag]);
+      }
+      setInputValue("");
+    } else if (e.key === "Backspace" && inputValue === "" && tags.length > 0) {
+      // 빈 입력 필드에서 백스페이스 누르면 마지막 태그 삭제
+      onTagsChange(tags.slice(0, -1));
+    }
+  };
+
+  const handleTagRemove = (tagToRemove: string) => {
+    onTagsChange(tags.filter((tag) => tag !== tagToRemove));
+  };
+
   return (
-    <div className={cn("flex flex-wrap items-start gap-4", className)}>
-      {tags.map((tag) => (
+    <div className={cn("gap-xs flex flex-wrap items-center", className)}>
+      {tags.map((tag, index) => (
         <button
-          key={tag}
+          key={`${tag}-${index}`}
           type="button"
-          className={cn(
-            "text-headings-heading-4 text-muted whitespace-nowrap",
-            className,
-          )}
-          onClick={() => onTagsChange(tags.filter((t) => t !== tag))}
+          onClick={() => handleTagRemove(tag)}
+          className="flex items-center"
         >
-          {tag}
+          <Tag type="default">{tag}</Tag>
         </button>
       ))}
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+        onKeyDown={handleKeyDown}
+        placeholder={tags.length === 0 ? "태그를 입력하세요" : ""}
+        className={cn(
+          "text-body-medium text-text-black bg-transparent outline-none",
+          "placeholder:text-text-muted",
+          "min-w-100 flex-1",
+        )}
+      />
     </div>
   );
 };
