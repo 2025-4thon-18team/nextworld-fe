@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { CreateSeriesUniverseView } from "./CreateSeriesUniverseView";
 import { useNavigate } from "react-router-dom";
 import { useSearch } from "@/querys/useFeed";
+import { toast } from "sonner";
 
 type StepType = "기본 설정" | "유니버스 설정" | "2차 창작 설정";
 
@@ -53,6 +54,16 @@ const CreateSeriesUniverse = () => {
   }, [navigate]);
 
   const onNext = useCallback(() => {
+    // 필수 필드 검증 (유료 연재가 켜져있을 때만 가격 필수)
+    if (paidSeries && !episodePrice.trim()) {
+      toast.error("회차 가격을 입력해주세요.");
+      return;
+    }
+    if (paidSeries && isNaN(Number(episodePrice))) {
+      toast.error("올바른 가격을 입력해주세요.");
+      return;
+    }
+
     // 유니버스 설정 데이터를 localStorage에 저장
     const universeData = {
       selectedOriginalSeriesId,

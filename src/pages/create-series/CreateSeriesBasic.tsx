@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { CreateSeriesBasicView } from "./CreateSeriesBasicView";
 import { useNavigate } from "react-router-dom";
 import { useUploadWorkImage } from "@/querys/useWorks";
@@ -15,6 +15,20 @@ const presets = [preset1, preset2, preset3, preset4];
 const CreateSeriesBasic = () => {
   const navigate = useNavigate();
   const [activeStep, setActiveStep] = useState<StepType>("기본 설정");
+
+  // 작품 생성 시작 시 이전 위치 저장 (작품 생성 페이지가 아닐 때만)
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    const isCreateSeriesPath = currentPath.startsWith("/create-series");
+
+    // 작품 생성 페이지가 아니고, 아직 저장된 경로가 없을 때만 저장
+    if (
+      !isCreateSeriesPath &&
+      !sessionStorage.getItem("createWorkReturnPath")
+    ) {
+      sessionStorage.setItem("createWorkReturnPath", currentPath);
+    }
+  }, []);
   const [coverImageUrl, setCoverImageUrl] = useState<string | undefined>();
   const [selectedPresetIndex, setSelectedPresetIndex] = useState<number | null>(
     null,
@@ -98,6 +112,28 @@ const CreateSeriesBasic = () => {
   }, []);
 
   const onNext = useCallback(() => {
+    // 필수 필드 검증
+    if (!coverImageUrl) {
+      toast.error("표지 이미지를 선택해주세요.");
+      return;
+    }
+    if (!title.trim()) {
+      toast.error("제목을 입력해주세요.");
+      return;
+    }
+    if (!description.trim()) {
+      toast.error("작품 설명을 입력해주세요.");
+      return;
+    }
+    if (serialDays.length === 0) {
+      toast.error("연재일을 선택해주세요.");
+      return;
+    }
+    if (genres.length === 0) {
+      toast.error("장르 카테고리를 선택해주세요.");
+      return;
+    }
+
     // 다음 단계로 데이터 전달 (localStorage 사용)
     const workData = {
       coverImageUrl,

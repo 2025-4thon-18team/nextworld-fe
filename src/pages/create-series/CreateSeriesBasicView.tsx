@@ -165,13 +165,10 @@ export const CreateSeriesBasicView: FC<Props> = ({
                   className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                 />
                 <div className="border-grayscale-g3 px-md flex h-full w-full items-center rounded-md border">
-                  <p className="text-body-medium text-muted px-md">
+                  <p className="text-body-medium text-text-on-accentmuted px-md">
                     파일을 선택해주세요.
                   </p>
-                  <div className="ml-auto flex h-full items-center justify-center">
-                    <IconChevron className="size-46 rotate-90" />
-                  </div>
-                  <p className="text-body-medium text-muted absolute top-1/2 right-25 -translate-y-1/2">
+                  <p className="text-body-medium text-text-muted absolute top-1/2 right-25 -translate-y-1/2">
                     파일 선택
                   </p>
                 </div>
@@ -186,7 +183,7 @@ export const CreateSeriesBasicView: FC<Props> = ({
           <div className="gap-sm flex w-full flex-col items-start">
             <InputLabel required>제목</InputLabel>
             <TextInput
-              placeholder="placeholder"
+              placeholder="작품 제목을 입력해주세요"
               value={title}
               onChange={(e) => onTitleChange(e.target.value)}
             />
@@ -196,7 +193,7 @@ export const CreateSeriesBasicView: FC<Props> = ({
           <div className="gap-sm flex w-full flex-col items-start">
             <InputLabel required>작품 설명</InputLabel>
             <TextArea
-              placeholder="placeholder"
+              placeholder="작품의 줄거리나 소개를 입력해주세요"
               className="h-140"
               value={description}
               onChange={(e) => onDescriptionChange(e.target.value)}
