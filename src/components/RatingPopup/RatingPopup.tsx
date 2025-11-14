@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useEffect } from "react";
 import { IconStar, IconCross } from "@/assets/icons";
 import { cn } from "@/utils";
 
@@ -19,6 +19,14 @@ export const RatingPopup: FC<RatingPopupProps> = ({
     currentRating || 0,
   );
   const [hoveredRating, setHoveredRating] = useState<number>(0);
+
+  // 팝업이 열릴 때마다 currentRating을 초기값으로 설정
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedRating(currentRating || 0);
+      setHoveredRating(0);
+    }
+  }, [isOpen, currentRating]);
 
   const handleStarClick = (rating: number) => {
     setSelectedRating(rating);
