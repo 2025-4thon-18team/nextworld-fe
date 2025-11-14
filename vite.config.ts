@@ -15,19 +15,29 @@ const dirname =
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   // GitHub Pages 배포를 위한 base path 설정
-  base: process.env.GITHUB_PAGES === "true" ? "/nextworld-fe/" : "/",
+  base: process.env.GITHUB_PAGES === "true" ? "./" : "/",
   plugins: [
     react({
       babel: {
-        plugins: [
-          // other Babel plugins
-          [
-            "@locator/babel-jsx/dist",
-            {
-              env: "development",
-            },
-          ],
-        ],
+        plugins:
+          // @locator 플러그인은 Windows 경로에서 이슈가 있어 일시적으로 비활성화
+          process.platform !== "win32"
+            ? [
+                [
+                  "@locator/babel-jsx/dist",
+                  {
+                    env: "development",
+                  },
+                ],
+              ]
+            : [],
+        parserOpts: {
+          errorRecovery: true,
+        },
+        generatorOpts: {
+          compact: false,
+          retainLines: false,
+        },
       },
     }),
     tailwindcss(),

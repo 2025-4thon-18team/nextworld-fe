@@ -12,6 +12,8 @@ interface EditorHeaderProps {
   onAddImage?: () => void;
   editorOptionsVariant?: "post" | "series" | "post-with-settlement";
   seriesTitle?: string;
+  onPostClick?: () => void;
+  onGuidelineClick?: () => void;
   className?: string;
 }
 
@@ -23,6 +25,8 @@ export const EditorHeader: FC<EditorHeaderProps> = ({
   onAddImage,
   editorOptionsVariant = "post-with-settlement",
   seriesTitle,
+  onPostClick,
+  onGuidelineClick,
   className,
 }) => {
   return (
@@ -75,6 +79,8 @@ export const EditorHeader: FC<EditorHeaderProps> = ({
         <EditorOptions
           variant={editorOptionsVariant}
           seriesTitle={seriesTitle}
+          onPostClick={onPostClick}
+          onGuidelineClick={onGuidelineClick}
         />
       </div>
     </div>

@@ -22,6 +22,8 @@ import SeriesDetail from "./pages/series-detail/SeriesDetail";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
 
+import ProfileEdit from "./pages/mypage/ProfileEdit";  // ⭐ 추가됨
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -32,7 +34,6 @@ const queryClient = new QueryClient({
 });
 
 export function Router() {
-  // GitHub Pages 배포 시 HashRouter 사용, 로컬 개발 시 BrowserRouter 사용
   const isGitHubPages =
     import.meta.env.VITE_GITHUB_PAGES === "true" ||
     window.location.hostname.includes("github.io");
@@ -44,46 +45,38 @@ export function Router() {
         <Routes>
           {/* Layout 없이 */}
           <Route element={<TestPage />} path="/test" />
-          <Route
-            element={<Viewer type="EPISODE" />}
-            path="/series/:seriesId/content/:contentId"
-          />
+          <Route element={<Viewer type="EPISODE" />} path="/series/:seriesId/content/:contentId" />
           <Route element={<Viewer type="POST" />} path="/post/:postId" />
           <Route element={<Editor />} path="/editor" />
 
-          {/* Layout이 필요한 페이지들 */}
+          {/* 일반 Layout */}
           <Route element={<Layout />}>
             <Route element={<Home />} path="/" />
             <Route element={<Interests />} path="/interests" />
             <Route element={<New />} path="/new" />
             <Route element={<SeriesDetail />} path="/series/:seriesId" />
-            <Route
-              element={<CreateSeriesBasic />}
-              path="/create-series/basic"
-            />
-            <Route
-              element={<CreateSeriesUniverse />}
-              path="/create-series/universe"
-            />
-            <Route
-              element={<CreateSeriesSecondary />}
-              path="/create-series/secondary"
-            />
+            <Route element={<CreateSeriesBasic />} path="/create-series/basic" />
+            <Route element={<CreateSeriesUniverse />} path="/create-series/universe" />
+            <Route element={<CreateSeriesSecondary />} path="/create-series/secondary" />
             <Route element={<Login />} path="/login" />
             <Route element={<SignUp />} path="/signup" />
             <Route element={<AuthorPage />} path="/author/:authorId" />
           </Route>
 
-          {/* MyPage Layout이 필요한 페이지들 */}
+          {/* MyPage Layout */}
           <Route element={<MyPageLayout />}>
             <Route element={<MyPageMain />} path="/my-page/main" />
             <Route element={<MyLibrary />} path="/my-page/library" />
             <Route element={<Revenue />} path="/my-page/revenue" />
             <Route element={<PointHistory />} path="/my-page/point" />
             <Route element={<Favorites />} path="/my-page/favorites" />
+
+            {/* ⭐ 프로필 수정 페이지 라우트 */}
+            <Route element={<ProfileEdit />} path="/my-page/profile/edit" />
           </Route>
         </Routes>
       </RouterComponent>
+
       {import.meta.env.VITE_APP_ENV === "development" &&
         import.meta.env.VITE_ENABLE_QUERY_DEVTOOLS === "true" && (
           <ReactQueryDevtools initialIsOpen={false} />

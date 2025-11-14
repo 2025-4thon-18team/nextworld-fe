@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { client } from "./client";
+import { useAuthStore } from "@/stores/authStore";
 import type {
   LoginRequest,
   LoginResponse,
@@ -25,12 +26,18 @@ export const authApi = {
   logout: () => client.post<void>("/api/auth/logout"),
 
   // 토큰 재발급 (Refresh-Token 헤더 필요, BaseResponse<String> 반환)
-  refresh: () =>
-    client.post<string>("/api/auth/refresh", {}, {
-      headers: {
-        "Refresh-Token": "", // TODO: 실제 refresh token으로 교체
+  refresh: () => {
+    const { refreshToken } = useAuthStore.getState();
+    return client.post<string>(
+      "/api/auth/refresh",
+      {},
+      {
+        headers: {
+          "Refresh-Token": refreshToken || "",
+        },
       },
-    }),
+    );
+  },
 
   // 내 정보 조회
   me: () => client.get<UserProfileResponse>("/api/auth/me"),
@@ -50,13 +57,14 @@ export const authKeys = {
 // ============================================
 
 // Query: 내 계정 정보 조회
-export const useGetMe = () => {
+export const useGetMe = (options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ["useGetMe", ...authKeys.me()],
     queryFn: async () => {
       const response = await authApi.me();
       return response.data;
     },
+    enabled: options?.enabled !== false,
   });
 };
 
@@ -90,6 +98,7 @@ export const useLogin = () => {
 // Mutation: 로그아웃
 export const useLogout = () => {
   const queryClient = useQueryClient();
+  const clearTokens = useAuthStore((state) => state.clearTokens);
 
   return useMutation({
     mutationKey: ["useLogout"],
@@ -98,6 +107,7 @@ export const useLogout = () => {
       return response.data;
     },
     onSuccess: () => {
+      clearTokens();
       queryClient.clear();
     },
   });
@@ -105,11 +115,30 @@ export const useLogout = () => {
 
 // Mutation: 액세스 토큰 재발급 (백엔드에서 직접 문자열 반환)
 export const useRefreshToken = () => {
+  const setTokens = useAuthStore((state) => state.setTokens);
+
   return useMutation({
     mutationKey: ["useRefreshToken"],
     mutationFn: async () => {
       const response = await authApi.refresh();
-      return response.data; // 문자열 (새로운 accessToken)
+      const newAccessToken = response.data; // 문자열 (새로운 accessToken)
+
+      // 새로운 accessToken 저장 (refreshToken은 그대로 유지)
+      const { refreshToken: currentRefreshToken } = useAuthStore.getState();
+      if (currentRefreshToken) {
+        setTokens({
+          accessToken: newAccessToken,
+          refreshToken: currentRefreshToken,
+        });
+      }
+
+      return newAccessToken;
     },
   });
+};
+
+// Hook: 로그인 상태 확인
+export const useIsAuthenticated = () => {
+  const accessToken = useAuthStore((state) => state.accessToken);
+  return !!accessToken;
 };

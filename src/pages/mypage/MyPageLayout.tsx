@@ -1,9 +1,12 @@
-import { FC, useCallback, useMemo } from "react";
+import { FC, useCallback, useMemo, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { DashboardList } from "@/components/DashboardList/DashboardList";
 import { useGetMyPoints } from "@/querys/useMypage";
 import { usePoints } from "@/hooks/usePoints";
 import { Gnb } from "@/components/Gnb/Gnb";
+import { useIsAuthenticated, useGetMe } from "@/querys/useAuth";
+import { Toaster } from "@/components/ui/sonner";
+import type { UserProfileResponse } from "@/querys/types";
 
 const menuMap: Record<string, string> = {
   "/my-page/favorites": "선호 작품",
@@ -24,6 +27,9 @@ const pathMap: Record<string, string> = {
 export const MyPageLayout: FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const isAuthenticated = useIsAuthenticated();
+  const { data: profileData } = useGetMe({ enabled: isAuthenticated });
+  const [searchValue, setSearchValue] = useState("");
 
   const { data: pointsData } = useGetMyPoints();
   const { points } = usePoints(pointsData?.balance);
@@ -42,9 +48,22 @@ export const MyPageLayout: FC = () => {
     [navigate],
   );
 
+  const onWriteClick = useCallback(() => {
+    navigate("/editor");
+  }, [navigate]);
+
   return (
     <div className="min-h-screen w-full bg-white">
-      <Gnb />
+      <Gnb
+        isAuthorized={isAuthenticated}
+        searchValue={searchValue}
+        onSearchChange={setSearchValue}
+        onWriteClick={onWriteClick}
+        profileImageUrl={
+          (profileData as UserProfileResponse | undefined)?.profileImageUrl
+        }
+      />
+      <Toaster />
       <div className="flex items-start gap-38 px-80 pt-48">
         {/* Dashboard Sidebar */}
         <div className="shrink-0">

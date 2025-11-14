@@ -1,8 +1,10 @@
 import { FC, ReactNode } from "react";
 import { cn } from "@/utils";
-import { HomeCategory } from "@/components/HomeCategory/HomeCategory";
-
-type HomeCategoryTab = "홈" | "신규" | "관심";
+import {
+  CategoryTabs,
+  HomeCategoryTab,
+} from "@/components/CategoryTabs/CategoryTabs";
+import { Outlet } from "react-router-dom";
 
 interface HomeLayoutViewProps {
   className?: string;
@@ -22,23 +24,31 @@ export const HomeLayoutView: FC<HomeLayoutViewProps> = ({
   children,
 }) => {
   return (
-    <div className={cn("flex size-full flex-col bg-white", className)}>
-      {/* Home Category */}
-      <HomeCategory
-        activeTab={activeTab as "홈" | "신규" | "관심" | "내 작품" | "원작" | "포스트" | "작품 연재"}
-        onTabChange={onTabChange as (tab: "홈" | "신규" | "관심" | "내 작품" | "원작" | "포스트" | "작품 연재") => void}
-        className={cn("flex h-48 items-center", categoryClassName)}
-      />
+    <div
+      className={cn("flex size-full min-h-screen flex-col bg-white", className)}
+    >
+      <div className="flex h-20 w-full shrink-0 items-center justify-center">
+        {/* Home Category */}
+        <CategoryTabs
+          variant="home"
+          activeTab={activeTab}
+          onTabChange={
+            onTabChange as (
+              tab:
+                | HomeCategoryTab
+                | import("@/components/CategoryTabs/CategoryTabs").GuidelineCategoryTab
+                | import("@/components/CategoryTabs/CategoryTabs").PostTypeCategoryTab,
+            ) => void
+          }
+          className={cn("flex h-48 items-center", categoryClassName)}
+        />
+      </div>
 
       {/* Main Content */}
-      {contentClassName ? (
-        <div className={cn("flex items-start", contentClassName)}>
-          {children}
-        </div>
-      ) : (
-        children
-      )}
+      <div className={cn("flex items-start", contentClassName)}>
+        {children}
+        <Outlet />
+      </div>
     </div>
   );
 };
-

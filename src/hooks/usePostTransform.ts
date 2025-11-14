@@ -11,6 +11,10 @@ export type PostItem = {
   views: number;
   comments: number;
   date: string;
+  // 결제 관련
+  isPaid?: boolean;
+  price?: number | null;
+  postData?: PostResponseDto;
 };
 
 export type ContentItemData = {
@@ -21,6 +25,10 @@ export type ContentItemData = {
   views: number;
   comments: number;
   date: string;
+  // 결제 관련
+  isPaid?: boolean;
+  price?: number | null;
+  postData?: PostResponseDto;
 };
 
 export type EpisodeItem = {
@@ -39,19 +47,20 @@ export type EpisodeItem = {
  * @param maxLength 최대 길이 (기본값: 전체)
  * @param contentPreviewLength 콘텐츠 미리보기 길이 (기본값: 100)
  */
+
 export function usePostTransform(
   posts: PostResponseDto[] | undefined,
   maxLength?: number,
   contentPreviewLength: number = 100,
 ) {
   const postList = useMemo(() => {
-    if (!posts) return [];
+    if (!posts || !Array.isArray(posts)) return [];
     const sliced = maxLength ? posts.slice(0, maxLength) : posts;
     return sliced.map((post) => ({
       id: String(post.id),
       title: post.title,
       content:
-        post.content.length > contentPreviewLength
+        post.content && post.content.length > contentPreviewLength
           ? post.content.substring(0, contentPreviewLength) + "..."
           : post.content,
       points: post.price || 0,
@@ -60,6 +69,9 @@ export function usePostTransform(
       views: post.viewsCount,
       comments: post.commentsCount,
       date: post.createdAt,
+      isPaid: post.isPaid,
+      price: post.price,
+      postData: post,
     }));
   }, [posts, maxLength, contentPreviewLength]);
 
@@ -74,7 +86,7 @@ export function useContentItemTransform(
   maxLength?: number,
 ) {
   const contentList = useMemo(() => {
-    if (!posts) return [];
+    if (!posts || !Array.isArray(posts)) return [];
     const sliced = maxLength ? posts.slice(0, maxLength) : posts;
     return sliced.map((post) => ({
       id: String(post.id),
@@ -84,6 +96,9 @@ export function useContentItemTransform(
       views: post.viewsCount,
       comments: post.commentsCount,
       date: post.createdAt,
+      isPaid: post.isPaid,
+      price: post.price,
+      postData: post,
     }));
   }, [posts, maxLength]);
 
@@ -95,7 +110,7 @@ export function useContentItemTransform(
  */
 export function useEpisodeTransform(posts: PostResponseDto[] | undefined) {
   const episodeList = useMemo(() => {
-    if (!posts) return [];
+    if (!posts || !Array.isArray(posts)) return [];
     return posts.map((post) => ({
       id: String(post.id),
       title: post.title,
@@ -104,9 +119,11 @@ export function useEpisodeTransform(posts: PostResponseDto[] | undefined) {
       views: post.viewsCount,
       comments: post.commentsCount,
       date: post.createdAt,
+      isPaid: post.isPaid,
+      price: post.price,
+      postData: post,
     }));
   }, [posts]);
 
   return episodeList;
 }
-

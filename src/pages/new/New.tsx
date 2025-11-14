@@ -1,29 +1,25 @@
 import { FC, useCallback } from "react";
 import { NewView } from "./NewView";
-import { useGetAllWorks } from "@/querys/useWorks";
-import { useGetAllPosts } from "@/querys/usePosts";
+import { useGetRecentFeed } from "@/querys/useFeed";
 import { useTab } from "@/hooks/useTab";
 import { useNavigation } from "@/hooks/useNavigation";
 import { useWorkTransform } from "@/hooks/useWorkTransform";
 import { usePostTransform } from "@/hooks/usePostTransform";
 
-type HomeCategoryTab = "홈" | "신규" | "관심";
+type CategoryTabsTab = "홈" | "신규" | "관심";
 
 export const New: FC = () => {
   const { activeTab, onTabChange: setActiveTab } =
-    useTab<HomeCategoryTab>("신규");
+    useTab<CategoryTabsTab>("신규");
   const { navigateToHome, navigateToInterests } = useNavigation();
-
   // React Query hooks 직접 사용
-  // TODO: 백엔드에 신규 작품/포스트 API가 없어서 임시로 모든 작품/포스트 조회
-  const { data: worksData } = useGetAllWorks("ORIGINAL");
-  const { data: postsData } = useGetAllPosts();
+  const { data: recentFeedData } = useGetRecentFeed();
 
-  const newSeries = useWorkTransform(worksData?.slice(0, 12));
-  const newPosts = usePostTransform(postsData, 9);
+  const newSeries = useWorkTransform(recentFeedData?.works?.slice(0, 12));
+  const newPosts = usePostTransform(recentFeedData?.posts, 9);
 
   const handleTabChange = useCallback(
-    (tab: HomeCategoryTab) => {
+    (tab: CategoryTabsTab) => {
       setActiveTab(tab);
       if (tab === "홈") {
         navigateToHome();

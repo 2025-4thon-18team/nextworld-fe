@@ -1,39 +1,34 @@
-import { useMemo } from "react";
+import { useParams } from "react-router-dom";
 import { AuthorPageView } from "./AuthorPageView";
-import { useGetAllWorks } from "@/querys/useWorks";
+import {
+  useGetAuthorProfile,
+  useGetAuthorWorks,
+  useGetAuthorPosts,
+} from "@/querys/useUsers";
 import { useTab } from "@/hooks/useTab";
+import { usePostTransform, useWorkTransform } from "@/hooks";
+import type { PostResponseDto, WorkResponseDto } from "@/querys/types";
 
 const AuthorPage = () => {
   const { activeTab, onTabChange } = useTab<"작품" | "포스트">("작품");
+  const { authorId } = useParams<{ authorId: string }>();
+  const authorIdNum = authorId ? Number(authorId) : 0;
 
   // React Query hooks 직접 사용
-  // TODO: URL에서 작가 ID 추출하여 해당 작가의 작품 목록만 조회
-  const { data: worksData } = useGetAllWorks("ORIGINAL");
+  const { data: authorProfile } = useGetAuthorProfile(authorIdNum);
+  const { data: authorWorks } = useGetAuthorWorks(authorIdNum);
+  const { data: authorPosts } = useGetAuthorPosts(authorIdNum);
 
-  const seriesList = useMemo(() => {
-    if (!worksData) return [];
-    return worksData.slice(0, 6).map((work) => ({
-      id: String(work.id),
-      imageUrl: work.coverImageUrl,
-      title: work.title,
-      tags: work.tags,
-    }));
-  }, [worksData]);
-
-  // TODO: 작가 정보는 별도 API 필요
-  const authorName = "[작가명]";
-  const authorBio = ["안녕하세요 누구입니다 안녕", "나 누구 좋아한다.."];
-  const authorContact = "작가 개인 sns, 이메일";
-  const profileImageUrl: string | undefined = undefined;
+  const seriesList = useWorkTransform(authorWorks as unknown as WorkResponseDto[]);
+  const postList = usePostTransform(authorPosts as unknown as PostResponseDto[]);
+  if (!authorProfile) return <div>작가 정보를 찾을 수 없습니다.</div>;
 
   return (
     <AuthorPageView
-      authorName={authorName}
-      authorBio={authorBio}
-      authorContact={authorContact}
-      profileImageUrl={profileImageUrl}
+      authorProfile={authorProfile}
       activeTab={activeTab}
-      seriesList={seriesList}
+      seriesList={seriesList || []}
+      postList={postList || []}
       onTabChange={onTabChange}
     />
   );

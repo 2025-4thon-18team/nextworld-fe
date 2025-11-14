@@ -87,8 +87,10 @@ function TestPage() {
     console.log("Me:", me);
 
     signup({
+      name: "테스트",
       email: "test@example.com",
       password: "password123",
+      passwordConfirm: "password123",
       nickname: "테스트유저",
     });
 

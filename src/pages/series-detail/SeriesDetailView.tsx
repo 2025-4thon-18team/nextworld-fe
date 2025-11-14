@@ -46,6 +46,7 @@ interface SeriesDetailViewProps {
   category: string;
   rating: number;
   views: number;
+  schedule: string | null;
   isSerializing: boolean;
   tags: string[];
   likes: number;
@@ -79,6 +80,7 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
   category,
   rating,
   views,
+  schedule,
   isSerializing,
   tags,
   likes,
@@ -121,6 +123,7 @@ export const SeriesDetailView: FC<SeriesDetailViewProps> = ({
             category={category}
             rating={rating}
             views={views}
+            schedule={schedule}
             isSerializing={isSerializing}
             tags={tags}
             likes={likes}

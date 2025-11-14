@@ -3,9 +3,9 @@ import { client } from "./client";
 import type {
   WorkRequestDto,
   WorkResponseDto,
-  WorkTypeEnum,
   WorkGuidelineResponseDto,
   PostResponseDto,
+  WorkTypeEnum,
 } from "./types";
 
 // ============================================
@@ -17,7 +17,7 @@ export const worksApi = {
   createWork: (data: WorkRequestDto) =>
     client.post<WorkResponseDto>("/api/works", data),
 
-  // 작품 목록 조회 (workType 필터링 가능)
+  // 작품 목록 조회
   getAllWorks: (workType?: WorkTypeEnum) =>
     client.get<WorkResponseDto[]>("/api/works", {
       params: workType ? { workType } : undefined,
@@ -26,20 +26,31 @@ export const worksApi = {
   // 작품 상세 조회
   getWorkById: (id: number) => client.get<WorkResponseDto>(`/api/works/${id}`),
 
-  // 작품의 회차 목록 조회
+  // 작품 회차 목록 조회
   getWorkEpisodes: (workId: number) =>
     client.get<PostResponseDto[]>(`/api/works/${workId}/posts`),
 
-  // 작품의 원작 참조 포스트 목록 조회
+  // 2차 창작 포스트 목록 조회
   getDerivativePosts: (workId: number) =>
     client.get<PostResponseDto[]>(`/api/works/${workId}/derivatives`),
-
-  // 작품 삭제
-  deleteWork: (id: number) => client.delete<string>(`/api/works/${id}`),
 
   // 작품 가이드라인 조회
   getWorkGuideline: (workId: number) =>
     client.get<WorkGuidelineResponseDto>(`/api/works/${workId}/guideline`),
+
+  // 작품 이미지 업로드 (multipart/form-data)
+  uploadImage: (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    return client.post<string>("/api/works/upload-image", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  },
+
+  // 작품 삭제
+  deleteWork: (id: number) => client.delete<void>(`/api/works/${id}`),
 };
 
 // ============================================
@@ -77,6 +88,17 @@ export const useCreateWork = () => {
   });
 };
 
+// Mutation: 작품 이미지 업로드
+export const useUploadWorkImage = () => {
+  return useMutation({
+    mutationKey: ["useUploadWorkImage"],
+    mutationFn: async (file: File) => {
+      const response = await worksApi.uploadImage(file);
+      return response.data; // 이미지 URL 반환
+    },
+  });
+};
+
 // Query: 작품 목록 조회
 export const useGetAllWorks = (workType?: WorkTypeEnum) => {
   return useQuery({
@@ -100,7 +122,7 @@ export const useGetWorkById = (id: number) => {
   });
 };
 
-// Query: 작품의 회차 목록 조회
+// Query: 작품 회차 목록 조회
 export const useGetWorkEpisodes = (workId: number) => {
   return useQuery({
     queryKey: ["useGetWorkEpisodes", ...worksKeys.episodes(workId)],
@@ -112,12 +134,24 @@ export const useGetWorkEpisodes = (workId: number) => {
   });
 };
 
-// Query: 작품의 원작 참조 포스트 목록 조회
+// Query: 2차 창작 포스트 목록 조회
 export const useGetDerivativePosts = (workId: number) => {
   return useQuery({
     queryKey: ["useGetDerivativePosts", ...worksKeys.derivatives(workId)],
     queryFn: async () => {
       const response = await worksApi.getDerivativePosts(workId);
+      return response.data;
+    },
+    enabled: !!workId,
+  });
+};
+
+// Query: 작품 가이드라인 조회
+export const useGetWorkGuideline = (workId: number) => {
+  return useQuery({
+    queryKey: ["useGetWorkGuideline", ...worksKeys.guideline(workId)],
+    queryFn: async () => {
+      const response = await worksApi.getWorkGuideline(workId);
       return response.data;
     },
     enabled: !!workId,
@@ -131,23 +165,10 @@ export const useDeleteWork = () => {
   return useMutation({
     mutationKey: ["useDeleteWork"],
     mutationFn: async (id: number) => {
-      const response = await worksApi.deleteWork(id);
-      return response.data;
+      await worksApi.deleteWork(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: worksKeys.lists() });
     },
-  });
-};
-
-// Query: 작품 가이드라인 조회
-export const useGetWorkGuideline = (workId: number) => {
-  return useQuery({
-    queryKey: ["useGetWorkGuideline", ...worksKeys.guideline(workId)],
-    queryFn: async () => {
-      const response = await worksApi.getWorkGuideline(workId);
-      return response.data;
-    },
-    enabled: !!workId,
   });
 };

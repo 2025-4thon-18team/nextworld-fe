@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { CreateSeriesUniverseView } from "./CreateSeriesUniverseView";
 import { useNavigate } from "react-router-dom";
-import { useGetAllWorks } from "@/querys/useWorks";
+import { useSearch } from "@/querys/useFeed";
 
 type StepType = "기본 설정" | "유니버스 설정" | "2차 창작 설정";
 
@@ -16,21 +16,17 @@ const CreateSeriesUniverse = () => {
   const [episodePrice, setEpisodePrice] = useState("");
 
   // React Query hooks 직접 사용
-  const { data: allWorks } = useGetAllWorks("ORIGINAL");
+  // 검색어가 있을 때만 검색 API 호출
+  const { data: searchData } = useSearch(originalSeriesSearch);
 
   const originalSeriesList = useMemo(() => {
-    if (!allWorks || !originalSeriesSearch) return [];
-    return allWorks
-      .filter((work) =>
-        work.title.toLowerCase().includes(originalSeriesSearch.toLowerCase()),
-      )
-      .slice(0, 10)
-      .map((work) => ({
-        id: String(work.id),
-        imageUrl: work.coverImageUrl,
-        title: work.title,
-      }));
-  }, [allWorks, originalSeriesSearch]);
+    if (!searchData?.works || !originalSeriesSearch.trim()) return [];
+    return searchData.works.slice(0, 10).map((work) => ({
+      id: String(work.id),
+      imageUrl: work.coverImageUrl,
+      title: work.title,
+    }));
+  }, [searchData, originalSeriesSearch]);
 
   const onStepChange = useCallback((step: StepType) => {
     setActiveStep(step);
@@ -57,8 +53,20 @@ const CreateSeriesUniverse = () => {
   }, [navigate]);
 
   const onNext = useCallback(() => {
+    // 유니버스 설정 데이터를 localStorage에 저장
+    const universeData = {
+      selectedOriginalSeriesId,
+      paidSeries,
+      episodePrice,
+    };
+    const existingData = localStorage.getItem("createWorkData");
+    const workData = existingData ? JSON.parse(existingData) : {};
+    localStorage.setItem(
+      "createWorkData",
+      JSON.stringify({ ...workData, ...universeData }),
+    );
     navigate("/create-series/secondary");
-  }, [navigate]);
+  }, [navigate, selectedOriginalSeriesId, paidSeries, episodePrice]);
 
   return (
     <CreateSeriesUniverseView

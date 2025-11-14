@@ -13,7 +13,7 @@ export type SeriesItem = {
  */
 export function useWorkTransform(works: WorkResponseDto[] | undefined) {
   const seriesList = useMemo(() => {
-    if (!works) return [];
+    if (!works || !Array.isArray(works)) return [];
     return works.map((work) => ({
       id: String(work.id),
       imageUrl: work.coverImageUrl,
@@ -30,7 +30,7 @@ export function useWorkTransform(works: WorkResponseDto[] | undefined) {
  */
 export function useSimpleWorkTransform(works: WorkResponseDto[] | undefined) {
   const seriesList = useMemo(() => {
-    if (!works) return [];
+    if (!works || !Array.isArray(works)) return [];
     return works.map((work) => ({
       id: work.id,
       imageUrl: work.coverImageUrl,
@@ -40,4 +40,3 @@ export function useSimpleWorkTransform(works: WorkResponseDto[] | undefined) {
 
   return seriesList;
 }
-

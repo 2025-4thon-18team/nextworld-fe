@@ -2,6 +2,7 @@ import { FC, useCallback } from "react";
 import { cn } from "@/utils";
 import { PostItem } from "@/components/article/PostItem/PostItem";
 import { useNavigation } from "@/hooks";
+import type { PostResponseDto } from "@/querys/types";
 
 type PostItemData = {
   id: string;
@@ -13,6 +14,9 @@ type PostItemData = {
   views: number;
   comments: number;
   date: string;
+  isPaid?: boolean;
+  price?: number | null;
+  postData?: PostResponseDto;
 };
 
 type Props = {
@@ -45,6 +49,9 @@ export const PostListVertical: FC<Props> = ({ className, items }) => {
           date={item.date}
           onClick={() => handlePostClick(item.id)}
           className="border-background-subtle h-230 min-h-230 w-403 shrink-0 rounded-xs border-t-2 bg-white"
+          isPaid={item.isPaid}
+          price={item.price}
+          postData={item.postData}
         />
       ))}
     </div>

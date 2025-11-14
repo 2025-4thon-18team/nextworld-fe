@@ -15,6 +15,8 @@ type StepType = "기본 설정" | "유니버스 설정" | "2차 창작 설정";
 type Props = {
   activeStep: StepType;
   coverImageUrl?: string;
+  selectedPresetIndex: number | null;
+  presets: string[];
   title: string;
   description: string;
   serialDays: string[];
@@ -23,6 +25,8 @@ type Props = {
   onTagsChange: (tags: string[]) => void;
   onStepChange: (step: StepType) => void;
   onCoverImageClick: () => void;
+  onFileInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onPresetClick: (index: number) => void;
   onTitleChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onSerialDayToggle: (day: string) => void;
@@ -33,6 +37,8 @@ type Props = {
 export const CreateSeriesBasicView: FC<Props> = ({
   activeStep,
   coverImageUrl,
+  selectedPresetIndex,
+  presets,
   title,
   description,
   serialDays,
@@ -41,6 +47,8 @@ export const CreateSeriesBasicView: FC<Props> = ({
   onTagsChange,
   onStepChange,
   onCoverImageClick,
+  onFileInputChange,
+  onPresetClick,
   onTitleChange,
   onDescriptionChange,
   onSerialDayToggle,
@@ -126,16 +134,24 @@ export const CreateSeriesBasicView: FC<Props> = ({
             <div className="gap-xl flex flex-col items-start">
               {/* Presets */}
               <div className="gap-lg flex items-center">
-                {[1, 2, 3, 4].map((index) => (
+                {presets.map((preset, index) => (
                   <button
                     key={index}
                     type="button"
-                    onClick={onCoverImageClick}
-                    className="bg-grayscale-g2 flex h-171 w-110 flex-col items-center justify-center gap-10 rounded-md px-22 py-60"
+                    onClick={() => onPresetClick(index)}
+                    className={cn(
+                      "h-171 w-110 shrink-0 overflow-hidden rounded-md border-2 transition-all",
+                      selectedPresetIndex === index
+                        ? "border-primary-main"
+                        : "hover:border-grayscale-g3 border-transparent",
+                    )}
                   >
-                    <p className="text-body-medium whitespace-nowrap text-black">
-                      프리셋
-                    </p>
+                    <img
+                      src={preset}
+                      alt={`프리셋 ${index + 1}`}
+                      className="h-full w-full object-cover"
+                      draggable={false}
+                    />
                   </button>
                 ))}
               </div>
@@ -145,7 +161,7 @@ export const CreateSeriesBasicView: FC<Props> = ({
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={onCoverImageClick}
+                  onChange={onFileInputChange}
                   className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                 />
                 <div className="border-grayscale-g3 px-md flex h-full w-full items-center rounded-md border">

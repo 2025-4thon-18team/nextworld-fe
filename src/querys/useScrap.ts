@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { client } from "./client";
-import type { ScrapResponse, WorkResponseDto } from "./types";
+import type { ScrapResponse, WorkResponseDto, PostResponseDto } from "./types";
 
 // ============================================
 // API 함수
@@ -17,16 +17,19 @@ export const scrapApi = {
 
   // WORK 스크랩 삭제
   unscrapWork: (workId: number) =>
-    client.delete<string>(`/api/scraps/works/${workId}`),
+    client.delete<void>(`/api/scraps/works/${workId}`),
 
   // POST 스크랩 삭제
   unscrapPost: (postId: number) =>
-    client.delete<string>(`/api/scraps/posts/${postId}`),
+    client.delete<void>(`/api/scraps/posts/${postId}`),
 
-  // 스크랩된 작품 목록 조회
-  // TODO: 백엔드 API가 추가되면 연결 필요
-  getScrappedWorks: () =>
-    client.get<WorkResponseDto[]>("/api/scraps/works"),
+  // 내 북마크 WORK 리스트 조회
+  getMyWorkScraps: () =>
+    client.get<WorkResponseDto[]>("/api/mypage/scraps/works"),
+
+  // 내 북마크 POST 리스트 조회
+  getMyPostScraps: () =>
+    client.get<PostResponseDto[]>("/api/mypage/scraps/posts"),
 };
 
 // ============================================
@@ -36,6 +39,7 @@ export const scrapApi = {
 export const scrapKeys = {
   all: ["scraps"] as const,
   works: () => [...scrapKeys.all, "works"] as const,
+  posts: () => [...scrapKeys.all, "posts"] as const,
   work: (workId: number) => [...scrapKeys.all, "work", workId] as const,
   post: (postId: number) => [...scrapKeys.all, "post", postId] as const,
 };
@@ -83,8 +87,7 @@ export const useUnscrapWork = () => {
   return useMutation({
     mutationKey: ["useUnscrapWork"],
     mutationFn: async (workId: number) => {
-      const response = await scrapApi.unscrapWork(workId);
-      return response.data;
+      await scrapApi.unscrapWork(workId);
     },
     onSuccess: (_, workId) => {
       queryClient.invalidateQueries({ queryKey: scrapKeys.work(workId) });
@@ -99,8 +102,7 @@ export const useUnscrapPost = () => {
   return useMutation({
     mutationKey: ["useUnscrapPost"],
     mutationFn: async (postId: number) => {
-      const response = await scrapApi.unscrapPost(postId);
-      return response.data;
+      await scrapApi.unscrapPost(postId);
     },
     onSuccess: (_, postId) => {
       queryClient.invalidateQueries({ queryKey: scrapKeys.post(postId) });
@@ -108,12 +110,23 @@ export const useUnscrapPost = () => {
   });
 };
 
-// Query: 스크랩된 작품 목록 조회
-export const useGetScrappedWorks = () => {
+// Query: 내 북마크 WORK 리스트 조회
+export const useGetMyWorkScraps = () => {
   return useQuery({
-    queryKey: ["useGetScrappedWorks", ...scrapKeys.works()],
+    queryKey: ["useGetMyWorkScraps", ...scrapKeys.works()],
     queryFn: async () => {
-      const response = await scrapApi.getScrappedWorks();
+      const response = await scrapApi.getMyWorkScraps();
+      return response.data;
+    },
+  });
+};
+
+// Query: 내 북마크 POST 리스트 조회
+export const useGetMyPostScraps = () => {
+  return useQuery({
+    queryKey: ["useGetMyPostScraps", ...scrapKeys.posts()],
+    queryFn: async () => {
+      const response = await scrapApi.getMyPostScraps();
       return response.data;
     },
   });

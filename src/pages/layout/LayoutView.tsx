@@ -1,16 +1,36 @@
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import { Gnb } from "@/components/Gnb/Gnb";
+import { Toaster } from "@/components/ui/sonner";
 
 type Props = {
-  activeMenu?: "홈" | "작품" | "포스트";
-  onMenuClick: (menu: "홈" | "작품" | "포스트") => void;
+  isAuthorized?: boolean;
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  onWriteClick?: () => void;
+  profileImageUrl?: string;
+  onProfileClick?: () => void;
 };
 
-export const LayoutView: FC<Props> = () => {
+export const LayoutView: FC<Props> = ({
+  isAuthorized = false,
+  searchValue = "",
+  onSearchChange,
+  onWriteClick,
+  profileImageUrl,
+  onProfileClick,
+}) => {
   return (
     <div className="flex min-h-screen w-full flex-col bg-white">
-      <Gnb />
+      <Gnb
+        isAuthorized={isAuthorized}
+        searchValue={searchValue}
+        onSearchChange={onSearchChange}
+        onWriteClick={onWriteClick}
+        profileImageUrl={profileImageUrl}
+        onProfileClick={onProfileClick}
+      />
+      <Toaster />
       <main className="mx-auto w-full max-w-1280 overflow-x-hidden">
         <Outlet />
       </main>

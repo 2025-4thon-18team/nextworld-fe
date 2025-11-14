@@ -7,17 +7,16 @@ import { useNavigation } from "@/hooks/useNavigation";
 import { useWorkTransform } from "@/hooks/useWorkTransform";
 import { usePostTransform } from "@/hooks/usePostTransform";
 
-type HomeCategoryTab = "홈" | "신규" | "관심";
+type CategoryTabsTab = "홈" | "신규" | "관심";
 
 export const Home: FC = () => {
   const { activeTab, onTabChange: setActiveTab } =
-    useTab<HomeCategoryTab>("홈");
+    useTab<CategoryTabsTab>("홈");
   const { navigateToNew, navigateToInterests, navigateToHome } =
     useNavigation();
 
   // React Query hooks 직접 사용
-  // TODO: 백엔드에 주간 유니버스, 인기 작품/포스트 API가 없어서 임시로 모든 작품/포스트 조회
-  const { data: worksData } = useGetAllWorks("ORIGINAL");
+  const { data: worksData } = useGetAllWorks();
   const { data: postsData } = useGetAllPosts();
 
   const popularSeries = useWorkTransform(worksData?.slice(0, 4));
@@ -35,7 +34,7 @@ export const Home: FC = () => {
   }, [worksData]);
 
   const handleTabChange = useCallback(
-    (tab: HomeCategoryTab) => {
+    (tab: CategoryTabsTab) => {
       setActiveTab(tab);
       if (tab === "신규") {
         navigateToNew();

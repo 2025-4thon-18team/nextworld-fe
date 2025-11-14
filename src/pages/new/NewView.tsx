@@ -1,10 +1,10 @@
 import { FC } from "react";
 import { cn } from "@/utils";
-import { HomeCategory } from "@/components/HomeCategory/HomeCategory";
+import { CategoryTabs } from "@/components/CategoryTabs/CategoryTabs";
 import { PostListVertical } from "@/components/PostListVertical/PostListVertical";
 import { SeriesCard } from "@/components/SeriesCard/SeriesCard";
 
-type HomeCategoryTab = "홈" | "신규" | "관심";
+type CategoryTabsTab = "홈" | "신규" | "관심";
 
 type SeriesItem = {
   id: string;
@@ -27,8 +27,8 @@ type PostItem = {
 
 type Props = {
   className?: string;
-  activeTab: HomeCategoryTab;
-  onTabChange: (tab: HomeCategoryTab) => void;
+  activeTab: CategoryTabsTab;
+  onTabChange: (tab: CategoryTabsTab) => void;
   newSeries: SeriesItem[];
   newPosts: PostItem[];
 };
@@ -44,9 +44,9 @@ export const NewView: FC<Props> = ({
     <div className={cn("flex size-full flex-col bg-white", className)}>
       {/* Home Category */}
       <div className="flex justify-center">
-        <HomeCategory
+        <CategoryTabs
           activeTab={activeTab as "홈" | "신규" | "관심"}
-          onTabChange={(tab) => onTabChange(tab as HomeCategoryTab)}
+          onTabChange={(tab) => onTabChange(tab as CategoryTabsTab)}
           className="flex h-48 items-center"
         />
       </div>
@@ -58,7 +58,7 @@ export const NewView: FC<Props> = ({
           <h2 className="text-headings-heading-2 tracking-tight text-nowrap text-black">
             신규 작품
           </h2>
-          <div className="flex w-609 shrink-0 flex-wrap items-center gap-0">
+          <div className="flex w-609 shrink-0 flex-wrap items-start gap-0">
             {newSeries.map((series) => (
               <SeriesCard
                 key={series.id}

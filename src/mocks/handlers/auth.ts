@@ -85,8 +85,8 @@ export const authHandlers = [
         userId: 1,
         email: mockUser.email,
         nickname: mockUser.nickname,
-        name: "테스트유저",
-        profileImageUrl: mockUser.profileImage,
+        name: "홍길동",
+        profileImageUrl: "https://placehold.co/150?text=User",
         pointsBalance: 2000,
       },
     });

@@ -11,27 +11,29 @@ export const postsApi = {
   createPost: (data: PostRequestDto) =>
     client.post<PostResponseDto>("/api/posts", data),
 
-  // 작품에 종속된 포스트 생성 (작품 회차)
+  // 작품 회차 생성
   createWorkPost: (workId: number, data: PostRequestDto) =>
     client.post<PostResponseDto>(`/api/posts/works/${workId}`, data),
 
-  // 포스트 목록 조회 (workId 필터링 가능, 없으면 독립 포스트만)
-  getAllPosts: (workId?: number) =>
+  // 포스트 목록 조회
+  getAllPosts: () => client.get<PostResponseDto[]>("/api/posts"),
+
+  getAllWorkPosts: (workId: number) =>
     client.get<PostResponseDto[]>("/api/posts", {
-      params: workId ? { workId } : undefined,
+      params: { workId },
     }),
 
   // 포스트 상세 조회
   getPostById: (id: number) => client.get<PostResponseDto>(`/api/posts/${id}`),
 
-  // 임시저장
+  // 포스트 임시저장
   saveDraft: (data: PostRequestDto) =>
     client.post<PostResponseDto>("/api/posts/drafts", data),
 
-  // 임시저장 전체 조회 (본인만)
+  // 임시저장 목록 조회
   getAllDrafts: () => client.get<PostResponseDto[]>("/api/posts/drafts"),
 
-  // 임시저장 단일 조회 (본인만)
+  // 임시저장 단일 조회
   getDraftById: (id: number) =>
     client.get<PostResponseDto>(`/api/posts/drafts/${id}`),
 
@@ -40,7 +42,22 @@ export const postsApi = {
     client.put<PostResponseDto>(`/api/posts/${id}`, data),
 
   // 포스트 삭제
-  deletePost: (id: number) => client.delete<string>(`/api/posts/${id}`),
+  deletePost: (id: number) => client.delete<void>(`/api/posts/${id}`),
+
+  // 에피소드 전체 조회
+  getAllEpisodes: () => client.get<PostResponseDto[]>("/api/episodes"),
+
+  // 작품 회차 목록 조회
+  getEpisodesByWork: (workId: number) =>
+    client.get<PostResponseDto[]>(`/api/episodes/work/${workId}`),
+
+  // 이전 회차 조회
+  getPreviousEpisode: (id: number) =>
+    client.get<PostResponseDto>(`/api/episodes/${id}/previous`),
+
+  // 다음 회차 조회
+  getNextEpisode: (id: number) =>
+    client.get<PostResponseDto>(`/api/episodes/${id}/next`),
 };
 
 // ============================================
@@ -75,7 +92,7 @@ export const useCreatePost = () => {
   });
 };
 
-// Mutation: 작품에 종속된 포스트 생성 (작품 회차)
+// Mutation: 작품 회차 생성
 export const useCreateWorkPost = () => {
   const queryClient = useQueryClient();
 
@@ -98,11 +115,23 @@ export const useCreateWorkPost = () => {
 };
 
 // Query: 포스트 목록 조회
-export const useGetAllPosts = (workId?: number) => {
+export const useGetAllPosts = () => {
   return useQuery({
-    queryKey: ["useGetAllPosts", ...postsKeys.lists(), workId],
+    queryKey: ["useGetAllPosts", ...postsKeys.lists()],
     queryFn: async () => {
-      const response = await postsApi.getAllPosts(workId);
+      const response = await postsApi.getAllPosts();
+      return response.data;
+    },
+  });
+};
+
+// Query: 작품 포스트 목록 조회
+
+export const useGetAllWorkPosts = (workId: number) => {
+  return useQuery({
+    queryKey: ["useGetAllWorkPosts", ...postsKeys.lists(), workId],
+    queryFn: async () => {
+      const response = await postsApi.getAllWorkPosts(workId);
       return response.data;
     },
   });
@@ -136,49 +165,21 @@ export const useSaveDraft = () => {
   });
 };
 
-// Query: 임시저장 포스트 목록 조회
-export const useGetAllDrafts = () => {
-  return useQuery({
-    queryKey: ["useGetAllDrafts", ...postsKeys.drafts()],
-    queryFn: async () => {
-      const response = await postsApi.getAllDrafts();
-      return response.data;
-    },
-  });
-};
-
-// Query: 임시저장 포스트 단일 조회
-export const useGetDraftById = (id: number) => {
-  return useQuery({
-    queryKey: ["useGetDraftById", ...postsKeys.draft(id)],
-    queryFn: async () => {
-      const response = await postsApi.getDraftById(id);
-      return response.data;
-    },
-    enabled: !!id,
-  });
-};
-
 // Mutation: 포스트 수정
 export const useUpdatePost = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: ["useUpdatePost"],
-    mutationFn: async ({
-      id,
-      data,
-    }: {
-      id: number;
-      data: PostRequestDto;
-    }) => {
+    mutationFn: async ({ id, data }: { id: number; data: PostRequestDto }) => {
       const response = await postsApi.updatePost(id, data);
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: postsKeys.detail(variables.id) });
+      queryClient.invalidateQueries({
+        queryKey: postsKeys.detail(variables.id),
+      });
       queryClient.invalidateQueries({ queryKey: postsKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: postsKeys.drafts() });
     },
   });
 };
@@ -190,13 +191,80 @@ export const useDeletePost = () => {
   return useMutation({
     mutationKey: ["useDeletePost"],
     mutationFn: async (id: number) => {
-      const response = await postsApi.deletePost(id);
-      return response.data;
+      await postsApi.deletePost(id);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: postsKeys.lists() });
-      queryClient.invalidateQueries({ queryKey: postsKeys.drafts() });
     },
   });
 };
 
+// Query: 임시저장 포스트 조회
+export const useGetDraftById = (id: number) => {
+  return useQuery({
+    queryKey: ["useGetDraftById", ...postsKeys.draft(id)],
+    queryFn: async () => {
+      const response = await postsApi.getDraftById(id);
+      return response.data;
+    },
+    enabled: !!id,
+  });
+};
+
+// Query: 모든 임시저장 포스트 조회
+export const useGetAllDrafts = () => {
+  return useQuery({
+    queryKey: ["useGetAllDrafts", ...postsKeys.drafts()],
+    queryFn: async () => {
+      const response = await postsApi.getAllDrafts();
+      return response.data;
+    },
+  });
+};
+
+// Query: 에피소드 전체 조회
+export const useGetAllEpisodes = () => {
+  return useQuery({
+    queryKey: ["useGetAllEpisodes", ...postsKeys.lists()],
+    queryFn: async () => {
+      const response = await postsApi.getAllEpisodes();
+      return response.data;
+    },
+  });
+};
+
+// Query: 작품 회차 목록 조회
+export const useGetEpisodesByWork = (workId: number) => {
+  return useQuery({
+    queryKey: ["useGetEpisodesByWork", ...postsKeys.lists(), workId],
+    queryFn: async () => {
+      const response = await postsApi.getEpisodesByWork(workId);
+      return response.data;
+    },
+    enabled: !!workId,
+  });
+};
+
+// Query: 이전 회차 조회
+export const useGetPreviousEpisode = (id: number) => {
+  return useQuery({
+    queryKey: ["useGetPreviousEpisode", ...postsKeys.detail(id), "previous"],
+    queryFn: async () => {
+      const response = await postsApi.getPreviousEpisode(id);
+      return response.data;
+    },
+    enabled: !!id,
+  });
+};
+
+// Query: 다음 회차 조회
+export const useGetNextEpisode = (id: number) => {
+  return useQuery({
+    queryKey: ["useGetNextEpisode", ...postsKeys.detail(id), "next"],
+    queryFn: async () => {
+      const response = await postsApi.getNextEpisode(id);
+      return response.data;
+    },
+    enabled: !!id,
+  });
+};
