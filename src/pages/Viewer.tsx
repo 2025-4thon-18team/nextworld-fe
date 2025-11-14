@@ -6,6 +6,7 @@ import { useGetPostById } from "@/querys/usePosts";
 import { useGetWorkEpisodes } from "@/querys/useWorks";
 import { useNavigation } from "@/hooks/useNavigation";
 import type { CreateCommentRequest } from "@/querys/types";
+import { toast } from "sonner";
 
 const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
   const { postId, contentId } = useParams<{
@@ -114,7 +115,7 @@ const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
             // 댓글 목록이 자동으로 갱신됨
           },
           onError: () => {
-            alert("댓글 작성에 실패했습니다.");
+            toast("댓글 작성에 실패했습니다.");
           },
         },
       );

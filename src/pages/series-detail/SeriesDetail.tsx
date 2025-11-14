@@ -125,7 +125,7 @@ const SeriesDetail = () => {
           setIsLiked(false);
         },
         onError: () => {
-          alert("좋아요 취소에 실패했습니다.");
+          toast("좋아요 취소에 실패했습니다.");
         },
       });
     } else {
@@ -134,7 +134,7 @@ const SeriesDetail = () => {
           setIsLiked(true);
         },
         onError: () => {
-          alert("좋아요에 실패했습니다.");
+          toast("좋아요에 실패했습니다.");
         },
       });
     }
@@ -149,7 +149,7 @@ const SeriesDetail = () => {
           setIsScrapped(false);
         },
         onError: () => {
-          alert("스크랩 취소에 실패했습니다.");
+          toast("스크랩 취소에 실패했습니다.");
         },
       });
     } else {
@@ -158,7 +158,7 @@ const SeriesDetail = () => {
           setIsScrapped(true);
         },
         onError: () => {
-          alert("스크랩에 실패했습니다.");
+          toast("스크랩에 실패했습니다.");
         },
       });
     }

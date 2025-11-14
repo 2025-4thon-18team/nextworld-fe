@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { CreateSeriesBasicView } from "./CreateSeriesBasicView";
 import { useNavigate } from "react-router-dom";
 import { useUploadWorkImage } from "@/querys/useWorks";
+import { toast } from "sonner";
 
 type StepType = "기본 설정" | "유니버스 설정" | "2차 창작 설정";
 
@@ -33,10 +34,10 @@ const CreateSeriesBasic = () => {
         uploadImage(file, {
           onSuccess: (imageUrl) => {
             setCoverImageUrl(imageUrl);
-            alert("이미지가 업로드되었습니다.");
+            toast("이미지가 업로드되었습니다.");
           },
           onError: () => {
-            alert("이미지 업로드에 실패했습니다.");
+            toast("이미지 업로드에 실패했습니다.");
           },
         });
       }

@@ -3,6 +3,7 @@ import { LoginView } from "./LoginView";
 import { useLogin as useLoginMutation } from "@/querys/useAuth";
 import { useNavigation } from "@/hooks/useNavigation";
 import { useAuthStore } from "@/stores/authStore";
+import { toast } from "sonner";
 
 const Login = () => {
   const loginMutation = useLoginMutation();
@@ -21,7 +22,7 @@ const Login = () => {
 
   const onSubmit = useCallback(async () => {
     if (!email.trim() || !password.trim()) {
-      alert("이메일과 비밀번호를 입력해주세요.");
+      toast("이메일과 비밀번호를 입력해주세요.");
       return;
     }
 
@@ -40,7 +41,7 @@ const Login = () => {
       navigateToMyPageMain();
     } catch (error) {
       console.error("로그인 실패:", error);
-      alert("로그인에 실패했습니다.");
+      toast("로그인에 실패했습니다.");
     }
   }, [loginMutation, navigateToMyPageMain, email, password, setTokens]);
 

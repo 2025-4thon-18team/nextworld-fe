@@ -41,12 +41,12 @@ const SignUp = () => {
       !password.trim() ||
       !passwordConfirm.trim()
     ) {
-      alert("모든 필드를 입력해주세요.");
+      toast("모든 필드를 입력해주세요.");
       return;
     }
 
     if (password !== passwordConfirm) {
-      alert("비밀번호가 일치하지 않습니다.");
+      toast("비밀번호가 일치하지 않습니다.");
       return;
     }
 
@@ -61,7 +61,7 @@ const SignUp = () => {
       navigateToLogin();
     } catch (error) {
       console.error("회원가입 실패:", error);
-      alert("회원가입에 실패했습니다.");
+      toast("회원가입에 실패했습니다.");
     }
   }, [
     signupMutation,

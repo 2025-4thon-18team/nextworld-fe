@@ -14,6 +14,7 @@ interface SeriesInfoProps {
   category: string;
   rating: number | null;
   views: number;
+  schedule: string | null;
   isSerializing: boolean;
   tags: string[];
   likes: number;
@@ -27,6 +28,7 @@ export const SeriesInfo: FC<SeriesInfoProps> = ({
   category,
   rating,
   views,
+  schedule,
   isSerializing,
   tags,
   likes,
@@ -43,7 +45,7 @@ export const SeriesInfo: FC<SeriesInfoProps> = ({
         {/* Category and Stats */}
         <div className="gap-md relative flex w-full shrink-0 flex-col items-start">
           <p className="text-body-medium w-full tracking-tight text-black">
-            {category}
+            {category} {schedule && `| ${schedule}`}
           </p>
           <div className="relative flex w-full shrink-0 items-center gap-91">
             <div className="flex shrink-0 items-center gap-18">

@@ -3,6 +3,7 @@ import { CreateSeriesSecondaryView } from "./CreateSeriesSecondaryView";
 import { useNavigate } from "react-router-dom";
 import { useCreateWork } from "@/querys/useWorks";
 import type { WorkRequestDto, WorkTypeEnum } from "@/querys/types";
+import { toast } from "sonner";
 
 type StepType = "기본 설정" | "유니버스 설정" | "2차 창작 설정";
 
@@ -79,14 +80,14 @@ const CreateSeriesSecondary = () => {
 
   const onComplete = useCallback(() => {
     if (!agreement1 || !agreement2) {
-      alert("약관에 동의해주세요.");
+      toast("약관에 동의해주세요.");
       return;
     }
 
     // localStorage에서 모든 단계 데이터 가져오기
     const savedData = localStorage.getItem("createWorkData");
     if (!savedData) {
-      alert("작품 데이터를 찾을 수 없습니다. 처음부터 다시 시작해주세요.");
+      toast("작품 데이터를 찾을 수 없습니다. 처음부터 다시 시작해주세요.");
       return;
     }
 
@@ -134,12 +135,12 @@ const CreateSeriesSecondary = () => {
 
     createWork(workRequest, {
       onSuccess: () => {
-        alert("작품이 성공적으로 생성되었습니다.");
+        toast("작품이 성공적으로 생성되었습니다.");
         localStorage.removeItem("createWorkData");
         navigate("/mypage");
       },
       onError: () => {
-        alert("작품 생성에 실패했습니다.");
+        toast("작품 생성에 실패했습니다.");
       },
     });
   }, [

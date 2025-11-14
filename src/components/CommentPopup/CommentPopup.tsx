@@ -3,6 +3,7 @@ import { IconComment, IconCross } from "@/assets/icons";
 import { useGetComments, useCreateComment } from "@/querys/useComments";
 import type { CreateCommentRequest } from "@/querys/types";
 import { cn, buildCommentTree, type Comment } from "@/utils";
+import { toast } from "sonner";
 
 interface CommentPopupProps {
   postId: number;
@@ -40,7 +41,7 @@ export const CommentPopup: FC<CommentPopupProps> = ({
           refetch();
         },
         onError: () => {
-          alert("댓글 작성에 실패했습니다.");
+          toast("댓글 작성에 실패했습니다.");
         },
       },
     );
@@ -68,7 +69,7 @@ export const CommentPopup: FC<CommentPopupProps> = ({
           refetch();
         },
         onError: () => {
-          alert("대댓글 작성에 실패했습니다.");
+          toast("대댓글 작성에 실패했습니다.");
         },
       },
     );

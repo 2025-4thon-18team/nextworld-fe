@@ -16,35 +16,38 @@ export const ArticleInfo: FC<ArticleInfoProps> = ({
 }) => {
   const displayRating = rating != null ? rating : 0;
   return (
-    <div className="gap-lg flex items-center relative shrink-0">
-      <div className="gap-xs flex items-center relative shrink-0">
-        <div className="relative shrink-0 size-24">
+    <div className="gap-lg relative flex shrink-0 items-center">
+      <div className="gap-xs relative flex shrink-0 items-center">
+        <div className="relative size-24 shrink-0">
           <IconStar className="size-24" />
         </div>
-        <p className="text-body-small-medium text-muted text-nowrap tracking-tight whitespace-pre">
+        <p className="text-body-small-medium text-text-muted tracking-tight text-nowrap whitespace-pre">
           {displayRating.toFixed(1)}
         </p>
       </div>
-      <div className="gap-xs flex items-center relative shrink-0">
-        <div className="overflow-hidden relative shrink-0 size-24">
+      <div className="gap-xs relative flex shrink-0 items-center">
+        <div className="relative size-24 shrink-0 overflow-hidden">
           <IconEye className="size-24" />
         </div>
-        <p className="text-body-small-medium text-muted text-nowrap tracking-tight whitespace-pre">
+        <p className="text-body-small-medium text-text-muted tracking-tight text-nowrap whitespace-pre">
           {views}
         </p>
       </div>
-      <div className="gap-xs flex items-center relative shrink-0">
-        <div className="overflow-hidden relative shrink-0 size-24">
+      <div className="gap-xs relative flex shrink-0 items-center">
+        <div className="relative size-24 shrink-0 overflow-hidden">
           <IconComment className="size-24" />
         </div>
-        <p className="text-body-small-medium text-muted text-nowrap tracking-tight whitespace-pre">
+        <p className="text-body-small-medium text-text-muted tracking-tight text-nowrap whitespace-pre">
           {comments}
         </p>
       </div>
-      <p className="text-body-small-medium text-muted text-nowrap tracking-tight whitespace-pre">
-        {date}
+      <p className="text-body-small-medium text-text-muted tracking-tight text-nowrap whitespace-pre">
+        {new Date(date).toLocaleDateString("ko-KR", {
+          year: "2-digit",
+          month: "long",
+          day: "numeric",
+        })}
       </p>
     </div>
   );
 };
-

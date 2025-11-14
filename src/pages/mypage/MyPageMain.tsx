@@ -4,6 +4,7 @@ import { useGetMe, useLogout } from "@/querys/useAuth";
 import { useTab } from "@/hooks/useTab";
 import { useSimpleWorkTransform } from "@/hooks/useWorkTransform";
 import { useNavigation } from "@/hooks/useNavigation";
+import { toast } from "sonner";
 
 type TabType = "작품" | "포스트";
 
@@ -41,7 +42,7 @@ const MyPageMain = () => {
         navigateToLogin();
       },
       onError: () => {
-        alert("로그아웃에 실패했습니다.");
+        toast("로그아웃에 실패했습니다.");
       },
     });
   }, [logout, navigateToLogin]);
