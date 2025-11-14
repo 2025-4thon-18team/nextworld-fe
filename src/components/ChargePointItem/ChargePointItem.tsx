@@ -8,6 +8,15 @@ interface ChargePointItemProps {
   className?: string;
 }
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("ko-KR", {
+    year: "2-digit",
+    month: "long",
+    day: "numeric",
+  });
+};
+
 export const ChargePointItem: FC<ChargePointItemProps> = ({
   title,
   date,
@@ -23,7 +32,7 @@ export const ChargePointItem: FC<ChargePointItemProps> = ({
           {title}
         </p>
         <p className="text-body-small-medium tracking-tight text-[#c1c1c1]">
-          {date}
+          {formatDate(date)}
         </p>
       </div>
       <Point value={points} showPrefix={true} prefix="+" />

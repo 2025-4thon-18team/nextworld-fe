@@ -5,6 +5,7 @@ import { AddSeries } from "@/components/AddSeries/AddSeries";
 import { RadioButton } from "@/components/RadioButton/RadioButton";
 import { useNavigation } from "@/hooks/useNavigation";
 import type { PostResponseDto } from "@/querys/types";
+import { ProfileImg } from "@/components/ProfileImg/ProfileImg";
 
 type TabType = "작품" | "포스트";
 
@@ -70,9 +71,12 @@ export const MyPageMainView: FC<Props> = ({
         <div className="flex w-full items-center justify-between">
           {/* 왼쪽 프로필 */}
           <div className="flex items-center gap-38">
-            <div className="bg-grayscale-g2 relative flex size-120 shrink-0 items-center justify-center rounded-full">
-              <span className="text-grayscale-g5">프로필</span>
-            </div>
+            <ProfileImg
+              imageUrl={profile?.profileImageUrl}
+              size="lg"
+              className="ml-20 shrink-0"
+            />
+
             <div className="flex w-233 flex-col items-start gap-9 text-black">
               <p className="text-headings-heading-4 w-full tracking-tight text-black">
                 {profile?.name || "[작가명]"}
@@ -84,13 +88,12 @@ export const MyPageMainView: FC<Props> = ({
                   </p>
                 )) || (
                   <>
-                    <p className="mb-0">안녕하세요 누구입니다 안녕</p>
-                    <p>나 누구 좋아한다..</p>
+                    <p className="mb-0">자기소개가 없습니다.</p>
                   </>
                 )}
               </div>
               <p className="text-body-small-regular text-subtle w-full tracking-tight">
-                {profile?.contact || "작가 개인 sns, 이메일"}
+                {profile?.contact || ""}
               </p>
             </div>
           </div>
@@ -161,7 +164,7 @@ export const MyPageMainView: FC<Props> = ({
                 comments={post.comments}
                 date={post.date}
                 onClick={() => handlePostClick(post.id)}
-                className="border-background-subtle h-230 min-h-230 w-403 shrink-0 rounded-xs border-t-2 bg-white"
+                className="border-background-subtle ㄴshrink-0 h-230 min-h-230 grow rounded-xs border-t-2 bg-white"
                 isPaid={post.isPaid}
                 price={post.price}
                 postData={post.postData}

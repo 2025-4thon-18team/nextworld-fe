@@ -68,11 +68,13 @@ export const EditorOptions: FC<EditorOptionsProps> = ({
           label="포스트"
           onClick={onPostClick}
         />
-        <IconWithLabel
-          icon={<IconWarning className="size-24 shrink-0 overflow-hidden" />}
-          label="가이드라인"
-          onClick={onGuidelineClick}
-        />
+        {onGuidelineClick && (
+          <IconWithLabel
+            icon={<IconWarning className="size-24 shrink-0 overflow-hidden" />}
+            label="가이드라인"
+            onClick={onGuidelineClick}
+          />
+        )}
       </div>
     );
   }

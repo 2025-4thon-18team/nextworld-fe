@@ -15,6 +15,9 @@ interface EditorHeaderProps {
   onPostClick?: () => void;
   onGuidelineClick?: () => void;
   className?: string;
+  isPublishing?: boolean;
+  showPublish?: boolean;
+  showGuideline?: boolean;
 }
 
 export const EditorHeader: FC<EditorHeaderProps> = ({
@@ -28,6 +31,9 @@ export const EditorHeader: FC<EditorHeaderProps> = ({
   onPostClick,
   onGuidelineClick,
   className,
+  isPublishing = false,
+  showPublish = true,
+  showGuideline = true,
 }) => {
   return (
     <div
@@ -56,11 +62,15 @@ export const EditorHeader: FC<EditorHeaderProps> = ({
               저장
             </ButtonSmall>
           )}
-          {onSettle && (
-            <ButtonSmall variant="default" onClick={onSettle}>
-              발행하기
+          {
+            <ButtonSmall
+              variant="default"
+              onClick={onSettle}
+              disabled={isPublishing || !showPublish}
+            >
+              {isPublishing ? "발행 중..." : "발행하기"}
             </ButtonSmall>
-          )}
+          }
         </div>
       </div>
 
@@ -80,7 +90,7 @@ export const EditorHeader: FC<EditorHeaderProps> = ({
           variant={editorOptionsVariant}
           seriesTitle={seriesTitle}
           onPostClick={onPostClick}
-          onGuidelineClick={onGuidelineClick}
+          onGuidelineClick={showGuideline ? onGuidelineClick : undefined}
         />
       </div>
     </div>

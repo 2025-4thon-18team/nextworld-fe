@@ -5,8 +5,28 @@ import { ArticleInfo } from "@/components/article/ArticleInfo/ArticleInfo";
 import { Tag } from "@/components/Tag/Tag";
 import { Point } from "@/components/Point/Point";
 import { PaymentConfirmPopup } from "@/components/PaymentConfirmPopup/PaymentConfirmPopup";
+import { DropdownMenu } from "@/components/DropdownMenu/DropdownMenu";
+import { IconMore } from "@/components/IconMore/IconMore";
 import { usePurchasePost } from "@/hooks/usePurchasePost";
+import { useGetMe } from "@/querys/useAuth";
+import { useDeletePost } from "@/querys/usePosts";
+import { useNavigation } from "@/hooks/useNavigation";
 import type { PostResponseDto } from "@/querys/types";
+import { toast } from "sonner";
+
+// HTML 태그 제거 및 텍스트만 추출하는 함수
+const stripHtmlTags = (html: string): string => {
+  // 임시 div 요소 생성
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  
+  // img 태그 제거
+  const images = tmp.getElementsByTagName("img");
+  Array.from(images).forEach((img) => img.remove());
+  
+  // 텍스트만 추출 (p 태그의 내용만 가져옴)
+  return tmp.textContent || tmp.innerText || "";
+};
 
 interface PostItemProps {
   title: string;
@@ -48,19 +68,29 @@ export const PostItem: FC<PostItemProps> = ({
   const [isPaymentPopupOpen, setIsPaymentPopupOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const { purchasePost } = usePurchasePost();
+  const { data: currentUser } = useGetMe();
+  const { mutate: deletePost } = useDeletePost();
+  const { navigate } = useNavigation();
 
-  // 포인트 표시 여부: price가 0이 아니고 null이 아니면 표시 (isPaid와 관계없이)
-  const shouldShowPoint = showPoint && price !== null && price > 0;
+  // 현재 사용자가 작가인지 확인
+  const isAuthor = currentUser && postData?.authorName === currentUser.nickname;
+
+  // 포인트 표시 여부: price가 0이 아니고 null이 아니면 표시 (작가가 아닐 때만)
+  const shouldShowPoint = showPoint && price !== null && price > 0 && !isAuthor;
 
   // isPaid는 현재 사용하지 않지만 props로 유지 (향후 사용 가능)
   void isPaid;
 
   const handleClick = () => {
-    // 가격이 있으면 결제 팝업 표시 (isPaid와 관계없이)
-    if (price !== null && price > 0 && postData) {
+    // 이미 구매했거나 무료인 경우 바로 이동
+    if (postData?.hasPurchased || price === null || price === 0) {
+      onClick?.();
+      return;
+    }
+    // 가격이 있고 구매하지 않은 경우 결제 팝업 표시
+    if (price > 0 && postData) {
       setIsPaymentPopupOpen(true);
     } else {
-      // 무료인 경우 바로 이동
       onClick?.();
     }
   };
@@ -89,6 +119,25 @@ export const PostItem: FC<PostItemProps> = ({
     }
   };
 
+  const handleEdit = () => {
+    if (!postData?.id) return;
+    navigate(`/editor?postId=${postData.id}`);
+  };
+
+  const handleDelete = () => {
+    if (!postData?.id) return;
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    deletePost(postData.id, {
+      onSuccess: () => {
+        toast.success("포스트가 삭제되었습니다.");
+      },
+      onError: () => {
+        toast.error("포스트 삭제에 실패했습니다.");
+      },
+    });
+  };
+
   return (
     <>
       <div
@@ -98,7 +147,7 @@ export const PostItem: FC<PostItemProps> = ({
         )}
         onClick={handleClick}
       >
-        <div className="min-h-inherit px-md py-lg relative box-border flex h-230 w-401 flex-col items-start justify-between overflow-hidden rounded-[inherit]">
+        <div className="min-h-inherit px-md py-lg relative box-border flex h-230 w-full flex-col items-start justify-between overflow-hidden rounded-[inherit]">
           {/* Title and Content Section */}
           <div className="gap-md relative flex w-full shrink-0 flex-col items-start">
             {/* Title and Points */}
@@ -111,20 +160,39 @@ export const PostItem: FC<PostItemProps> = ({
                   {title}
                 </p>
               </div>
-              {shouldShowPoint && (
-                <div className="relative flex shrink-0 flex-col items-start gap-10">
-                  <Point
-                    value={points}
-                    showPrefix={false}
-                    className="relative flex w-full shrink-0 items-end justify-end"
-                  />
-                </div>
-              )}
+              <div className="gap-sm relative flex shrink-0 items-center">
+                {isAuthor && (
+                  <DropdownMenu
+                    items={[
+                      {
+                        label: "수정",
+                        onClick: handleEdit,
+                      },
+                      {
+                        label: "삭제",
+                        onClick: handleDelete,
+                        className: "text-red-600",
+                      },
+                    ]}
+                  >
+                    <IconMore className="text-text-muted" size={20} />
+                  </DropdownMenu>
+                )}
+                {shouldShowPoint && (
+                  <div className="relative flex shrink-0 flex-col items-start gap-10">
+                    <Point
+                      value={points}
+                      showPrefix={false}
+                      className="relative flex w-full shrink-0 items-end justify-end"
+                    />
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Content */}
             <p className="text-body-medium w-379 tracking-tight text-black">
-              {content}
+              {stripHtmlTags(content)}
             </p>
           </div>
 

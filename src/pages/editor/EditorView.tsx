@@ -6,6 +6,8 @@ import { EditorBody } from "./components/EditorBody";
 import { useBlockEditor } from "./hooks/useBlockEditor";
 import { useDragAndDrop } from "./hooks/useDragAndDrop";
 import { useEditorImage } from "./hooks/useEditorImage";
+import { Toaster } from "sonner";
+import type { WorkResponseDto } from "@/querys/types";
 
 type Props = {
   title: string;
@@ -16,7 +18,6 @@ type Props = {
   episodePrice: string;
   searchValue: string;
   series: Array<{ imageUrl: string; title: string; id?: string }>;
-  selectedSeriesId?: string;
   categoryTab: "내 작품" | "원작";
   sidebarOpen: boolean;
   sidebarVariant?: "post-type" | "series-type" | "guideline";
@@ -28,6 +29,10 @@ type Props = {
   onEpisodePriceChange: (value: string) => void;
   onSearchChange: (value: string) => void;
   onSeriesSelect: (index: number) => void;
+  onWorkSelect?: (work: WorkResponseDto) => void;
+  selectedPostWorkId?: string | number;
+  selectedEpisodeWorkId?: string | number;
+  originalWorkId?: number;
   onAddSeries: () => void;
   onCategoryTabChange: (tab: "내 작품" | "원작") => void;
   onBack: () => void;
@@ -39,6 +44,9 @@ type Props = {
   onPostClick?: () => void;
   onGuidelineClick?: () => void;
   onTagsChange: (tags: string[]) => void;
+  isPublishing?: boolean;
+  showPublish?: boolean;
+  showGuideline?: boolean;
 };
 
 export const EditorView: FC<Props> = ({
@@ -50,7 +58,6 @@ export const EditorView: FC<Props> = ({
   episodePrice,
   searchValue,
   series,
-  selectedSeriesId,
   categoryTab,
   sidebarOpen,
   sidebarVariant: sidebarVariantProp,
@@ -62,6 +69,10 @@ export const EditorView: FC<Props> = ({
   onEpisodePriceChange,
   onSearchChange,
   onSeriesSelect,
+  onWorkSelect,
+  selectedPostWorkId,
+  selectedEpisodeWorkId,
+  originalWorkId,
   onAddSeries,
   onCategoryTabChange,
   onBack,
@@ -73,6 +84,9 @@ export const EditorView: FC<Props> = ({
   onAddImage,
   onSidebarClose,
   onTagsChange,
+  isPublishing = false,
+  showPublish = true,
+  showGuideline = true,
 }) => {
   // 블록 에디터 훅
   const {
@@ -132,29 +146,33 @@ export const EditorView: FC<Props> = ({
         <GuidelineSidebar
           title="가이드라인"
           onClose={onSidebarClose}
-          categoryTab={categoryTab}
-          onCategoryTabChange={onCategoryTabChange}
-          forbiddenWords={[]}
-          sections={[]}
+          originalWorkId={originalWorkId}
           className="absolute top-0 right-0"
         />
       );
     }
+
+    // post-type일 때는 postTypeTab에 따라 표시, series-type일 때는 항상 "작품 연재" 표시
+    const postTypeTabValue =
+      currentVariant === "series-type"
+        ? "작품 연재"
+        : postSelected
+          ? "포스트"
+          : "작품 연재";
 
     return (
       <PostTypeSidebar
         title="업로드 유형"
         onClose={onSidebarClose}
         variant={currentVariant === "series-type" ? "series-type" : "post-type"}
-        postTypeTab={postSelected ? "포스트" : "작품 연재"}
+        postTypeTab={postTypeTabValue}
         onPostTypeTabChange={(tab) => onPostChange?.(tab === "포스트")}
         searchValue={searchValue}
         onSearchChange={(e) => onSearchChange?.(e.target.value)}
-        series={series.map((item, index) => ({
-          imageUrl: item.imageUrl,
-          title: item.title,
-          selected: selectedSeriesId === (item.id || String(index)),
-        }))}
+        onWorkSelect={onWorkSelect}
+        selectedPostWorkId={selectedPostWorkId}
+        selectedEpisodeWorkId={selectedEpisodeWorkId}
+        series={series}
         onSeriesClick={onSeriesSelect}
         paidPostEnabled={paidPost}
         onPaidPostChange={onPaidPostChange}
@@ -172,6 +190,7 @@ export const EditorView: FC<Props> = ({
 
   return (
     <div className="bg-background-subtle relative flex h-full min-h-screen w-full flex-col items-center">
+      <Toaster position="top-center" />
       <EditorHeader
         onBack={onBack}
         onLoad={onLoad}
@@ -181,6 +200,9 @@ export const EditorView: FC<Props> = ({
         editorOptionsVariant={editorOptionsVariant}
         onPostClick={onPostClick}
         onGuidelineClick={onGuidelineClick}
+        isPublishing={isPublishing}
+        showPublish={showPublish}
+        showGuideline={showGuideline}
       />
 
       <div className="relative flex w-full grow items-start justify-center gap-10">

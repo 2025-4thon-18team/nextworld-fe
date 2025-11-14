@@ -85,15 +85,17 @@ export const useUpdateComment = () => {
     mutationFn: async ({
       commentId,
       data,
+      postId,
     }: {
       commentId: number;
       data: UpdateCommentRequest;
+      postId: number;
     }) => {
       const response = await commentsApi.updateComment(commentId, data);
       return response.data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: commentsKeys.comment(variables.commentId) });
+      queryClient.invalidateQueries({ queryKey: commentsKeys.post(variables.postId) });
     },
   });
 };

@@ -1,35 +1,56 @@
 import { FC } from "react";
 import { cn } from "@/utils";
 import { IconCross } from "@/assets/icons";
-import {
-  CategoryTabs,
-  GuidelineCategoryTab,
-} from "@/components/CategoryTabs/CategoryTabs";
 import { TagList } from "@/components/TagList/TagList";
 import { StickerCard } from "@/components/StickerCard/StickerCard";
+import { useGetWorkGuideline } from "@/querys/useWorks";
 
 interface GuidelineSidebarProps {
   title: string;
   onClose?: () => void;
   className?: string;
-  categoryTab?: "내 작품" | "원작";
-  onCategoryTabChange?: (tab: "내 작품" | "원작") => void;
-  forbiddenWords?: string[];
-  sections?: Array<{
-    title: string;
-    content: string;
-  }>;
+  originalWorkId?: number;
 }
 
 export const GuidelineSidebar: FC<GuidelineSidebarProps> = ({
   title,
   onClose,
   className,
-  categoryTab = "내 작품" as GuidelineCategoryTab,
-  onCategoryTabChange,
-  forbiddenWords = [],
-  sections = [],
+  originalWorkId,
 }) => {
+  // 항상 원작 가이드라인만 표시
+  const currentWorkId = originalWorkId;
+
+  // 가이드라인 조회
+  const { data: guidelineData } = useGetWorkGuideline(currentWorkId || 0);
+
+  // 가이드라인 데이터 파싱
+  const forbiddenWords = guidelineData?.bannedWords
+    ? guidelineData.bannedWords
+        .split(",")
+        .map((w) => w.trim())
+        .filter(Boolean)
+    : [];
+
+  const sections = [];
+  if (guidelineData?.guidelineRelation) {
+    sections.push({
+      title: "세계관 관계 규칙",
+      content: guidelineData.guidelineRelation,
+    });
+  }
+  if (guidelineData?.guidelineContent) {
+    sections.push({
+      title: "내용 규칙",
+      content: guidelineData.guidelineContent,
+    });
+  }
+  if (guidelineData?.guidelineBackground) {
+    sections.push({
+      title: "배경 설정",
+      content: guidelineData.guidelineBackground,
+    });
+  }
   return (
     <div
       className={cn(
@@ -52,16 +73,6 @@ export const GuidelineSidebar: FC<GuidelineSidebarProps> = ({
             <IconCross className="size-24 shrink-0 overflow-hidden" />
           </button>
         </div>
-
-        {/* CategoryTabs for guideline */}
-        <CategoryTabs
-          activeTab={categoryTab}
-          onTabChange={(tab) =>
-            onCategoryTabChange?.(tab as GuidelineCategoryTab)
-          }
-          variant="guideline"
-          className="h-48"
-        />
       </div>
 
       {/* Content Section */}

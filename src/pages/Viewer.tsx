@@ -1,9 +1,12 @@
-import { useCallback, useMemo } from "react";
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { ViewerView } from "./ViewerView";
 import { useGetComments, useCreateComment } from "@/querys/useComments";
-import { useGetPostById } from "@/querys/usePosts";
-import { useGetWorkEpisodes } from "@/querys/useWorks";
+import {
+  useGetPostById,
+  useGetPreviousEpisode,
+  useGetNextEpisode,
+} from "@/querys/usePosts";
 import {
   useGetRatingSummary,
   useGetMyRating,
@@ -31,32 +34,16 @@ const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
   // 실제 포스트 타입 확인 (postData에서 가져온 postType 사용)
   const actualPostType = postData?.postType || type;
 
-  // EPISODE일 때 회차 목록 조회 (다음화/이전화를 위해)
-  const { data: episodesData } = useGetWorkEpisodes(postData?.workId ?? 0);
+  // EPISODE일 때 이전/다음 회차 조회 (백엔드 API 사용)
+  const { data: prevEpisode } = useGetPreviousEpisode(
+    actualPostType === "EPISODE" && postIdNum > 0 ? postIdNum : 0,
+  );
+  const { data: nextEpisode } = useGetNextEpisode(
+    actualPostType === "EPISODE" && postIdNum > 0 ? postIdNum : 0,
+  );
 
-  // 현재 회차의 다음/이전 회차 찾기
-  const { prevEpisodeId, nextEpisodeId } = useMemo(() => {
-    if (!episodesData || !postIdNum || actualPostType !== "EPISODE") {
-      return { prevEpisodeId: null, nextEpisodeId: null };
-    }
-
-    const currentIndex = episodesData.findIndex((ep) => ep.id === postIdNum);
-    if (currentIndex === -1) {
-      return { prevEpisodeId: null, nextEpisodeId: null };
-    }
-
-    const prevEpisode =
-      currentIndex > 0 ? episodesData[currentIndex - 1] : null;
-    const nextEpisode =
-      currentIndex < episodesData.length - 1
-        ? episodesData[currentIndex + 1]
-        : null;
-
-    return {
-      prevEpisodeId: prevEpisode?.id ?? null,
-      nextEpisodeId: nextEpisode?.id ?? null,
-    };
-  }, [episodesData, postIdNum, actualPostType]);
+  const prevEpisodeId = prevEpisode?.id ?? null;
+  const nextEpisodeId = nextEpisode?.id ?? null;
 
   // 댓글 조회 및 생성 (ViewerView에 props 추가 후 사용)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -74,22 +61,16 @@ const Viewer = ({ type }: { type: "EPISODE" | "POST" }) => {
   const myRatingScore = myRating?.myScore ?? null;
 
   const onPrevious = useCallback(() => {
-    if (prevEpisodeId) {
-      navigateToSeriesContent(
-        String(postData?.workId ?? 0),
-        String(prevEpisodeId),
-      );
+    if (prevEpisodeId && postData?.workId) {
+      navigateToSeriesContent(String(postData.workId), String(prevEpisodeId));
     }
-  }, [prevEpisodeId, navigateToSeriesContent]);
+  }, [prevEpisodeId, postData?.workId, navigateToSeriesContent]);
 
   const onNext = useCallback(() => {
-    if (nextEpisodeId) {
-      navigateToSeriesContent(
-        String(postData?.workId ?? 0),
-        String(nextEpisodeId),
-      );
+    if (nextEpisodeId && postData?.workId) {
+      navigateToSeriesContent(String(postData.workId), String(nextEpisodeId));
     }
-  }, [nextEpisodeId, navigateToSeriesContent]);
+  }, [nextEpisodeId, postData?.workId, navigateToSeriesContent]);
 
   const onOriginalSeriesClick = useCallback(() => {
     // 작품 상세 페이지로 이동

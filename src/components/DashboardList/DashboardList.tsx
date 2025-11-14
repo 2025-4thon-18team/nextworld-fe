@@ -59,9 +59,7 @@ export const DashboardList: FC<DashboardListProps> = ({
               {menu}
             </p>
             {menu === activeMenu && (
-              <div className="flex size-24 shrink-0 items-center justify-center">
-                <IconChevron className="size-24 rotate-90" />
-              </div>
+              <div className="border-md border-border-default-second flex h-full w-0 shrink-0 items-center justify-center"></div>
             )}
           </button>
         ))}

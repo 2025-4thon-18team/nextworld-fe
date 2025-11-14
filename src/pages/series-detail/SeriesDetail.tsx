@@ -4,9 +4,11 @@ import {
   useGetWorkById,
   useGetWorkEpisodes,
   useGetDerivativePosts,
+  useGetAllWorks,
 } from "@/querys/useWorks";
 import { useLike, useUnlike } from "@/querys/useLike";
 import { useScrapWork, useUnscrapWork } from "@/querys/useScrap";
+import { useGetMe } from "@/querys/useAuth";
 import { useTab } from "@/hooks/useTab";
 import { useNavigation } from "@/hooks/useNavigation";
 import {
@@ -32,6 +34,8 @@ const SeriesDetail = () => {
   const { data: workData } = useGetWorkById(seriesId || 0);
   const { data: episodesData } = useGetWorkEpisodes(seriesId || 0);
   const { data: derivativePostsData } = useGetDerivativePosts(seriesId || 0);
+  const { data: allDerivativeWorks } = useGetAllWorks("DERIVATIVE");
+  const { data: currentUser } = useGetMe();
 
   // 좋아요 및 스크랩 API
   const { mutate: like } = useLike();
@@ -89,10 +93,21 @@ const SeriesDetail = () => {
   const episodes = useEpisodeTransform(episodePosts);
   const popularPosts = usePostTransform(universePosts, 4);
 
+  // 2차 창작 작품 목록 조회 (유니버스 작품)
   const universeWorks = useMemo(() => {
-    // TODO: PostResponseDto를 Work 형태로 변환 필요, 임시로 빈 배열 반환
-    return [];
-  }, []);
+    if (!allDerivativeWorks || !seriesId) return [];
+    // parentWorkId가 현재 작품 ID와 일치하는 DERIVATIVE 작품만 필터링
+    const filteredWorks = allDerivativeWorks.filter(
+      (work) => work.parentWorkId === seriesId,
+    );
+    // WorkResponseDto를 UniverseWork 형태로 변환
+    return filteredWorks.map((work) => ({
+      id: String(work.id),
+      imageUrl: work.coverImageUrl,
+      title: work.title,
+      tags: work.tags || [],
+    }));
+  }, [allDerivativeWorks, seriesId]);
 
   const sortedEpisodes = useSort(episodes, sortOrder);
   const { main: filterLabel, sub: filterSubLabel } = useSortLabels(sortOrder);
@@ -174,6 +189,14 @@ const SeriesDetail = () => {
     setSortOrder((prev) => (prev === "latest" ? "oldest" : "latest"));
   }, []);
 
+  // 작가인지 확인
+  const isAuthor = currentUser && workData?.authorName === currentUser.nickname;
+
+  const onEditWork = useCallback(() => {
+    // TODO: 작품 수정 페이지로 이동
+    toast.error("아직 준비 중인 기능입니다.");
+  }, []);
+
   if (!seriesData) {
     return (
       <SeriesDetailView
@@ -216,6 +239,7 @@ const SeriesDetail = () => {
       authorName={seriesData.authorName}
       description={seriesData.description}
       onViewFirstEpisode={onViewFirstEpisode}
+      onEditWork={isAuthor ? onEditWork : undefined}
       category={seriesData.category}
       rating={seriesData.rating}
       views={seriesData.views}

@@ -142,6 +142,7 @@ export interface PostResponseDto {
   aiCheck: string;
   createdAt: string; // ISO 8601 date-time
   updatedAt: string; // ISO 8601 date-time
+  hasPurchased?: boolean; // 결제 여부
 }
 
 // ============================================

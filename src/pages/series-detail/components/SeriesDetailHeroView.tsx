@@ -9,6 +9,7 @@ interface SeriesDetailHeroViewProps {
   authorName: string;
   description: string;
   onViewFirstEpisode: () => void;
+  onEditWork?: () => void;
   className?: string;
 }
 
@@ -19,6 +20,7 @@ export const SeriesDetailHeroView: FC<SeriesDetailHeroViewProps> = ({
   authorName,
   description,
   onViewFirstEpisode,
+  onEditWork,
   className,
 }) => {
   return (
@@ -75,11 +77,16 @@ export const SeriesDetailHeroView: FC<SeriesDetailHeroViewProps> = ({
             </div>
           </div>
         </div>
-        {/* Button */}
-        <div className="w-full">
+        {/* Buttons */}
+        <div className="gap-sm flex w-full">
           <Button variant="accent" onClick={onViewFirstEpisode}>
             첫 화 보기
           </Button>
+          {onEditWork && (
+            <Button variant="default" onClick={onEditWork}>
+              작품 수정하기
+            </Button>
+          )}
         </div>
       </div>
     </div>

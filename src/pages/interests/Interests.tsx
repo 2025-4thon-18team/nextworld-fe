@@ -1,6 +1,11 @@
 import { FC, useCallback, useState, useMemo, useEffect } from "react";
 import { InterestsView } from "./InterestsView";
-import { useGetWorkEpisodes, useGetDerivativePosts } from "@/querys/useWorks";
+import {
+  useGetDerivativePosts,
+  useGetAllWorks,
+  useGetWorkEpisodes,
+} from "@/querys/useWorks";
+import { useGetEpisodesByWork } from "@/querys/usePosts";
 import { useGetMyWorkScraps } from "@/querys/useScrap";
 import { useTab } from "@/hooks/useTab";
 import { useNavigation } from "@/hooks/useNavigation";
@@ -9,6 +14,7 @@ import {
   usePostTransform,
   useContentItemTransform,
 } from "@/hooks/usePostTransform";
+import type { PostResponseDto } from "@/querys/types";
 
 type CategoryTabsTab = "홈" | "신규" | "관심";
 
@@ -31,8 +37,8 @@ export const Interests: FC = () => {
     }
   }, [scrappedWorks, selectedWorkId]);
 
-  // 선택된 작품의 회차 목록 조회 (최신화)
-  const { data: episodesData } = useGetWorkEpisodes(selectedWorkId ?? 0);
+  // 선택된 작품의 EPISODE 목록 조회 (최신화) - useGetEpisodesByWork 사용
+  const { data: episodesData } = useGetEpisodesByWork(selectedWorkId ?? 0);
   // 최신순 정렬 (createdAt 기준 내림차순)
   const sortedEpisodes = useMemo(() => {
     if (!episodesData) return [];
@@ -46,32 +52,52 @@ export const Interests: FC = () => {
     4,
   );
 
-  // 선택된 작품의 원작 참조 포스트 목록 조회 (신규 포스트)
+  // 선택된 작품의 모든 포스트 조회 (work_id로 연결된 모든 포스트) - SeriesDetail과 동일한 로직
+  const { data: workEpisodesData } = useGetWorkEpisodes(selectedWorkId ?? 0);
+  // 선택된 작품의 원작 참조 포스트 목록 조회 (parentWorkId로 연결된 포스트)
   const { data: derivativePostsData } = useGetDerivativePosts(
     selectedWorkId ?? 0,
   );
+
+  // Post 타입과 파생 포스트를 합침 (SeriesDetail과 동일한 로직)
+  const universePosts = useMemo(() => {
+    const posts: PostResponseDto[] = [];
+    // Post 타입 포스트 추가 (work_id로 연결된 POST 타입)
+    if (workEpisodesData) {
+      const postTypePosts = workEpisodesData.filter(
+        (post) => post.postType === "POST",
+      );
+      posts.push(...postTypePosts);
+    }
+    // 파생 포스트 추가 (parentWorkId로 연결된 포스트)
+    if (derivativePostsData) {
+      posts.push(...derivativePostsData);
+    }
+    return posts;
+  }, [workEpisodesData, derivativePostsData]);
+
   // 최신순 정렬
-  const sortedDerivativePosts = useMemo(() => {
-    if (!derivativePostsData) return [];
-    return [...derivativePostsData].sort(
+  const sortedUniversePosts = useMemo(() => {
+    if (!universePosts) return [];
+    return [...universePosts].sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
-  }, [derivativePostsData]);
+  }, [universePosts]);
   const newPosts = usePostTransform(
-    sortedDerivativePosts.length > 0 ? sortedDerivativePosts : undefined,
+    sortedUniversePosts.length > 0 ? sortedUniversePosts : undefined,
     9,
   );
 
-  // 스크랩된 작품 중 DERIVATIVE 타입인 것들을 필터링 (신규 유니버스)
+  // 2차 창작 작품 목록 조회 (신규 유니버스)
+  const { data: allDerivativeWorks } = useGetAllWorks("DERIVATIVE");
   const filteredDerivativeWorks = useMemo(() => {
-    if (!scrappedWorks || !selectedWorkId) return [];
+    if (!allDerivativeWorks || !selectedWorkId) return [];
     // parentWorkId가 선택된 작품 ID와 일치하는 DERIVATIVE 작품만 필터링
-    return scrappedWorks.filter(
-      (work) =>
-        work.workType === "DERIVATIVE" && work.parentWorkId === selectedWorkId,
+    return allDerivativeWorks.filter(
+      (work) => work.parentWorkId === selectedWorkId,
     );
-  }, [scrappedWorks, selectedWorkId]);
+  }, [allDerivativeWorks, selectedWorkId]);
   const newUniverseSeries = useWorkTransform(
     filteredDerivativeWorks.slice(0, 6),
   );
