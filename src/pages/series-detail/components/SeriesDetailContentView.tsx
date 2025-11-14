@@ -132,11 +132,11 @@ export const SeriesDetailContentView: FC<SeriesDetailContentViewProps> = ({
           </div>
         </>
       ) : (
-        <div className="relative flex w-full flex-col items-start gap-36 mt-8">
+        <div className="relative mt-8 flex w-full flex-col items-start gap-36">
           {/* Popular Universe Works */}
           <div className="gap-md relative flex w-full flex-col items-start">
             <p className="text-headings-heading-2 w-full tracking-tight text-black">
-              인기 유니버스 작품
+              인기 작품
             </p>
             <div className="gap-lg relative flex w-full items-center overflow-x-auto">
               {universeWorks.map((work) => (
@@ -157,8 +157,8 @@ export const SeriesDetailContentView: FC<SeriesDetailContentViewProps> = ({
             <p className="text-headings-heading-2 tracking-tight text-nowrap whitespace-pre text-black">
               인기 포스트
             </p>
-            <div className="gap-lg relative flex w-full shrink-0 flex-wrap items-start">
-              {popularPosts.map((post) => (
+            <div className="relative flex w-full shrink-0 flex-col items-start">
+              {popularPosts.map((post, index) => (
                 <PostItem
                   key={post.id}
                   title={post.title}
@@ -170,7 +170,9 @@ export const SeriesDetailContentView: FC<SeriesDetailContentViewProps> = ({
                   comments={post.comments}
                   date={post.date}
                   onClick={() => onPostClick?.(post.id)}
-                  className="w-403 shrink-0"
+                  className={
+                    index > 0 ? "border-background-subtle border-t-2" : ""
+                  }
                   isPaid={post.isPaid}
                   price={post.price}
                   postData={post.postData}
