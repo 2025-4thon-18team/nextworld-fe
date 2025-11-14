@@ -148,6 +148,8 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
       creationType: variant === "secondary-post" ? "DERIVATIVE" : "ORIGINAL",
       workId: selectedSeriesId ? Number(selectedSeriesId) : undefined,
       status: "DRAFT",
+      isPaid: paidPost,
+      price: paidPost && episodePrice ? Number(episodePrice) : undefined,
     };
 
     if (selectedDraftId) {
@@ -185,6 +187,8 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
     variant,
     selectedSeriesId,
     selectedDraftId,
+    paidPost,
+    episodePrice,
     saveDraft,
     updatePost,
   ]);
@@ -203,6 +207,8 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
       creationType: variant === "secondary-post" ? "DERIVATIVE" : "ORIGINAL",
       workId: selectedSeriesId ? Number(selectedSeriesId) : undefined,
       status: "PUBLISHED",
+      isPaid: paidPost,
+      price: paidPost && episodePrice ? Number(episodePrice) : undefined,
     };
 
     createPost(postData, {
@@ -220,6 +226,8 @@ const Editor = ({ variant = "original-post" }: EditorProps) => {
     postSelected,
     variant,
     selectedSeriesId,
+    paidPost,
+    episodePrice,
     createPost,
     navigateBack,
   ]);

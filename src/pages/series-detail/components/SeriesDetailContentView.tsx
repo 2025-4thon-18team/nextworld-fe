@@ -6,6 +6,8 @@ import { ContentItem } from "@/components/article/ContentItem/ContentItem";
 import { SeriesCard } from "@/components/SeriesCard/SeriesCard";
 import { PostItem } from "@/components/article/PostItem/PostItem";
 
+import type { PostResponseDto } from "@/querys/types";
+
 interface Episode {
   id: string;
   title: string;
@@ -14,6 +16,10 @@ interface Episode {
   views: number;
   comments: number;
   date: string;
+  // 결제 관련
+  isPaid?: boolean;
+  price?: number | null;
+  postData?: PostResponseDto;
 }
 
 interface UniverseWork {
@@ -33,6 +39,10 @@ interface Post {
   views: number;
   comments: number;
   date: string;
+  // 결제 관련
+  isPaid?: boolean;
+  price?: number | null;
+  postData?: PostResponseDto;
 }
 
 interface SeriesDetailContentViewProps {
@@ -114,6 +124,9 @@ export const SeriesDetailContentView: FC<SeriesDetailContentViewProps> = ({
                 className={
                   index > 0 ? "border-background-subtle border-t-2" : ""
                 }
+                isPaid={episode.isPaid}
+                price={episode.price}
+                postData={episode.postData}
               />
             ))}
           </div>
@@ -158,6 +171,9 @@ export const SeriesDetailContentView: FC<SeriesDetailContentViewProps> = ({
                   date={post.date}
                   onClick={() => onPostClick?.(post.id)}
                   className="w-403 shrink-0"
+                  isPaid={post.isPaid}
+                  price={post.price}
+                  postData={post.postData}
                 />
               ))}
             </div>
