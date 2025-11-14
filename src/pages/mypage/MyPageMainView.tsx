@@ -4,6 +4,7 @@ import { PostItem } from "@/components/article/PostItem/PostItem";
 import { AddSeries } from "@/components/AddSeries/AddSeries";
 import { RadioButton } from "@/components/RadioButton/RadioButton";
 import { useNavigation } from "@/hooks/useNavigation";
+import type { PostResponseDto } from "@/querys/types";
 
 type TabType = "작품" | "포스트";
 
@@ -17,6 +18,9 @@ type PostItemData = {
   views: number;
   comments: number;
   date: string;
+  isPaid?: boolean;
+  price?: number | null;
+  postData?: PostResponseDto;
 };
 
 type Props = {
@@ -97,13 +101,15 @@ export const MyPageMainView: FC<Props> = ({
               onClick={onProfileEdit}
               className="bg-background-subtle flex h-38 items-center gap-10 rounded-sm px-26 py-9"
             >
-              <span className="text-body-medium text-[#7b7978]">프로필 수정</span>
+              <span className="text-body-medium text-text-muted">
+                프로필 수정
+              </span>
             </button>
             <button
               onClick={onLogout}
               className="bg-background-subtle flex h-38 items-center gap-10 rounded-sm px-26 py-9"
             >
-              <span className="text-body-medium text-[#7b7978]">로그아웃</span>
+              <span className="text-body-medium text-text-muted">로그아웃</span>
             </button>
           </div>
         </div>
@@ -168,22 +174,6 @@ export const MyPageMainView: FC<Props> = ({
           )}
         </div>
       )}
-
-            {postList.map((post) => (
-              <div
-                key={post.id}
-                className="bg-white border border-grayscale-g2 rounded-md p-12 w-380 h-200 flex flex-col gap-6"
-              >
-                <p className="text-body-medium text-black">{post.title}</p>
-                <p className="text-body-small text-[#8A8A8A]">{post.date}</p>
-                <p className="text-body-small text-[#8A8A8A]">
-                  조회수 {post.views}
-                </p>
-              </div>
-            ))}
-          </>
-        )}
-      </div>
     </div>
   );
 };

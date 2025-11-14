@@ -58,7 +58,7 @@ export const NewView: FC<Props> = ({
           <h2 className="text-headings-heading-2 tracking-tight text-nowrap text-black">
             신규 작품
           </h2>
-          <div className="flex w-609 shrink-0 flex-wrap items-center gap-0">
+          <div className="flex w-609 shrink-0 flex-wrap items-start gap-0">
             {newSeries.map((series) => (
               <SeriesCard
                 key={series.id}
