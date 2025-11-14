@@ -43,7 +43,7 @@ export const TextInput: FC<TextInputProps> = ({ className, ...props }) => {
   return (
     <input
       className={cn(
-        "text-body-medium text-muted border-sm border-grayscale-g2 px-lg py-md flex h-46 w-full items-start gap-10 rounded-md",
+        "text-body-medium text-text-muted border-sm border-grayscale-g2 px-lg py-md flex h-46 w-full items-start gap-10 rounded-md",
         "focus:border-foreground-default focus:outline-none",
         className,
       )}
@@ -61,7 +61,7 @@ export const TextArea: FC<TextAreaProps> = ({ className, ...props }) => {
   return (
     <textarea
       className={cn(
-        "text-body-medium text-muted border-sm border-grayscale-g2 px-lg flex min-h-120 w-full items-start gap-10 rounded-md py-11",
+        "text-body-medium text-text-muted border-sm border-grayscale-g2 px-lg flex min-h-120 w-full items-start gap-10 rounded-md py-11",
         "focus:border-foreground-default resize-y focus:outline-none",
         className,
       )}
@@ -102,7 +102,12 @@ export const TagsInput: FC<TagsInputProps> = ({
   };
 
   return (
-    <div className={cn("gap-xs flex flex-wrap items-center", className)}>
+    <div
+      className={cn(
+        "gap-xs border-sm border-grayscale-g2 flex w-full flex-wrap items-center rounded-md px-16 py-12",
+        className,
+      )}
+    >
       {tags.map((tag, index) => (
         <button
           key={`${tag}-${index}`}
@@ -120,8 +125,8 @@ export const TagsInput: FC<TagsInputProps> = ({
         onKeyDown={handleKeyDown}
         placeholder={tags.length === 0 ? "태그를 입력하세요" : ""}
         className={cn(
-          "text-body-medium text-text-black bg-transparent outline-none",
-          "placeholder:text-text-muted",
+          "text-body-small-regular text-text-black bg-transparent outline-none",
+          "placeholder:text-body-small-regular placeholder:text-text-muted",
           "min-w-100 flex-1",
         )}
       />

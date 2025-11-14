@@ -41,7 +41,7 @@ export const TextAreaInputList: FC<TextAreaInputListProps> = ({
   return (
     <div
       className={cn(
-        "gap-sm flex w-810 flex-col items-start opacity-60",
+        "gap-sm flex w-full flex-col items-start opacity-60",
         className,
       )}
     >

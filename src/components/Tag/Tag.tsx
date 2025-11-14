@@ -16,10 +16,11 @@ export const Tag: FC<TagProps> = ({ children, type }) => {
         "py-xs flex items-center justify-center rounded-md px-[10px]",
       )}
     >
-      <span className={cn(textColor, "text-caption-regular whitespace-nowrap")}>
+      <span
+        className={cn(textColor, "text-body-small-regular whitespace-nowrap")}
+      >
         {children}
       </span>
     </div>
   );
 };
-

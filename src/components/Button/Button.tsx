@@ -16,9 +16,9 @@ const Button: FC<ButtonProps> = ({
   ...props
 }) => {
   const variantStyles = {
-    default: "bg-foreground-default text-default",
-    accent: "bg-foreground-on-accent text-default",
-    muted: "bg-background-muted text-default",
+    default: "bg-foreground-default text-text-default",
+    accent: "bg-foreground-on-accent text-text-default",
+    muted: "bg-background-muted text-text-default",
     subtle:
       "border-md border-foreground-muted text-text-on-accent-second bg-transparent",
   };
@@ -39,4 +39,3 @@ const Button: FC<ButtonProps> = ({
 };
 
 export default Button;
-
