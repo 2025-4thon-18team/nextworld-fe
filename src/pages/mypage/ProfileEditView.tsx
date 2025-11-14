@@ -27,6 +27,9 @@ interface Props {
   isValid: boolean;
 
   fileInputRef: React.RefObject<HTMLInputElement>;
+
+  // ⭐ 추가됨: textarea auto-resize용 ref
+  textareaRef: React.RefObject<HTMLTextAreaElement>;
 }
 
 export const ProfileEditView: FC<Props> = ({
@@ -54,11 +57,13 @@ export const ProfileEditView: FC<Props> = ({
   isValid,
 
   fileInputRef,
+  textareaRef, // ⭐ 추가됨
 }) => {
   return (
     <div className={cn("flex flex-col", className)}>
+
       {/* 상단 네비 */}
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-10">
+      <div className="flex items-center gap-2 text-sm text-gray-500 mb-8">
         <button
           onClick={() => history.back()}
           className="text-xl text-gray-400 hover:text-gray-600"
@@ -69,17 +74,14 @@ export const ProfileEditView: FC<Props> = ({
       </div>
 
       {/* 프로필 이미지 */}
-      <section className="flex flex-col gap-4 mb-12">
-        <h2 className="text-base font-semibold text-black">프로필 이미지</h2>
+      <section className="flex flex-col gap-4 mb-10">
+        <h2 className="text-lg font-semibold text-black">프로필 이미지</h2>
 
-        <div className="flex items-center gap-8">
-          {/* 왼쪽 동그라미 */}
-          <div className="h-28 w-28 rounded-full overflow-hidden bg-gray-100">
+        <div className="flex items-center gap-10">
+          {/* 이미지 */}
+          <div className="h-28 w-28 rounded-full overflow-hidden bg-gray-100 shadow-sm">
             {previewUrl ? (
-              <img
-                src={previewUrl}
-                className="h-full w-full object-cover"
-              />
+              <img src={previewUrl} className="h-full w-full object-cover" />
             ) : (
               <div className="flex h-full w-full items-center justify-center text-4xl text-gray-300">
                 👤
@@ -88,9 +90,10 @@ export const ProfileEditView: FC<Props> = ({
           </div>
 
           {/* 파일 선택 */}
-          <div className="w-full max-w-xl">
+          <div className="w-full max-w-[600px]">
             <div
               onClick={onSelectFile}
+              style={{ minHeight: "30px" }}
               className="flex h-11 items-center justify-between rounded-lg border border-gray-300 bg-gray-50 px-4 text-sm text-gray-500 cursor-pointer"
             >
               <span className="truncate">
@@ -112,7 +115,7 @@ export const ProfileEditView: FC<Props> = ({
       </section>
 
       {/* 이름 */}
-      <section className="flex flex-col gap-2 mb-10">
+      <section className="flex flex-col gap-2 mb-8">
         <label className="text-sm font-semibold text-black">
           이름 <span className="text-purple-500">*</span>
         </label>
@@ -120,7 +123,8 @@ export const ProfileEditView: FC<Props> = ({
         <input
           value={name}
           onChange={(e) => onChangeName(e.target.value)}
-          className="h-11 w-full max-w-xl rounded-lg border border-gray-300 px-3 text-sm focus:border-purple-500 focus:ring-purple-500"
+          style={{ minHeight: "30px" }}
+          className="h-11 w-full max-w-[628px] rounded-lg border border-gray-300 px-3 text-sm focus:border-purple-500 focus:ring-purple-500"
           placeholder="이름을 입력해주세요."
         />
 
@@ -138,15 +142,27 @@ export const ProfileEditView: FC<Props> = ({
 
       {/* 자기소개 */}
       <section className="flex flex-col gap-2 mb-10">
-        <label className="text-sm font-semibold text-black">
-          자기소개
-        </label>
+        <label className="text-sm font-semibold text-black">자기소개</label>
 
+        {/* ⭐ auto-resize 적용된 textarea */}
         <textarea
+          ref={textareaRef}                           // ⭐ 추가됨
           value={bio}
-          onChange={(e) => onChangeBio(e.target.value)}
-          rows={6}
-          className="w-full max-w-xl rounded-lg border border-gray-300 px-3 py-3 text-sm focus:border-purple-500 focus:ring-purple-500"
+          onChange={(e) => onChangeBio(e.target.value)}   // ⭐ handleBioChange가 ProfileEdit에 있음
+          style={{ minHeight: "100px" }}
+          className="
+            w-full 
+            max-w-[628px] 
+            rounded-lg 
+            border 
+            border-gray-300 
+            px-3 py-3 
+            text-sm 
+            focus:border-purple-500 
+            focus:ring-purple-500 
+            overflow-hidden
+            resize-none
+          "
           placeholder="자기소개를 입력해주세요."
         />
 
@@ -160,29 +176,33 @@ export const ProfileEditView: FC<Props> = ({
         </p>
       </section>
 
-      {/* 소셜 정보 */}
+      {/* 소셜 */}
       <section className="flex flex-col gap-4 mb-14">
         <h3 className="text-sm font-semibold text-black">소셜 정보</h3>
 
-        <div className="flex items-center gap-3 max-w-xl">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100">
+        {/* 이메일 */}
+        <div className="flex items-center gap-3 max-w-[628px]">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-lg">
             ✉️
           </div>
           <input
             value={email}
             onChange={(e) => onChangeEmail(e.target.value)}
+            style={{ minHeight: "30px" }}
             placeholder="이메일 입력"
             className="h-11 flex-1 rounded-lg border border-gray-300 px-3 text-sm focus:border-purple-500 focus:ring-purple-500"
           />
         </div>
 
-        <div className="flex items-center gap-3 max-w-xl">
+        {/* 트위터 */}
+        <div className="flex items-center gap-3 max-w-[628px]">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-lg">
             X
           </div>
           <input
             value={twitter}
             onChange={(e) => onChangeTwitter(e.target.value)}
+            style={{ minHeight: "30px" }}
             placeholder="Twitter 계정 입력"
             className="h-11 flex-1 rounded-lg border border-gray-300 px-3 text-sm focus:border-purple-500 focus:ring-purple-500"
           />
@@ -190,15 +210,13 @@ export const ProfileEditView: FC<Props> = ({
       </section>
 
       {/* 저장 버튼 */}
-      <div className="flex max-w-xl justify-end">
+      <div className="flex max-w-[600px] justify-end">
         <button
           onClick={onSave}
           disabled={!isValid || isSaving}
           className={cn(
-            "h-11 w-56 rounded-full text-sm font-semibold text-white transition",
-            !isValid
-              ? "bg-purple-300"
-              : "bg-purple-500 hover:bg-purple-600",
+            "h-28 w-110 rounded-full text-sm font-semibold text-white transition",
+            !isValid ? "bg-purple-300" : "bg-purple-500 hover:bg-purple-600",
           )}
         >
           {isSaving ? "저장 중..." : "변경 내용 저장"}

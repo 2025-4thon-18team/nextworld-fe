@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from "react";
 import { MyPageMainView } from "./MyPageMainView";
-import { useGetMe } from "@/querys/useAuth";
+import { useGetMe } from "@/querys/useAuth";   // ⭐ 추가된 라인
 import { useGetAllWorks } from "@/querys/useWorks";
 import { useTab } from "@/hooks/useTab";
 import { useSimpleWorkTransform } from "@/hooks/useWorkTransform";
@@ -11,8 +11,9 @@ type TabType = "작품" | "포스트";
 const MyPageMain = () => {
   const { activeTab, onTabChange } = useTab<TabType>("작품");
   const { navigateToLogin } = useNavigation();
+  const { navigateToProfileEdit } = useNavigation();
 
-  const { data: profileData } = useGetMe();
+  const { data: profileData } = useGetMe();      // ⭐ 이제 정상 동작
   const { data: worksData } = useGetAllWorks("ORIGINAL");
 
   const seriesList = useSimpleWorkTransform(worksData);
@@ -32,10 +33,10 @@ const MyPageMain = () => {
     };
   }, [profileData]);
 
-  // ⭐ 수정: 최소 변경으로 ProfileEdit 페이지 실행
+  // ⭐ 최소 변경으로 ProfileEdit 페이지 실행
   const onProfileEdit = useCallback(() => {
-    window.location.href = "/my-page/profile/edit";
-  }, []);
+    navigateToProfileEdit();
+  }, [navigateToProfileEdit]);
 
   const onLogout = useCallback(() => {
     navigateToLogin();
@@ -48,7 +49,7 @@ const MyPageMain = () => {
       postList={postList}
       activeTab={activeTab}
       onTabChange={onTabChange}
-      onProfileEdit={onProfileEdit}   // ⭐ 수정된 핸들러 전달
+      onProfileEdit={onProfileEdit}
       onLogout={onLogout}
     />
   );

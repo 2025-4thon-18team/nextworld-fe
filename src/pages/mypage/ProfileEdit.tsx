@@ -13,6 +13,9 @@ export const ProfileEdit: FC = () => {
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+  // ⭐ 추가: textarea auto-resize를 위한 ref
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [email, setEmail] = useState("");
@@ -39,6 +42,17 @@ export const ProfileEdit: FC = () => {
     reader.readAsDataURL(file);
   };
 
+  // ⭐ 추가: textarea auto-resize 기능
+  const handleBioChange = (value: string) => {
+    setBio(value);
+
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
+    }
+  };
+
   const handleSave = () => {
     updateProfile(
       {
@@ -52,7 +66,7 @@ export const ProfileEdit: FC = () => {
           alert("변경 완료!");
           history.back();
         },
-      },
+      }
     );
   };
 
@@ -73,7 +87,10 @@ export const ProfileEdit: FC = () => {
         previewUrl={previewUrl}
         fileName={imageFile?.name ?? null}
         onChangeName={setName}
-        onChangeBio={setBio}
+
+        // ⭐ 기존 setBio → auto-resize 적용된 handleBioChange
+        onChangeBio={handleBioChange}
+
         onChangeEmail={setEmail}
         onChangeTwitter={setTwitter}
         onSelectFile={() => fileInputRef.current?.click()}
@@ -81,7 +98,11 @@ export const ProfileEdit: FC = () => {
         onSave={handleSave}
         isSaving={isPending}
         isValid={isValid}
+
         fileInputRef={fileInputRef}
+
+        // ⭐ textareaRef 전달 (View에서 연결해야 auto-resize 작동)
+        textareaRef={textareaRef}
       />
     </ProfileEditLayoutView>
   );
