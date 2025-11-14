@@ -7,6 +7,7 @@ import { useNavigation } from "@/hooks/useNavigation";
 interface ViewerHeaderProps {
   seriesTitle?: string;
   episodeTitle: string;
+  onBack?: () => void;
   onPrevious?: () => void;
   onNext?: () => void;
   className?: string;
@@ -29,15 +30,16 @@ const IconChevronFlip = ({ className }: { className?: string }) => {
 export const ViewerHeader: FC<ViewerHeaderProps> = ({
   seriesTitle,
   episodeTitle,
+  onBack,
   onPrevious,
   onNext,
   className,
 }) => {
   const { navigateBack } = useNavigation();
 
-  const handlePrevious = () => {
-    if (onPrevious) {
-      onPrevious();
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
     } else {
       navigateBack();
     }
@@ -53,10 +55,10 @@ export const ViewerHeader: FC<ViewerHeaderProps> = ({
       <div className="relative flex h-100 w-full max-w-1440 items-center justify-center">
         <div className="flex w-1035 items-center justify-between">
           <div className="gap-xl flex shrink-0 items-center">
-            {/* Previous Episode Button */}
+            {/* Back Button */}
             <button
               type="button"
-              onClick={handlePrevious}
+              onClick={handleBack}
               className="flex size-24 cursor-pointer items-center justify-center overflow-hidden"
             >
               <IconChevron className="size-24 shrink-0 overflow-hidden" />

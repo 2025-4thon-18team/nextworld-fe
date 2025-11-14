@@ -13,6 +13,7 @@ export const ProfileImg: FC<ProfileImgProps> = ({
   imageUrl,
   size = "lg",
   className,
+  onClick,
   ...props
 }) => {
   const sizeClasses = {
@@ -27,6 +28,7 @@ export const ProfileImg: FC<ProfileImgProps> = ({
         sizeClasses[size],
         className,
       )}
+      onClick={onClick}
     >
       {imageUrl ? (
         <img

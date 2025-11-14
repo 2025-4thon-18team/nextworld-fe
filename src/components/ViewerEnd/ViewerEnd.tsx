@@ -1,14 +1,18 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { IconStar, IconComment } from "@/assets/icons";
 import IconWithLabel from "@/components/IconWithLabel/IconWithLabel";
 import { cn } from "@/utils";
 import { useNavigation } from "@/hooks/useNavigation";
+import { CommentPopup } from "@/components/CommentPopup/CommentPopup";
+import { RatingPopup } from "@/components/RatingPopup/RatingPopup";
 
 interface ViewerEndProps {
   authorName: string;
   authorId?: string | number;
   rating?: number;
   commentsLabel?: string;
+  postId?: number;
+  onRatingSubmit?: (rating: number) => void;
   className?: string;
 }
 
@@ -17,13 +21,33 @@ export const ViewerEnd: FC<ViewerEndProps> = ({
   authorId,
   rating,
   commentsLabel = "댓글",
+  postId,
+  onRatingSubmit,
   className,
 }) => {
   const { navigate } = useNavigation();
+  const [isCommentPopupOpen, setIsCommentPopupOpen] = useState(false);
+  const [isRatingPopupOpen, setIsRatingPopupOpen] = useState(false);
 
   const handleAuthorClick = () => {
     if (authorId) {
       navigate(`/author/${authorId}`);
+    }
+  };
+
+  const handleCommentClick = () => {
+    if (postId) {
+      setIsCommentPopupOpen(true);
+    }
+  };
+
+  const handleRatingClick = () => {
+    setIsRatingPopupOpen(true);
+  };
+
+  const handleRatingSubmit = (newRating: number) => {
+    if (onRatingSubmit) {
+      onRatingSubmit(newRating);
     }
   };
 
@@ -60,6 +84,7 @@ export const ViewerEnd: FC<ViewerEndProps> = ({
             <IconWithLabel
               icon={<IconStar className="size-24 text-black" />}
               label={rating.toFixed(1)}
+              onClick={handleRatingClick}
             />
           </div>
           {/* Separator */}
@@ -72,8 +97,24 @@ export const ViewerEnd: FC<ViewerEndProps> = ({
         <IconWithLabel
           icon={<IconComment className="size-24 text-black" />}
           label={commentsLabel}
+          onClick={handleCommentClick}
         />
       </div>
+
+      {/* Popups */}
+      {postId && (
+        <CommentPopup
+          postId={postId}
+          isOpen={isCommentPopupOpen}
+          onClose={() => setIsCommentPopupOpen(false)}
+        />
+      )}
+      <RatingPopup
+        currentRating={rating}
+        isOpen={isRatingPopupOpen}
+        onClose={() => setIsRatingPopupOpen(false)}
+        onSubmit={handleRatingSubmit}
+      />
     </div>
   );
 };
