@@ -30,7 +30,7 @@ export const LayoutView: FC<Props> = ({
         profileImageUrl={profileImageUrl}
         onProfileClick={onProfileClick}
       />
-      <Toaster />
+      <Toaster position="top-center" />
       <main className="mx-auto w-full max-w-1280 overflow-x-hidden">
         <Outlet />
       </main>
