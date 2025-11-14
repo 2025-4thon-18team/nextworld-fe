@@ -63,7 +63,7 @@ export const MyPageLayout: FC = () => {
           (profileData as UserProfileResponse | undefined)?.profileImageUrl
         }
       />
-      <Toaster />
+      <Toaster position="top-center" />
       <div className="flex items-start gap-38 px-80 pt-48">
         {/* Dashboard Sidebar */}
         <div className="shrink-0">
