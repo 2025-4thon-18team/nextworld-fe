@@ -1,7 +1,15 @@
 import { FC, useState } from "react";
 import { IconComment, IconCross } from "@/assets/icons";
-import { useGetComments, useCreateComment } from "@/querys/useComments";
-import type { CreateCommentRequest } from "@/querys/types";
+import {
+  useGetComments,
+  useCreateComment,
+  useUpdateComment,
+  useDeleteComment,
+} from "@/querys/useComments";
+import { useGetMe } from "@/querys/useAuth";
+import { DropdownMenu } from "@/components/DropdownMenu/DropdownMenu";
+import { IconMore } from "@/components/IconMore/IconMore";
+import type { CreateCommentRequest, UpdateCommentRequest } from "@/querys/types";
 import { cn, buildCommentTree, type Comment } from "@/utils";
 import { toast } from "sonner";
 
@@ -19,8 +27,13 @@ export const CommentPopup: FC<CommentPopupProps> = ({
   const [commentContent, setCommentContent] = useState("");
   const [replyingToId, setReplyingToId] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState<Record<number, string>>({});
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingContent, setEditingContent] = useState<Record<number, string>>({});
   const { data: comments = [], refetch } = useGetComments(postId);
   const { mutate: createComment, isPending } = useCreateComment();
+  const { mutate: updateComment } = useUpdateComment();
+  const { mutate: deleteComment } = useDeleteComment();
+  const { data: currentUser } = useGetMe();
 
   // 댓글 트리 구조로 변환
   const commentTree = buildCommentTree(comments);
@@ -143,6 +156,13 @@ export const CommentPopup: FC<CommentPopupProps> = ({
                     setReplyContent={setReplyContent}
                     onReplySubmit={handleReplySubmit}
                     postId={postId}
+                    currentUserId={currentUser?.userId}
+                    editingCommentId={editingCommentId}
+                    setEditingCommentId={setEditingCommentId}
+                    editingContent={editingContent}
+                    setEditingContent={setEditingContent}
+                    onUpdateComment={updateComment}
+                    onDeleteComment={deleteComment}
                   />
                 ))}
               </div>
@@ -191,6 +211,13 @@ interface CommentItemProps {
   setReplyContent: React.Dispatch<React.SetStateAction<Record<number, string>>>;
   onReplySubmit: (parentCommentId: number) => void;
   postId: number;
+  currentUserId?: number;
+  editingCommentId: number | null;
+  setEditingCommentId: (id: number | null) => void;
+  editingContent: Record<number, string>;
+  setEditingContent: React.Dispatch<React.SetStateAction<Record<number, string>>>;
+  onUpdateComment: (variables: { commentId: number; data: UpdateCommentRequest; postId: number }) => void;
+  onDeleteComment: (variables: { commentId: number; postId: number }) => void;
 }
 
 const CommentItem: FC<CommentItemProps> = ({
@@ -202,9 +229,19 @@ const CommentItem: FC<CommentItemProps> = ({
   setReplyContent,
   onReplySubmit,
   postId,
+  currentUserId,
+  editingCommentId,
+  setEditingCommentId,
+  editingContent,
+  setEditingContent,
+  onUpdateComment,
+  onDeleteComment,
 }) => {
   const isReplying = replyingToId === comment.id;
   const currentReplyContent = replyContent[comment.id] || "";
+  const isEditing = editingCommentId === comment.id;
+  const currentEditingContent = editingContent[comment.id] || comment.content;
+  const isAuthor = currentUserId === comment.authorId;
 
   const handleReplyClick = () => {
     setReplyingToId(isReplying ? null : comment.id);
@@ -219,6 +256,62 @@ const CommentItem: FC<CommentItemProps> = ({
 
   const handleReplySubmitClick = () => {
     onReplySubmit(comment.id);
+  };
+
+  const handleEditClick = () => {
+    setEditingCommentId(comment.id);
+    setEditingContent((prev) => ({ ...prev, [comment.id]: comment.content }));
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCommentId(null);
+    setEditingContent((prev) => {
+      const next = { ...prev };
+      delete next[comment.id];
+      return next;
+    });
+  };
+
+  const handleSaveEdit = () => {
+    const content = editingContent[comment.id]?.trim();
+    if (!content) return;
+
+    onUpdateComment(
+      {
+        commentId: comment.id,
+        data: { content },
+        postId,
+      },
+      {
+        onSuccess: () => {
+          setEditingCommentId(null);
+          setEditingContent((prev) => {
+            const next = { ...prev };
+            delete next[comment.id];
+            return next;
+          });
+        },
+        onError: () => {
+          toast.error("댓글 수정에 실패했습니다.");
+        },
+      },
+    );
+  };
+
+  const handleDeleteClick = () => {
+    if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    onDeleteComment(
+      { commentId: comment.id, postId },
+      {
+        onSuccess: () => {
+          toast.success("댓글이 삭제되었습니다.");
+        },
+        onError: () => {
+          toast.error("댓글 삭제에 실패했습니다.");
+        },
+      },
+    );
   };
 
   return (
@@ -239,14 +332,75 @@ const CommentItem: FC<CommentItemProps> = ({
               {formatDate(comment.createdAt)}
             </span>
           </div>
-          <p className="text-body-regular text-black">{comment.content}</p>
-          <button
-            type="button"
-            onClick={handleReplyClick}
-            className="mt-xs text-body-small-medium text-text-muted hover:text-black"
-          >
-            {isReplying ? "취소" : "답글"}
-          </button>
+          {isEditing ? (
+            <div className="gap-sm mt-xs flex flex-col">
+              <textarea
+                value={currentEditingContent}
+                onChange={(e) =>
+                  setEditingContent((prev) => ({
+                    ...prev,
+                    [comment.id]: e.target.value,
+                  }))
+                }
+                className="border-default px-md py-md text-body-regular placeholder:text-muted focus:border-accent resize-none rounded-md border text-black focus:outline-none"
+                rows={2}
+              />
+              <div className="flex justify-end gap-xs">
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="px-md py-xs text-body-small-medium text-text-muted hover:text-black"
+                >
+                  취소
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveEdit}
+                  disabled={!currentEditingContent.trim()}
+                  className={cn(
+                    "px-md py-xs text-body-small-medium rounded-md",
+                    currentEditingContent.trim()
+                      ? "bg-foreground-default hover:bg-foreground-500 text-white"
+                      : "bg-grayscale-g2 text-muted cursor-not-allowed",
+                  )}
+                >
+                  저장
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-start justify-between gap-sm">
+                <p className="text-body-regular text-black flex-1">{comment.content}</p>
+                {isAuthor && (
+                  <DropdownMenu
+                    items={[
+                      {
+                        label: "수정",
+                        onClick: handleEditClick,
+                      },
+                      {
+                        label: "삭제",
+                        onClick: handleDeleteClick,
+                        className: "text-red-600",
+                      },
+                    ]}
+                  >
+                    <IconMore className="text-text-muted" size={20} />
+                  </DropdownMenu>
+                )}
+              </div>
+              <div className="mt-xs">
+                <button
+                  type="button"
+                  onClick={handleReplyClick}
+                  className="text-body-small-medium text-text-muted hover:text-black"
+                >
+                  {isReplying ? "취소" : "답글"}
+                </button>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -292,6 +446,13 @@ const CommentItem: FC<CommentItemProps> = ({
               setReplyContent={setReplyContent}
               onReplySubmit={onReplySubmit}
               postId={postId}
+              currentUserId={currentUserId}
+              editingCommentId={editingCommentId}
+              setEditingCommentId={setEditingCommentId}
+              editingContent={editingContent}
+              setEditingContent={setEditingContent}
+              onUpdateComment={onUpdateComment}
+              onDeleteComment={onDeleteComment}
             />
           ))}
         </div>

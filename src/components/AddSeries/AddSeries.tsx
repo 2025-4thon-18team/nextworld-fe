@@ -7,9 +7,17 @@ interface AddSeriesProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const AddSeries: FC<AddSeriesProps> = ({ className, ...props }) => {
-  const { navigateToCreateSeries } = useNavigation();
+  const { navigateToCreateSeries, navigate } = useNavigation();
 
   const handleAddSeries = () => {
+    // 작품 생성 시작 페이지가 아닐 때만 이전 위치 저장
+    const currentPath = window.location.pathname;
+    const isCreateSeriesPath = currentPath.startsWith("/create-series");
+    
+    if (!isCreateSeriesPath && !sessionStorage.getItem("createWorkReturnPath")) {
+      sessionStorage.setItem("createWorkReturnPath", currentPath);
+    }
+    
     navigateToCreateSeries();
   };
 
