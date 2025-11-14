@@ -1,6 +1,8 @@
 // src/pages/my/ProfileEditView.tsx
 import { FC, ChangeEvent } from "react";
 import { cn } from "@/utils";
+import iconMail from "@/assets/icons/icon-mail.svg";   // ⭐ 추가
+import iconX from "@/assets/icons/icon-x.svg";         // ⭐ 추가
 
 interface Props {
   className?: string;
@@ -144,11 +146,10 @@ export const ProfileEditView: FC<Props> = ({
       <section className="flex flex-col gap-2 mb-10">
         <label className="text-sm font-semibold text-black">자기소개</label>
 
-        {/* ⭐ auto-resize 적용된 textarea */}
         <textarea
-          ref={textareaRef}                           // ⭐ 추가됨
+          ref={textareaRef}
           value={bio}
-          onChange={(e) => onChangeBio(e.target.value)}   // ⭐ handleBioChange가 ProfileEdit에 있음
+          onChange={(e) => onChangeBio(e.target.value)}
           style={{ minHeight: "100px" }}
           className="
             w-full 
@@ -183,7 +184,7 @@ export const ProfileEditView: FC<Props> = ({
         {/* 이메일 */}
         <div className="flex items-center gap-3 max-w-[628px]">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-lg">
-            ✉️
+            <img src={iconMail} alt="email" className="h-5 w-5" /> {/* ⭐ 변경 */}
           </div>
           <input
             value={email}
@@ -194,10 +195,10 @@ export const ProfileEditView: FC<Props> = ({
           />
         </div>
 
-        {/* 트위터 */}
+        {/* 트위터(X) */}
         <div className="flex items-center gap-3 max-w-[628px]">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-lg">
-            X
+            <img src={iconX} alt="twitter-x" className="h-5 w-5" /> {/* ⭐ 변경 */}
           </div>
           <input
             value={twitter}
