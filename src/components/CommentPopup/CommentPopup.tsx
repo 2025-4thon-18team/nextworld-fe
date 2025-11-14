@@ -126,7 +126,7 @@ export const CommentPopup: FC<CommentPopupProps> = ({
           <div className="px-xl py-lg flex-1 overflow-y-auto">
             {commentTree.length === 0 ? (
               <div className="py-xl text-center">
-                <p className="text-body-medium text-muted">
+                <p className="text-body-medium text-text-muted">
                   아직 댓글이 없습니다.
                 </p>
               </div>
@@ -156,7 +156,7 @@ export const CommentPopup: FC<CommentPopupProps> = ({
                 value={commentContent}
                 onChange={(e) => setCommentContent(e.target.value)}
                 placeholder="댓글을 입력하세요..."
-                className="border-default px-md py-md text-body-regular placeholder:text-muted focus:border-accent resize-none rounded-md border text-black focus:outline-none"
+                className="border-default px-md py-md text-body-regular placeholder:text-text-muted focus:border-accent resize-none rounded-md border text-black focus:outline-none"
                 rows={3}
               />
               <div className="flex justify-end">
@@ -167,8 +167,8 @@ export const CommentPopup: FC<CommentPopupProps> = ({
                   className={cn(
                     "px-lg py-sm text-body-medium rounded-md",
                     commentContent.trim() && !isPending
-                      ? "bg-primary-main hover:bg-primary-700 text-white"
-                      : "bg-grayscale-g2 text-muted cursor-not-allowed",
+                      ? "bg-foreground-default hover:bg-foreground-500 text-white"
+                      : "bg-grayscale-g2 text-text-muted cursor-not-allowed",
                   )}
                 >
                   {isPending ? "작성 중..." : "작성"}
@@ -235,7 +235,7 @@ const CommentItem: FC<CommentItemProps> = ({
             <span className="text-body-medium text-black">
               {comment.authorName}
             </span>
-            <span className="text-body-small-regular text-muted">
+            <span className="text-body-small-regular text-text-muted">
               {formatDate(comment.createdAt)}
             </span>
           </div>
@@ -243,7 +243,7 @@ const CommentItem: FC<CommentItemProps> = ({
           <button
             type="button"
             onClick={handleReplyClick}
-            className="mt-xs text-body-small-medium text-muted hover:text-black"
+            className="mt-xs text-body-small-medium text-text-muted hover:text-black"
           >
             {isReplying ? "취소" : "답글"}
           </button>
@@ -268,7 +268,7 @@ const CommentItem: FC<CommentItemProps> = ({
               className={cn(
                 "px-md py-xs text-body-small-medium rounded-md",
                 currentReplyContent.trim()
-                  ? "bg-primary-main hover:bg-primary-700 text-white"
+                  ? "bg-foreground-default hover:bg-foreground-500 text-white"
                   : "bg-grayscale-g2 text-muted cursor-not-allowed",
               )}
             >
