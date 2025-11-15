@@ -103,7 +103,7 @@ export const PostTypeSidebar: FC<PostTypeSidebarProps> = ({
 
         {/* 포스트 탭일 때: 원작 설정, 검색, 유료 포스트, 태그 */}
         {!isEpisodeTab && (
-          <>
+          <div className="gap-md relative flex w-full shrink-0 flex-col items-start px-32">
             {/* 원작 설정 */}
             <InputLabel>원작 설정</InputLabel>
 
@@ -167,14 +167,14 @@ export const PostTypeSidebar: FC<PostTypeSidebarProps> = ({
               <InputLabel>태그</InputLabel>
               <TagsInput tags={tags} onTagsChange={onTagsChange} />
             </div>
-          </>
+          </div>
         )}
 
         {/* 작품 연재 탭일 때: 작품 선택만 */}
         {isEpisodeTab && (
-          <div className="gap-md relative flex w-full shrink-0 flex-col items-start px-32 py-0">
+          <div className="relative flex w-full shrink-0 grow flex-col items-start overflow-hidden px-32 py-0">
             {/* 작품 카드들 */}
-            <div className="gap-md relative flex w-full shrink-0 flex-wrap items-start justify-between">
+            <div className="gap-md relative grid w-full shrink-0 grid-cols-2 overflow-y-auto">
               {series.map((item, index) => {
                 // 작품 연재 탭에서는 selectedEpisodeWorkId를 기준으로 선택 상태 결정
                 const seriesId = series[index]?.id || String(index);

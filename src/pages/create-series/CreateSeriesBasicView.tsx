@@ -55,8 +55,30 @@ export const CreateSeriesBasicView: FC<Props> = ({
   onGenreToggle,
   onNext,
 }) => {
-  const weekDays = ["월", "화", "수", "목", "금", "토", "일"];
-  const genreOptions = ["현대로맨스", "현대로맨스", "스릴러"];
+  const weekDays = ["월", "화", "수", "목", "금", "토", "일", "자유연재"];
+  const genreOptions = [
+    "현대로맨스",
+    "로맨스판타지",
+    "판타지",
+    "스릴러",
+    "무협",
+    "액션",
+    "코미디",
+    "드라마",
+    "성장담",
+    "추리",
+    "공포",
+    "SF",
+    "라이트노벨",
+    "BL",
+    "GL",
+    "대체역사",
+    "일상",
+    "스포츠",
+    "스페이스오페라",
+    "범죄",
+    "서사시",
+  ];
 
   return (
     <div className="relative min-h-screen w-full bg-white">
@@ -233,7 +255,7 @@ export const CreateSeriesBasicView: FC<Props> = ({
           {/* Genres */}
           <div className="gap-sm flex w-full flex-col items-start">
             <InputLabel required>장르 카테고리</InputLabel>
-            <div className="px-md flex flex-col gap-10 py-0">
+            <div className="px-md flex flex-col gap-10 overflow-x-scroll py-0">
               <div className="gap-xs flex items-center">
                 {genreOptions.map((genre) => (
                   <button
