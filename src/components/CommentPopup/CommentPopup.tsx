@@ -9,7 +9,10 @@ import {
 import { useGetMe } from "@/querys/useAuth";
 import { DropdownMenu } from "@/components/DropdownMenu/DropdownMenu";
 import { IconMore } from "@/components/IconMore/IconMore";
-import type { CreateCommentRequest, UpdateCommentRequest } from "@/querys/types";
+import type {
+  CreateCommentRequest,
+  UpdateCommentRequest,
+} from "@/querys/types";
 import { cn, buildCommentTree, type Comment } from "@/utils";
 import { toast } from "sonner";
 
@@ -28,7 +31,9 @@ export const CommentPopup: FC<CommentPopupProps> = ({
   const [replyingToId, setReplyingToId] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState<Record<number, string>>({});
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
-  const [editingContent, setEditingContent] = useState<Record<number, string>>({});
+  const [editingContent, setEditingContent] = useState<Record<number, string>>(
+    {},
+  );
   const { data: comments = [], refetch } = useGetComments(postId);
   const { mutate: createComment, isPending } = useCreateComment();
   const { mutate: updateComment } = useUpdateComment();
@@ -215,9 +220,27 @@ interface CommentItemProps {
   editingCommentId: number | null;
   setEditingCommentId: (id: number | null) => void;
   editingContent: Record<number, string>;
-  setEditingContent: React.Dispatch<React.SetStateAction<Record<number, string>>>;
-  onUpdateComment: (variables: { commentId: number; data: UpdateCommentRequest; postId: number }) => void;
-  onDeleteComment: (variables: { commentId: number; postId: number }) => void;
+  setEditingContent: React.Dispatch<
+    React.SetStateAction<Record<number, string>>
+  >;
+  onUpdateComment: (
+    variables: {
+      commentId: number;
+      data: UpdateCommentRequest;
+      postId: number;
+    },
+    options?: {
+      onSuccess?: () => void;
+      onError?: () => void;
+    },
+  ) => void;
+  onDeleteComment: (
+    variables: { commentId: number; postId: number },
+    options?: {
+      onSuccess?: () => void;
+      onError?: () => void;
+    },
+  ) => void;
 }
 
 const CommentItem: FC<CommentItemProps> = ({
@@ -345,7 +368,7 @@ const CommentItem: FC<CommentItemProps> = ({
                 className="border-default px-md py-md text-body-regular placeholder:text-muted focus:border-accent resize-none rounded-md border text-black focus:outline-none"
                 rows={2}
               />
-              <div className="flex justify-end gap-xs">
+              <div className="gap-xs flex justify-end">
                 <button
                   type="button"
                   onClick={handleCancelEdit}
@@ -370,8 +393,10 @@ const CommentItem: FC<CommentItemProps> = ({
             </div>
           ) : (
             <>
-              <div className="flex items-start justify-between gap-sm">
-                <p className="text-body-regular text-black flex-1">{comment.content}</p>
+              <div className="gap-sm flex items-start justify-between">
+                <p className="text-body-regular flex-1 text-black">
+                  {comment.content}
+                </p>
                 {isAuthor && (
                   <DropdownMenu
                     items={[
